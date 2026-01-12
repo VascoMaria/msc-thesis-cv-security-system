@@ -1,0 +1,264 @@
+%
+% Modelo para relatório de trabahlo final das disciplinas de Projecto dos
+% mestrados do DI:
+% - Engenharia Informática
+% - Informática
+% - Segurança Informática
+% - Ciência de Dados
+%
+% Incorpora elementos impostos pelo Regulamento de Estudos Pos-Graduados da
+% Universidade de Lisboa
+%(Deliberacao 1506/2006 - Diario da República, 2.a série - n.o 209 -
+% 30 de Outubro de 2006)
+%
+% Versão Setembro 2024 
+%
+% Algumas  dicas:
+%  - Na pasta ./tex deverão estar os vários ficheiros latex que constituem o relatório
+%  - Primeiro os ficheiros:
+%		- capa.tex
+%		- agradecimentos.tex
+%		- resumo_pt.tex
+%		- resumo_ing.tex
+%		- No início de cada um destes ficheiros é mencionado o que é necessário/possível alterar
+%  - Depois vêm os ficheiros com os capítulos, organizados da forma que entenderem e incluídos de forma apropriada no local indicado neste ficheiro main.
+%  - Na pasta ./pic deverão ser colocadas as figuras
+%  - A bibliografia deverá estar num ficheirona mesma directoria que este main.tex	
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[11pt,openright,twoside]{report}
+
+\usepackage[utf8]{inputenc}
+% Quem tiver problemas com os acentos, trocar utf8 por latin1
+
+\usepackage[portuguese,english]{babel}
+\usepackage{times}
+\usepackage{booktabs} % no preâmbulo
+\usepackage{pdfpages}
+
+% Isto é só para gerar o texto dummy do exemplo. Remover da tese.
+\usepackage{blindtext}
+
+\usepackage{graphicx}
+\usepackage{enumitem}
+
+% Indice remissivo
+\usepackage{makeidx}
+\makeindex
+
+% Glossario
+\usepackage[acronym]{glossaries}
+\makeglossaries
+\input{./tex/acronimos} % só definições
+% Links
+\usepackage{hyperref}
+
+% Package para cabecalhos
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{subcaption}
+\usepackage{float}  % para o [H]
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{amsmath} % no preâmbulo, se ainda não estiver incluído
+\usepackage{tikz}
+\fancyhf{} %
+\lhead{\nouppercase {\leftmark}} %
+\rhead{\nouppercase {\bf \thepage}}
+\renewcommand{\headrulewidth}{0.1pt}
+
+% Comando para inserir pagina em branco (inserida na numeracao, mas sem
+% numero impresso) para quando e' preciso obrigar um capitulo a comecar
+% do lado direito (pagina impar)
+\newcommand{\LIMPA}{
+\newpage
+\mbox{}
+\thispagestyle{empty}
+}
+
+% Igual, mas insere pagina com numero impresso (normalmente nao se usa)
+\newcommand{\LIMPAC}{
+\newpage
+\mbox{}
+\thispagestyle{plain}
+}
+
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\DontPrintSemicolon
+
+
+%
+% ALTERAR AQUI AS INFORMACOES RELATIVAS AO PROJECTO
+%
+\newcommand{\TITULO}{Visão Computacional para Soluções de Segurança Adicional em Máquinas de Auto-Atendimento}
+\newcommand{\Autor}{Vasco Miguel Raimão Maria}
+
+%Orientador e CoOrientador *sem* titulos (e.g. Prof. Doutor)
+\newcommand{\Orientador}{Nome Completo do Orientador}
+\newcommand{\PCoOrientador}{Nome Completo do Orientador} %se nao se aplicar, nao importa o que aqui esteja
+
+\newcommand{\PEIAnoLectivo}{2024/2025}
+\newcommand{\PEIAno}{\Large{2025}}
+
+% Comentar/descomentar conforme conveniente
+%\newcommand{\PEITIPO}{DISSERTAÇÃO}
+%\newcommand{\PEITIPO}{TRABALHO DE PROJETO}
+
+% Comentar/descomentar conforme conveniente
+\newcommand{\PEIIdiomaTese}{\selectlanguage{portuguese}}
+%\newcommand{\PEIIdiomaTese}{\selectlanguage{english}}
+
+% Comentar/descomentar conforme conveniente
+\newcommand{\MDesignacao}{Engenharia Informática}
+%\newcommand{\MDesignacao}{Engenharia Informática}
+%\newcommand{\MDesignacao}{Informática}
+%\newcommand{\MDesignacao}{Segurança Informática}
+%\newcommand{\MDesignacao}{Ciências de Dados}
+
+
+% Comentar/descomentar conforme conveniente
+\newcommand{\MEspecializacao}{Engenharia de Software}
+%\newcommand{\MEspecializacao}{Sistemas de Informação}
+%\newcommand{\MEspecializacao}{Interacção e Conhecimento}
+%\newcommand{\MEspecializacao}{Engenharia de Software }
+
+%\usepackage{ifpdf}
+%\ifpdf
+%\pdfinfo {
+%	/Author (\Autor)
+%	/Title (\TITULO)
+%	/Subject (\MEspecializacao)
+%	/Keywords ()
+%	/CreationDate (D:20230825)
+%}
+%\fi
+
+\usepackage[dvips]{geometry}
+\geometry{a4paper=true,portrait=true,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+%\geometry{a4paper=true,portrait=true,left=3cm,right=3cm,top=2.5cm,bottom=3.5cm}
+
+
+%\title{\PEITITULO}
+%\author{\PEIAutor}
+%\date{\today}
+
+%% Para o ano da tese ficar mais abaixo, de acordo com o template da FCUL
+\fancypagestyle{estilocapa}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}\fancyfoot[CE,CO]{\large{\fontfamily{phv}\fontseries{c}\selectfont \PEIAno}}}
+
+
+\begin{document}
+
+%Capa e pagina de rosto
+\include{./tex/capa}
+%\includepdf{./tex/capafeita.pdf}
+
+
+% Agradecimentos
+\include{./tex/agradecimentos}
+
+% Pagina do resumo em portugues
+\include{./tex/resumo_pt}
+
+\LIMPA
+
+% Pagina do resumo em ingles
+\include{./tex/resumo_ing}
+
+\pagestyle{plain}
+
+\PEIIdiomaTese
+
+% Indice
+\tableofcontents
+
+%\LIMPA
+
+%Lista de figuras
+\listoffigures
+
+\addcontentsline {toc} {chapter} {\listfigurename}
+%\newpage
+\thispagestyle{empty}
+%\mbox{}
+%\newpage
+
+%Lista de tabelas
+\listoftables
+
+\addcontentsline {toc} {chapter} {\listtablename}
+%\newpage
+%\thispagestyle{empty} \mbox{}
+%\newpage
+
+\printglossary[type=\acronymtype,title={Siglas e Acrónimos}]
+\addcontentsline{toc}{chapter}{Siglas e Acrónimos}
+\cleardoublepage
+
+
+% ----------------------------------------------------------------------
+% Inicio conteudo - Ficheiros com os capítulos
+
+\pagestyle{fancy}
+\cleardoublepage
+
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+% Conteudo (incl. Introducao)
+\include{./tex/introducao}
+
+% Contexto
+\include{./tex/contexto}
+
+% Estado da arte
+\include{./tex/trabalho_relacionado}
+
+% trabalho realizado (podem ser vários capítulos)
+\include{./tex/metodologia}
+
+% Conclusao
+\include{./tex/conclusao}
+
+% Fim do conteudo
+% ----------------------------------------------------------------------
+
+% Glossario
+
+%\LIMPA
+
+%
+% Para actualizar o glossario, e' preciso correr o script ./fazindice
+% e voltar a gerar o PDF
+%
+\include{./tex/glossary}
+%\renewcommand{\glossaryname}{Abreviaturas}
+%\setglossary{glodelim={\noexpand}}
+%\setglossary{glsnumformat=ignore}
+\printglossary
+\addcontentsline {toc} {chapter} {\glossaryname}
+\bibliographystyle{ieeetr}
+\bibliography{sample-base}
+\addcontentsline{toc}{chapter}{\bibname}
+
+
+
+% Bibliografia
+%\LIMPA
+%\nocite{*}
+%\bibliographystyle{plain}
+%\bibliography{bibliografia}
+%\addcontentsline {toc} {chapter} {\bibname}
+
+% Indice remissivo
+%\LIMPA
+%\printindex
+%addcontentsline {toc} {chapter} {\indexname}
+
+% Inicio apendices
+\appendix
+
+
+
+\include{./tex/apendices}
+\end{document}

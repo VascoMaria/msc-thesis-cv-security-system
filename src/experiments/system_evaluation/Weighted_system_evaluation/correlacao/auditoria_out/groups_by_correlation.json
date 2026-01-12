@@ -1,0 +1,11 @@
+{
+  "group_1": [
+    "weapon_detection_best_detections",
+    "weapon_detection_best2_detections",
+    "weapon_detection_model_detections",
+    "weapon_detection_EffientNet_detections",
+    "emotion_recognition_deepface_emotions",
+    "emotion_recognition_fer_emotions",
+    "environment_detection_violenceEnvironments"
+  ]
+}

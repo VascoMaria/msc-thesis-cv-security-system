@@ -1,0 +1,4 @@
+fastapi[standard]
+opencv-python
+deepface
+tf-keras

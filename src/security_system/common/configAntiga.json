@@ -1,0 +1,82 @@
+{
+  "categories_decision_rule": "scoring",
+  "threshold": 3,
+  "categories": [
+    {
+      "name": "weapon_detection",
+      "active": true,
+      "decision_rule": "scoring",
+      "threshold": 6,
+      "weight": 3,
+      "models": [
+        {
+          "name": "best",
+          "url": "http://localhost:8000/detect_batch",
+          "classes": {"guns": 0, "knife": 2},
+          "weight": 6,
+          "thresholdDetection": 0.4
+        },
+        {
+          "name": "best2",
+          "url": "http://localhost:8007/detect_batch",
+          "classes": {"gun": 1},
+          "thresholdDetection": 0.2,
+          "weight": 4
+        },
+        {
+          "name": "model",
+          "url": "http://localhost:8006/detect_batch",
+          "classes": {"gun" : 0, "knife" : 1,"Pistol": 0,"Grenade": 0,"rifle": 0,"handgun": 0},
+          "thresholdDetection": 0.4,
+          "weight": 4
+        },
+        {
+          "name": "EffientNet",
+          "url": "http://localhost:8010/detect_batch",
+          "classes": {"weapon": 1},
+          "thresholdDetection": 0.2,
+          "weight": 3
+        }
+      ]
+    },
+    {
+      "name": "emotion_recognition",
+      "active": true,
+      "decision_rule": "scoring",
+      "threshold": 1,
+      "weight": 2,
+      "models": [
+        {
+          "name": "deepface",
+          "url": "http://localhost:8001/detect_batch",
+          "classes": {"fear": 2, "angry" :3},
+          "thresholdDetection": 0.4,
+          "weight": 1
+        },
+        {
+          "name": "fer",
+          "url": "http://localhost:8012/detect_batch",
+          "classes": {"fear" : 1, "angry": 1},
+          "thresholdDetection": 0.4,
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "name": "environment_detection",
+      "active": true,
+      "decision_rule": "scoring",
+      "threshold": 1,
+      "weight": 2,
+      "models": [
+        {
+          "name": "violenceEnvironment_detection",
+          "url": "http://localhost:8009/detect_batch",
+          "classes": {"violence" : 5},
+          "thresholdDetection": 0.3,
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}

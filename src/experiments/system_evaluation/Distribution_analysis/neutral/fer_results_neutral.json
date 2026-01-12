@@ -1,0 +1,25 @@
+{
+  "image_path": "C:\\Vasco\\Tese\\Projeto\\ProjetoFinal\\SecurityDetectionML\\Sistema_de_Seguranca\\INFERENCE_ENGINE\\EvaluateModels\\Distribuicao\\neutral\\neutral.jpg",
+  "inference_time": 1.282670021057129,
+  "faces": [
+    {
+      "box": {
+        "x": 207,
+        "y": 225,
+        "w": 94,
+        "h": 119
+      },
+      "emotions": {
+        "angry": 0.07,
+        "disgust": 0.0,
+        "fear": 0.1,
+        "happy": 0.0,
+        "sad": 0.44,
+        "surprise": 0.03,
+        "neutral": 0.35
+      },
+      "top_emotion": "sad",
+      "top_confidence": 0.44
+    }
+  ]
+}

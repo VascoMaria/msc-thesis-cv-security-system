@@ -1,0 +1,27 @@
+{
+  "C:\\Vasco\\Tese\\Projeto\\ProjetoFinal\\SecurityDetectionML\\Sistema_de_Seguranca\\INFERENCE_ENGINE\\EvaluateModels\\Distribuicao\\neutral\\neutral.jpg": {
+    "inference_time": 5.610138416290283,
+    "num_detections": 1,
+    "avg_confidence": 0.8914687037467957,
+    "max_confidence": 0.8914687037467957,
+    "detections": [
+      {
+        "class_id": 0,
+        "class_name": "non_violence",
+        "confidence": 0.8914687037467957,
+        "bbox": {
+          "x1": 7.649566650390625,
+          "y1": 157.0630340576172,
+          "x2": 408.964111328125,
+          "y2": 626.9913940429688
+        },
+        "bbox_norm": {
+          "x1": 0.01791467599623097,
+          "y1": 0.24541099071502687,
+          "x2": 0.957761384843384,
+          "y2": 0.9796740531921386
+        }
+      }
+    ]
+  }
+}

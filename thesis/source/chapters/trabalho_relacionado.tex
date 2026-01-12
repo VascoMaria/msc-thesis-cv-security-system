@@ -1,0 +1,169 @@
+
+\chapter{Trabalho relacionado}
+
+\section{Abordagens Baseadas em Redes Neuronais para Deteção de Objetos}
+\subsection{Limitações dos Métodos Tradicionais de Visão Computacional}
+A deteção automática de objetos perigosos, como armas brancas e de fogo, é essencial para garantir a segurança em sistemas automatizados, especialmente em contextos particulares como em máquinas de autoatendimento, onde a interação ocorre sem supervisão direta e a capacidade de resposta rápida é crucial para prevenir incidentes.
+Entre as abordagens tradicionais de visão computacional, destaca-se o modelo \gls{bovw}, que foi amplamente utilizado na identificação de objetos em imagens estáticas, sobretudo em ambientes controlados como a triagem de segurança em aeroportos \cite{RaioXBoVW}. Este método, baseado na extração e quantização de descritores locais, demonstrou bons resultados quando as condições de iluminação, ângulo de visão e disposição dos objetos são estáveis e previsíveis.
+No entanto, esse tipo de abordagem mostra-se insuficiente em cenários mais dinâmicos e desestruturados, como as máquinas de autoatendimento. Nestes contextos, os objetos podem surgir parcialmente ocultos, em movimento rápido, com variações acentuadas de iluminação ou até sobrepostos a outros elementos. Tais condições desafiam a robustez dos métodos tradicionais, comprometendo tanto a taxa de deteção como o tempo de resposta. \cite{RaioXWeapons}.
+
+
+
+\subsection{Evolução das Arquiteturas com Redes Neuronais}
+Os primeiros avanços relevantes na deteção baseada em redes neuronais surgiram com o modelo \gls{rcnn}, que introduziu o conceito de deteção por regiões. Este modelo começa por gerar múltiplas propostas de regiões na imagem (potenciais localizações de objetos), e aplica uma rede convolucional separadamente a cada uma delas para extrair características, que são depois classificadas individualmente. A Figura~\ref{fig:rcnn_arq} ilustra este processo, onde se destaca a divisão explícita entre as fases de extração de regiões, processamento por CNN e posterior a classificação.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{pic/RCNNARQ.png}
+    \caption{Arquitetura do modelo R-CNN}
+    \label{fig:rcnn_arq}
+\end{figure}
+
+Apesar de ter melhorado substancialmente a precisão face a abordagens anteriores, o R-CNN é computacionalmente ineficiente, dado que requer o processamento independente de centenas de regiões por imagem.
+A evolução natural deste modelo deu origem ao \textit{Fast} R-CNN, que passou a extrair um mapa de características global da imagem inteira, usando esse mapa para avaliar todas as regiões de interesse. Com isso, reduziu-se significativamente o tempo de computação, mantendo bons níveis de precisão. Posteriormente, o \textit{Faster} R-CNN \cite{fasterrcnn} integrou uma \gls{rpn} diretamente na arquitetura, eliminando a dependência de algoritmos externos para gerar as propostas iniciais, como ilustrado na Figura~\ref{fig:fasterrcnn_arq}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{pic/FasterRCNN.png}
+    \caption{Arquitetura do modelo Faster R-CNN}
+    \label{fig:fasterrcnn_arq}
+\end{figure}
+
+No entanto, apesar destas melhorias, ambos os modelos continuam a seguir uma abordagem em duas etapas, que separa a localização da classificação dos objetos, o que limita a sua aplicabilidade em sistemas com restrições de tempo real \cite{ObjDetSurvey2022}.
+
+\subsection{Modelos de Uma Etapa para Deteção em Tempo Real}
+Como alternativa aos modelos de duas etapas, surgiram as arquiteturas de deteção de uma só etapa, como o SSD e o YOLO. Estes modelos realizam simultaneamente a localização e a classificação dos objetos diretamente a partir da imagem completa, sem necessidade de uma fase separada de propostas de regiões. Esta abordagem unificada permite uma deteção significativamente mais rápida, tornando estas redes especialmente adequadas para aplicações em tempo real, como é o caso dos sistemas de segurança em máquinas de autoatendimento \cite{ssd,yoloOptimal,yolov8}.
+
+A Figura~\ref{fig:yolo_arq} ilustra o funcionamento genérico de um modelo do tipo YOLO, onde a imagem de entrada é processada por uma rede convolucional que, numa única passagem, extrai as características, classifica os objetos presentes e estima simultaneamente as suas localizações através da regressão das caixas delimitadoras.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pic/yoloArq.png}
+    \caption{Arquitetura genérica do modelo YOLO.}
+    \label{fig:yolo_arq}
+\end{figure}
+
+\subsection{Distinção entre Modelos de Deteção e de Classificação}
+
+Em visão computacional, é importante distinguir entre modelos concebidos exclusivamente para classificação de imagens e aqueles orientados para deteção de objetos. Modelos de classificação, como ResNet \cite{resnet}, MobileNet \cite{mobilenetv3} ou EfficientNet \cite{efficientnet}, recebem uma imagem como entrada e produzem uma predição global, indicando a presença de uma ou mais categorias de interesse, sem identificar a localização exata dos objetos. Do ponto de vista arquitetural, estes modelos terminam geralmente com camadas totalmente conectadas aplicadas ao vetor de características extraído pela rede convolucional.
+
+Por contraste, os modelos de deteção, como SSD \cite{ssd}, YOLO \cite{yoloFast} ou Faster R-CNN \cite{fasterrcnn}, realizam simultaneamente a regressão das caixas delimitadoras e a classificação individual de cada objeto identificado. Estes modelos analisam várias regiões da imagem e geram, para cada uma, uma caixa com coordenadas e uma previsão de classe. Ao contrário dos classificadores, não dependem de camadas totalmente conectadas aplicadas à imagem inteira.
+
+Esta distinção entre classificação e deteção está ilustrada na Figura~\ref{fig:class_vs_detec}, onde se observa que o classificador apenas indica a presença de uma ameaça, enquanto o detetor a identifica e localiza explicitamente na imagem.
+
+Deste modo, os classificadores podem constituir uma mais-valia em sistemas de segurança, atuando como componente adicional que permite detetar a presença de conteúdo suspeito, mesmo sem fornecer localização. Esta capacidade pode complementar os modelos de deteção, contribuindo para decisões mais rápidas ou reforço da análise em contextos críticos.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{pic/Classificadores_detet.png}
+    \caption{Comparação entre classificação (esquerda) e deteção (direita).}
+    \label{fig:class_vs_detec}
+\end{figure}
+
+
+
+\subsection{Arquiteturas com Transformadores}
+\label{subsec:transformadores}
+Mais recentemente, modelos baseados em Transformadores começaram a ser aplicados à tarefa de deteção de objetos, oferecendo uma alternativa inovadora às arquiteturas tradicionais baseadas em CNNs. Originalmente desenvolvidos para o processamento de linguagem natural, os Transformadores destacam-se pela sua capacidade de modelar relações entre elementos de uma sequência através de mecanismos de atenção, que permitem ao modelo focar-se nas partes mais relevantes da entrada, independentemente da sua posição. Esta capacidade mostrou-se também útil em visão computacional, pois permite ao modelo compreender como diferentes partes da imagem se relacionam entre si.
+Um dos exemplos desta abordagem é o \gls{detr}, que propõe um sistema unificado onde a localização e a classificação dos objetos são tratadas conjuntamente, sem depender de fases intermédias como a de gerar propostas de regiões ou a \gls{nms}. O modelo utiliza uma CNN para extrair características da imagem e, em seguida, aplica um Transformador que aprende as relações espaciais entre objetos e produz diretamente as caixas delimitadoras e as classes correspondentes.
+O DETR apresenta limitações em aplicações com exigência de tempo real, devido à sua complexidade computacional e ao tempo de convergência mais prolongado. Além disso, o modelo mostra menor eficácia na deteção de objetos pequenos, o que representa um obstáculo adicional em cenários com elevada densidade ou múltiplos elementos visuais sobrepostos \cite{ObjDetSurvey2022}.
+Importa ainda referir que, embora os modelos baseados em Transformadores representem uma evolução relevante no domínio da visão computacional, a sua aplicação prática continua condicionada pela necessidade de recursos computacionais elevados. Tendo em conta que este trabalho tem como foco a integração em máquinas de autoatendimento que, na sua maioria, apresentam capacidades computacionais limitadas e não dispõem de GPU dedicadas. Por esta razão, apesar de serem aqui abordadas no contexto do estado da arte, estas arquiteturas não serão consideradas como solução prática a implementar.
+
+
+\section{Modelos de Deteção em Tempo Real}
+
+\subsection{Limitações dos Modelos com NMS}
+Recentes avanços têm mostrado que detetores baseados em CNNs, como as diferentes versões do YOLO até à versão 9, se destacam pela sua capacidade de conciliar desempenho e eficiência \cite{yoloOptimal, yoloFast}. O YOLO, enquanto modelo de uma só etapa (\textit{single-stage}), realiza a deteção através de uma passagem direta pela rede (\textit{forward process}), seguida de um pós-processamento com \gls{nms}. Apesar de esta abordagem oferecer bons resultados em termos de desempenho, o uso de NMS para remover predições redundantes pode afetar a velocidade de inferência e introduzir dependências em relação a hiperparâmetros específicos. No entanto, esse impacto tende a ser pouco significativo em implementações otimizadas, dependendo do contexto da aplicação.
+
+\subsection{Arquiteturas \textit{End-to-End}: DETR e RT-DETR}
+Como alternativa ao uso do NMS, surgiram arquiteturas \textit{end-to-end} como o DETR e a sua variante otimizada RT-DETR \cite{Detrsbeatyolos}, que eliminam a necessidade de pós-processamento ao integrarem a deteção e a classificação num único passo. No entanto, apesar de resolverem esse problema, estes modelos exigem mais recursos computacionais, o que dificulta o equilíbrio entre precisão e velocidade, especialmente em aplicações com restrições de tempo real e recursos limitados, como dispositivos sem GPU, tal como foi abordado na Secção~\ref{subsec:transformadores}.                  
+
+\subsection{Avanços com YOLOv10}
+Neste contexto, o surgimento do YOLOv10 \cite{yolov10Repositorio}, representa um avanço significativo face às versões anteriores da arquitetura YOLO (como ilustrado na Figura~\ref{fig:Yolov10}), especialmente no que diz respeito à dependência do NMS e ao impacto deste na latência de inferência \cite{yolov10}.
+
+Com a introdução do conceito de "\textit{dual assignments}", o YOLOv10 funciona de forma totalmente independente do NMS, tanto na fase de treino como na de inferência. Esta mudança permite uma deteção mais fluida, com menor latência, uma vez que o próprio modelo aprende a identificar as caixas mais relevantes sem recorrer a regras externas ou pós-processamentos adicionais. Esta estratégia elimina a necessidade de ajuste de hiperparâmetros associados ao NMS, o que torna o modelo mais robusto e adaptável a diferentes contextos \cite{yolov10}.
+
+Para além disso, o YOLOv10 foi projetado com foco na eficiência computacional, recorrendo a técnicas como \textit{downsampling} desacoplado e uma \textit{classification head} leve, o que permite realizar inferências rápidas sem comprometer a precisão. Estas melhorias posicionam o YOLOv10 como uma das soluções mais eficazes para aplicações em tempo real que exigem simultaneamente alta precisão e baixa latência.
+
+\subsection{Comparação de Desempenho}
+Em comparação com o RT-DETR, o YOLOv10 destaca-se pela sua maior velocidade de inferência, sendo até 1,8 vezes mais rápido, ao mesmo tempo que mantém uma precisão competitiva \cite{yolov10}.
+
+A análise da Figura~\ref{fig:Yolov10} mostra que, no gráfico à esquerda, o YOLOv10 alcança uma precisão significativamente superior com menor latência, o que o posiciona como uma solução altamente eficiente para aplicações em tempo real. Esta métrica, baseada \gls{map}, foi obtida utilizando a base de dados \gls{coco} \cite{COCODataset}, um dos principais \textit{benchmarks} utilizados na avaliação de modelos de deteção de objetos. Já o gráfico à direita evidencia o equilíbrio entre a precisão e o número de parâmetros, ou seja, a quantidade de pesos aprendidos pelo modelo durante o treino. Esse valor influencia diretamente a complexidade e a eficiência computacional, sendo um fator determinante no desempenho em tempo real. O YOLOv10 destaca-se por alcançar elevada precisão mesmo com modelos mais leves, demonstrando maior eficiência.
+
+
+\begin{figure}[H]
+    \centering
+    \hspace{-0.5 cm}
+    \includegraphics[width=1\textwidth]{pic/Yolov10.png} % Reduz o tamanho da imagem para evitar sobreposição
+    \caption{Comparação de métricas entre YOLOv10 e outras arquiteturas, incluindo latência e número de parâmetros. Gráficos retirados de \cite{yolov10}.}
+    \label{fig:Yolov10}
+
+\end{figure}
+
+\section{Abordagens para Rastreamento de Múltiplos Objetos}
+
+Dando continuidade à discussão da Secção~\ref{RastreamentoEDetenção}, esta secção explora as abordagens mais utilizadas na implementação do MOT. Esta tarefa é fundamental em várias áreas da visão computacional, como videovigilância, controlo de tráfego e análise de interações humanas \cite{MOTComputerVision}. No contexto das máquinas de autoatendimento, o MOT torna-se relevante por permitir o acompanhamento contínuo de objetos que interagem com o equipamento, contribuindo para a deteção de comportamentos suspeitos \cite{MOT, smallOBJDeteTrack}.
+Uma das estratégias mais comuns para realizar MOT é o \gls{tbd}, que combina detetores de objetos, como o YOLO, com algoritmos de rastreamento como o \gls{sort} \cite{Simpleonlineandrealtimetracking} e apesar da sua simplicidade e eficiência, esta abordagem enfrenta limitações em cenários mais complexos, como já referido na Secção~\ref{RastreamentoEDetenção}. Por outro lado, existem abordagens mais recentes, como o \textit{Tracking-by-Attention} com Transformadores, que usam mecanismos de atenção para seguir objetos entre imagens de forma direta \cite{atencaotranformer}. Este tipo de atenção permite ao modelo concentrar-se nas partes mais importantes da imagem e aprender sozinho a ligar os objetos ao longo do tempo. Assim, deixa de ser necessário recorrer a métodos externos de associação, como o uso do \gls{iou} para emparelhar deteções. Apesar de mais avançadas, estas soluções exigem muito mais recursos computacionais e, por isso, não serão consideradas neste trabalho, que se foca em soluções leves e adequadas ao uso em tempo real \cite{meinhardt2022trackformer}.
+
+
+Entre os rastreadores em MOT, destacam-se abordagens em tempo real com diferentes características. O SORT é simples e eficiente \cite{Simpleonlineandrealtimetracking}, baseando-se em modelos de movimento linear e associação por \gls{iou}, o que o torna adequado para cenários com deteções bem definidas. No entanto, apresenta fragilidades em situações com oclusões prolongadas ou objetos visualmente semelhantes. O \textit{BYTETrack} melhora o SORT ao considerar deteções de baixa confiança no processo de associação, mantendo um elevado desempenho em tempo real \cite{BYTETrack}. É frequentemente utilizado com detetores como o YOLO \cite{yolov10Repositorio}, que também suporta o BoT-SORT \cite{BOT-SORT}, rastreador que integra informação de aparência com técnicas de associação mais robustas, alcançando maior precisão segundo a métrica \gls{hota} em cenários complexos.
+
+O gráfico da Figura~\ref{fig:SOTA_MOT} destaca o estado da arte em rastreamento de múltiplos objetos, demonstrando como rastreadores como \textit{SMILEtrack}, \textit{BYTETrack} e \textit{BoT-SORT} equilibram a HOTA e os \gls{fps}, sendo indicados para aplicações práticas em tempo real. No entanto, importa referir que muitos destes métodos são avaliados em contexto \textit{offline}, com acesso a frames futuros, o que pode não refletir plenamente as exigências do rastreamento \textit{online} necessário em cenários reais de vigilância \cite{SOTAMOT}.
+
+
+\begin{figure}[H]
+    \centering
+    \hspace{-0.5 cm}
+    \includegraphics[width=0.8\textwidth]{pic/SOTA_MOT.png} % Reduz o tamanho da imagem para evitar sobreposição
+    \caption{Comparação da precisão entre rastreadores do estado da arte. Gráfico retirado de \cite{SOTAMOT}.}
+    \label{fig:SOTA_MOT}
+
+\end{figure}
+
+\section{Fluxo para Deteção e Prevenção de Crimes em ATMs}
+
+A Figura~\ref{fig:ArchitectureProposel} apresenta um fluxo funcional descrito na literatura para sistemas de segurança em ATMs, baseado na integração de módulos de visão computacional e reconhecimento de eventos \cite{ArchitectureProposal}. Este fluxo, já existente, serviu como uma das principais inspirações para a conceção do sistema desenvolvido neste trabalho. O funcionamento assenta na captação contínua de imagens por uma câmara embutida no terminal ATM, cujos \textit{frames} são processados.
+
+\begin{figure}[H]
+    \centering
+    \hspace{-0.5 cm}
+    \includegraphics[width=0.7\textwidth]{pic/Architecture.png} % Reduz o tamanho da imagem para evitar sobreposição
+    \caption{Fluxo funcional de um sistema de segurança para ATMs baseado em deteção de objetos e reconhecimento de atividades suspeitas. \cite{ArchitectureProposal}}
+    \label{fig:ArchitectureProposel}
+
+\end{figure}
+
+Inicialmente, as imagens são enviadas para um módulo de deteção de múltiplos objetos, responsável por identificar entidades presentes na cena, como pessoas adicionais ou objetos potencialmente perigosos. Sempre que este módulo deteta a presença de mais do que uma pessoa na área do ATM, é acionado um \textit{display prompt} no ecrã, solicitando ao utilizador que confirme se se encontra em segurança e se autoriza a continuidade da operação. Caso o utilizador valide a situação, o sistema prossegue para o módulo de reconhecimento de atiividades. Caso contrário, é criado um alerta imediato e acionado o mecanismo de resposta definido para situações de risco.
+
+O segundo módulo tem como objetivo analisar de forma autónoma os padrões de interação captados pela câmara, de modo a identificar comportamentos potencialmente anómalos, como gestos agressivos ou situações de coação. Mesmo nos casos em que o utilizador tenha validado a presença de múltiplas pessoas, o sistema continua a proceder a esta verificação. Sempre que o módulo de reconhecimento de atividades deteta indícios de comportamento suspeito, o sistema aciona de imediato um alarme e notifica as autoridades competentes. Apenas quando não é identificada qualquer anomalia, seja pela resposta do utilizador ao aviso inicial, seja pela análise automática de atividades, a transação no ATM prossegue de forma normal.
+
+Apesar de representar uma proposta interessante, esta abordagem apresenta riscos práticos significativos. Num cenário real, um assaltante poderia facilmente coagir a vítima a selecionar a opção negativa ou validar falsamente a presença de múltiplas pessoas, ocultando a situação de perigo. Além disso, exigir uma resposta explícita do utilizador em momentos de tensão pode aumentar o risco para a sua integridade física, o que limita a aplicabilidade desta solução em contextos de criminalidade violenta.
+
+Este fluxo constitui, assim, um exemplo de abordagem híbrida que combina intervenção do utilizador e deteção automatizada, cuja análise contribuiu para a reflexão que orientou o desenvolvimento da proposta desta dissertação.
+
+
+
+
+
+
+
+
+\section{Reconhecimento de Emoções Faciais}
+
+O \gls{fer} é uma subárea relevante da visão computacional, com aplicações em domínios como a interação humano-computador, a saúde e a segurança. Esta tarefa consiste na identificação automática de estados emocionais, como felicidade, medo ou raiva, através da análise de expressões faciais captadas em imagens ou sequências de vídeo. Em contextos de segurança, como em sistemas de vigilância automatizada, o FER tem sido explorado como um componente complementar para a deteção de comportamentos anómalos. Emoções como stress ou medo podem constituir indicadores indiretos de situações de coação, tornando o FER útil em ambientes sensíveis e não supervisionados, como as máquinas de autoatendimento \cite{li2020deep}.
+
+As abordagens iniciais baseavam-se em técnicas de extração manual de características, como o \gls{hog} \cite{HOG}, ou em descritores geométricos obtidos a partir de rácios entre distâncias faciais \cite{FER2}. Embora eficazes em ambientes controlados, essas técnicas revelam fragilidades significativas perante variações de pose, iluminação ou oclusões. 
+
+Com a introdução da aprendizagem profunda, redes convolucionais começaram a dominar esta tarefa, devido à sua capacidade de aprender representações discriminativas diretamente dos dados. No entanto, mesmo modelos modernos baseados em CNNs enfrentam dificuldades quando expostos a imagens degradadas por iluminação desigual, expressões subtis ou posições faciais fora do eixo frontal. Estas limitações afetam a generalização dos modelos e comprometem a precisão em ambientes não controlados.
+
+Como resposta a estas limitações, Vignesh et al. propuseram uma arquitetura baseada no \gls{vgg19} com blocos de segmentação facial que permite isolar regiões expressivas da face, como os olhos e a boca, antes da extração de características \cite{Fer}. Esta segmentação orientada permite ao modelo focar-se nas áreas mais relevantes para a expressão emocional, reduzindo o impacto de ruído de fundo ou partes irrelevantes da imagem. Os resultados obtidos demonstraram melhorias significativas na robustez e precisão da classificação, especialmente em imagens com variações de pose e iluminação.
+
+Um pipeline típico de FER envolve múltiplas etapas, desde a deteção da face na imagem até à classificação final da emoção. Como ilustrado na Figura~\ref{fig:pipeline_fer}, o processo inicia-se com a localização e alinhamento geométrico da região facial, com base em pontos-chave como os olhos e a boca. A imagem normalizada é então processada por redes convolucionais que extraem representações discriminativas. Finalmente, estas são classificadas numa das categorias emocionais predefinidas através de camadas totalmente conectadas ou classificadores dedicados, como \gls{svm} \cite{SVM}, aplicados sobre os vetores extraídos \cite{li2020deep}. Este pipeline permite lidar eficazmente com variações significativas na aparência facial.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{pic/FER.png}
+    \caption{Pipeline geral de um sistema de reconhecimento de emoções faciais \cite{li2020deep}.}
+    \label{fig:pipeline_fer}
+\end{figure}
+

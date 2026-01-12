@@ -1,0 +1,83 @@
+{
+  "categories_decision_rule": "scoring",
+  "threshold": 3,
+  "faces_areas_ratio_threshold": 30,
+  "categories": [
+    {
+      "name": "weapon_detection",
+      "active": false,
+      "decision_rule": "scoring",
+      "threshold": 2,
+      "weight": 3,
+      "models": [
+        {
+          "name": "best",
+          "url": "http://localhost:8000/detect_batch",
+          "classes": ["guns", "knife"],
+          "weight": 1,
+          "thresholdDetection": 0.5
+        },
+        {
+          "name": "best2",
+          "url": "http://localhost:8007/detect_batch",
+          "classes": ["gun"],
+          "thresholdDetection": 0.5,
+          "weight": 1
+        },
+        {
+          "name": "model",
+          "url": "http://localhost:8006/detect_batch",
+          "classes": ["gun", "knife", "Pistol", "Grenade", "rifle", "handgun"],
+          "thresholdDetection": 0.5,
+          "weight": 1
+        },
+        {
+          "name": "EffientNet",
+          "url": "http://localhost:8010/detect_batch",
+          "classes": ["weapon"],
+          "thresholdDetection": 0.5,
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "name": "emotion_recognition",
+      "active": true,
+      "decision_rule": "scoring",
+      "threshold": 2,
+      "weight": 2,
+      "models": [
+        {
+          "name": "deepface",
+          "url": "http://localhost:8001/detect_batch",
+          "classes": ["fear", "angry"],
+          "thresholdDetection": 0.5,
+          "weight": 1
+        },
+        {
+          "name": "fer",
+          "url": "http://localhost:8012/detect_batch",
+          "classes": ["fear", "angry"],
+          "thresholdDetection": 0.5,
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "name": "environment_detection",
+      "active": false,
+      "decision_rule": "scoring",
+      "threshold": 1,
+      "weight": 2,
+      "models": [
+        {
+          "name": "violenceEnvironment_detection",
+          "url": "http://localhost:8009/detect_batch",
+          "classes": ["violence"],
+          "thresholdDetection": 0.5,
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}

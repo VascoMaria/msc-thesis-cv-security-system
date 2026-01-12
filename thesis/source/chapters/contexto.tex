@@ -1,0 +1,219 @@
+\chapter{Contexto}
+
+\section{Máquinas de Autoatendimento}
+As máquinas de autoatendimento, como os ATMs, tornaram-se fundamentais em vários setores pela sua capacidade de otimizar processos, onde trouxeram conveniência e eficiência aos clientes. Em particular no setor bancário, estas máquinas permitem às instituições responder à crescente procura por serviços rápidos e seguros sem a necessidade de intervenção humana, melhorando assim a qualidade dos serviços oferecidos. Desde a década de 80, as máquinas de autoatendimento evoluíram de simples funções como levantamento de dinheiro, para máquinas que possibilitam uma vasta gama de serviços, como transferências, pagamentos de contas, consultas de saldo e outras operações financeiras complexas.
+Contudo, com esta evolução, surgiram novos desafios, como vulnerabilidades relacionadas com a segurança e falhas técnicas. Problemas como a clonagem de cartões, a falsificação de transações, a possibilidade de distribuição de notas falsas, eventos criminosos como assaltos diretos e tentativas de acesso ilegal aos compartimentos internos das máquinas são preocupações crescentes no contexto das máquinas de autoatendimento, principalmente no setor bancário. Além disso, falhas técnicas frequentes, como a indisponibilidade de dinheiro e falhas mecânicas durante os períodos de maior utilização ou em feriados, afetam diretamente a confiança dos consumidores. A fiabilidade das máquinas, incluindo a consistência das transações e a precisão dos registos de contas, também é fundamental para a confiança dos utilizadores \cite{iberahim2016customer}.
+Existem diversos exemplos de implementações destas máquinas em diferentes setores de negócios. Em particular, os sistemas de autoatendimento têm sido amplamente adotados no setor dos transportes, como é o caso do terminal rodoviário de Larkin, na Malásia \cite{roslanimplementation}. Nesse local, foram instaladas máquinas de emissão de bilhetes eletrónicos (\textit{e-ticketing}) com o objetivo de agilizar o processo de compra, sem necessidade de intervenção humana.
+Outro caso notável foi a implementação das máquinas interativas TOMI nas lojas do cidadão em Portugal \cite{tomiPT}, que permitem aos utilizadores obter senhas virtuais e receber notificações sobre a sua vez, reduzindo assim filas e tempos de espera.
+Deste modo, a adoção das máquinas de autoatendimento tornou-se essencial não apenas no setor financeiro, mas também em diversos contextos operacionais e de prestação de serviços, contribuindo para a eficiência dos processos e satisfação dos utilizadores finais. No entanto, este crescimento torna também evidente a importância de considerar e resolver as vulnerabilidades associadas a estes sistemas, particularmente no que diz respeito à segurança, para garantir uma utilização segura e sustentável destas tecnologias.
+
+\section{Principais Ameaças}
+
+Os ATMs, embora convenientes, têm-se tornado alvos frequentes de diversos tipos de crimes, sobretudo físicos \cite{roubosATMS}. Estas ameaças podem ser classificadas em três categorias principais: fraude com cartões e numerário, ataques lógicos, que recorrem a dispositivos ou softwares maliciosos para manipular o funcionamento da máquina, e ataques físicos \cite{CrimeATMeArquitetura}.
+
+De entre estas categorias, é possível identificar um conjunto de ameaças recorrentes, que se encontram resumidas na Tabela ~\ref{tab:ameacasATM}. Esta apresentação em formato tabular permite uma visão mais clara e organizada das principais formas de ataque aos ATMs e respetivas características.  
+
+% na tabela
+\begin{table}[H]
+\centering
+\caption{Principais ameaças associadas ao uso de ATMs}
+\label{tab:ameacasATM}
+\renewcommand{\arraystretch}{1.5} 
+\begin{tabular}{>{\raggedright\arraybackslash}p{5cm} >{\raggedright\arraybackslash}p{9cm}}
+\toprule
+\textbf{Tipo de Ameaça} & \textbf{Descrição/Observação} \\
+\midrule
+Roubo a transportadores & Ataques direcionados às equipas responsáveis pelo abastecimento de numerário. \\
+Furto de PINs & Obtenção ilícita de códigos de identificação dos utilizadores. \\
+Interceção eletrónica de dados & Captura não autorizada de informações transmitidas pelo sistema. \\
+Transações fraudulentas & Realização de operações bancárias por meios eletrónicos indevidos. \\
+Desvio interno de numerário & Apropriação de valores diretamente dos ATMs por funcionários. \\
+Assaltos & Ações violentas contra utilizadores ou contra o próprio equipamento. \\
+Vandalismo & Danos intencionais à estrutura ou componentes dos ATMs. \\
+Cumplicidade criminosa & Crimes realizados com a colaboração de terceiros. \\
+Tentativas de homicídio & Situações extremas de violência associadas à utilização de ATMs. \\
+Outros ataques físicos & Formas diversas de agressão direta ao equipamento. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+Em locais como Cacuaco, em Angola, tem-se verificado um aumento preocupante de assaltos violentos a utilizadores de ATMs. Muitas destas pessoas já enfrentam dificuldades económicas significativas, e cada levantamento representa uma parte essencial para garantir a sobrevivência do agregado familiar. Contudo, ao dirigirem-se a uma máquina de autoatendimento, deparam-se frequentemente com cenários de insegurança, onde são abordadas por criminosos armados, coagidas a realizar levantamentos forçados e privadas dos escassos recursos de que dispõem \cite{ngolaCrime}. Esta realidade evidencia de forma clara a fragilidade do atual modelo de autoatendimento no país e a urgência em adotar soluções mais modernas e eficazes, capazes de responder não apenas às necessidades operacionais do setor bancário, mas também de proteger os utilizadores em contextos de elevado risco social.
+
+É precisamente neste enquadramento que se encontra o projeto HEFESTO, desenvolvido pela INM, já em utilização no setor bancário em Angola. 
+
+
+\section{Projeto HEFESTO}
+
+No contexto da modernização do autoatendimento bancário, têm surgido soluções que procuram ir além das funcionalidades tradicionais dos ATMs, oferecendo serviços mais completos e seguros. Entre estas soluções destaca-se o projeto HEFESTO, desenvolvido pela INM, empresa especializada em soluções digitais omnicanal que integra \textit{hardware} e \textit{software}, principalmente direcionadas ao setor financeiro. Este projeto consistiu no desenvolvimento de uma máquina de autoatendimento inovadora do tipo \gls{vtm}, concebida para ser modular, multifuncional e totalmente personalizável às necessidades específicas de cada cliente.
+
+Enquanto os ATMs convencionais se limitam geralmente a operações básicas, o HEFESTO apresenta-se como uma evolução significativa relativamente aos ATMs, destacando-se por oferecer funcionalidades mais amplas e realizar operações complexas como abertura de contas, emissão de cartões bancários, pagamentos diversos e subscrição de produtos financeiros.
+
+O HEFESTO foi desenhado com especial atenção para contextos em que existe uma elevada procura pelos balcões presenciais, como é o caso de Angola, onde frequentemente se verificam filas extensas para a execução de operações simples. A implementação do HEFESTO nestas situações permite que essas operações sejam realizadas de forma rápida e autónoma, reduzindo significativamente o volume de clientes nos balcões e otimizando o atendimento ao cliente.
+
+Uma das grandes vantagens do HEFESTO reside na sua incorporação de tecnologias avançadas, tais como \gls{ia}, aprendizagem automática e biometria, incluindo reconhecimento facial e verificação facial. Adicionalmente, ao integrar biometria facial e leitura de impressões digitais, o HEFESTO oferece uma vantagem clara face aos métodos tradicionais de autenticação baseados em cartões e códigos \gls{pin}, que podem ser mais facilmente comprometidos. Estas tecnologias são cruciais para aumentar a segurança das transacções, protegendo os utilizadores contra fraudes e acessos não autorizados e, simultaneamente, tornam a experiência do cliente mais ágil e intuitiva.
+
+Adicionalmente, a estrutura modular do HEFESTO garante às entidades bancárias uma elevada flexibilidade, permitindo que novos serviços e funcionalidades sejam facilmente adicionados e personalizados conforme as exigências do mercado e dos clientes, como ilustrado nas Figuras \ref{fig:modulo_cartoes} e \ref{fig:modulo_pagamentos}, que apresentam respetivamente os módulos de emissão de cartões e pagamentos.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.35\textwidth}
+    \includegraphics[width=\textwidth]{pic/Hefesto_ModuloCartoes.png}
+    \subcaption{Módulo de emissão de cartões integrado no HEFESTO (destacado a amarelo).}
+    \label{fig:modulo_cartoes}
+  \end{subfigure}%
+  \hspace{2em}% espaço mínimo
+  \begin{subfigure}[t]{0.35\textwidth}
+    \includegraphics[width=\textwidth]{pic/Hefesto_ModuloPagamentos.png}
+    \subcaption{Módulo de pagamentos integrado no HEFESTO (destacado a roxo).}
+    \label{fig:modulo_pagamentos}
+  \end{subfigure}
+  \caption{Módulos configuráveis do HEFESTO.}
+  \label{fig:hefesto_modulos}
+\end{figure}
+
+Como ilustrado na Figura~\ref{fig:hefesto}, o HEFESTO não se limita a substituir os ATMs convencionais, mais do que substituir acrescenta funcionalidades e redefine a experiência de autoatendimento no setor financeiro ao oferecer uma solução integrada, segura e eficiente ajustada às necessidades contemporâneas deste setor \cite{hefesto2024}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{pic/Hefesto.png} 
+    \caption{Máquina de autoatendimento HEFESTO com configuração base. \cite{inm,hefesto2024}}
+    \label{fig:hefesto}
+\end{figure}
+
+Neste contexto, o HEFESTO constitui o ambiente ideal para a implementação da solução proposta neste trabalho, que visa especificamente detetar e mitigar ameaças em máquinas de autoatendimento através da visão computacional. Sendo estas máquinas utilizadas frequentemente para processar informações altamente sensíveis (dados bancário, códigos PIN e dados pessoais dos clientes), torna-se imperativo assegurar que estejam equipadas com sistemas capazes de identificar situações de risco, como operações realizadas sob ameaça ou coação.
+
+Em complemento à análise funcional, é importante caracterizar o \textit{hardware} do HEFESTO, baseado num mini-PC da marca Bmax, cujas capacidades computacionais influenciam diretamente a implementação de soluções de visão computacional.
+
+A Tabela~\ref{tab:hardware_hefesto} apresenta as principais especificações técnicas do mini-PC. Para além deste, o equipamento inclui uma câmara embutida com resolução de 720 × 1280 pixeis e taxa de captura de 15 \textit{frames} por segundo.
+
+
+\begin{table}[H]
+\centering
+\caption{Especificações de hardware do HEFESTO (Bmax)}
+\label{tab:hardware_hefesto}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Componente} & \textbf{Descrição} \\
+\hline
+\gls{cpu} & Intel\textsuperscript{\textregistered} Celeron\textsuperscript{\textregistered} N5095 @ 2.00\,GHz\\
+\hline
+Núcleos Lógicos & 4 \\
+\hline
+Núcleos Físicos & 4 \\
+\hline
+Frequência Máxima & 2001 MHz \\
+\hline
+Memória RAM & 7,78 GB Disponível\\
+\hline
+\gls{gpu} & Nenhuma GPU dedicada \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\section{Visão Computacional e Aprendizagem Profunda}
+
+Neste trabalho, explora-se o uso da visão computacional como uma ferramenta essencial para reforçar a segurança em máquinas de autoatendimento. Esta tecnologia permite interpretar e processar informação visual de forma automatizada, simulando o comportamento da visão humana em tempo real \cite{ComputerVision}. Com algoritmos avançados, como as \gls{cnn}, torna-se possível identificar objectos suspeitos, rastrear movimentos no ambiente e reconhecer padrões de comportamento associados a potenciais ameaças, oferecendo uma camada adicional de proteção para os utilizadores.
+
+O desenvolvimento de CNNs e de outras técnicas de \gls{dl} revolucionou a deteção e localização de objectos em tempo real, aliando eficiência computacional a elevada precisão. Li et al.\ \cite{Cnns} destacam a eficácia destas arquitecturas em tarefas como o reconhecimento facial e a segmentação de imagens. Tipicamente, uma CNN estrutura-se em três tipos principais de camadas:
+\begin{itemize}[nosep]
+  \item \textbf{Convolucionais}, que extraem características locais das imagens;
+  \item \textit{\textbf{Pooling}}, que reduzem a dimensionalidade preservando informação relevante;
+  \item \textbf{Totalmente ligadas}, que combinam essas características para produzir a previsão final.
+\end{itemize}
+Um dos aspetos eficientes desta arquitetura é a partilha de pesos entre os filtros convolucionais, ou seja, o mesmo conjunto de pesos é aplicado repetidamente sobre diferentes regiões da imagem. Esta abordagem reduz a complexidade do modelo e permite extrair padrões visuais de forma mais eficiente, mantendo a precisão nas tarefas de deteção.
+A implementação de sistemas baseados em visão computacional envolve diversas etapas, como a deteção de características visuais (pontos de interesse, bordas e contornos), a segmentação de objectos e o reconhecimento de padrões comportamentais. Estas técnicas são fundamentais para identificar ameaças de forma rápida e eficaz, garantindo respostas adequadas a situações de risco \cite{ComputerVision}. Além disso, têm sido amplamente aplicadas em cenários de \gls{iot} para melhorar a segurança em ambientes inteligentes, como cidades, residências e espaços públicos. González García et al.\ propõem a integração da visão computacional em plataformas de IoT para automatizar a deteção de pessoas e objectos em espaços privados, utilizando câmaras como sensores de imagem e activando respostas automáticas em casos de eventos suspeitos \cite{InternetDasCoisasComComputerVision}.
+
+
+\section{Aprendizagem automática em Produção}
+A aplicação de sistemas de \gls{ml} em ambientes de produção exige abordagens específicas, que diferem substancialmente do contexto académico. Enquanto os modelos de ML feitos em ambiente académico dão prioridade à precisão e à exploração de conceitos inovadores, os modelos de ML para  produção devem atender a requisitos como fiabilidade, escalabilidade, baixa latência e adaptabilidade. Estes sistemas também têm de responder aos requisitos empresariais e acomodarem-se as necessidades dos \textit{stakeholders} com diferentes objetivos.
+Uma distinção significativa é no uso de dados. Em ambiente académico, é frequente utilizar conjuntos de dados estáticos e históricos, o que facilita o treino e os testes controlados. Em contraste, os sistemas de ML em produção lidam com fluxos de dados dinâmicos e em constante evolução, o que requer robustez para lidar com ruído, adaptações rápidas a alterações nas distribuições e atualizações regulares dos modelos para garantir um desempenho contínuo \cite{cursoProf,cursoProf2}.
+
+\subsection{Previsões em lote e Previsões em tempo real}
+As abordagens para previsões incluem dois métodos principais: previsões em lote e previsões em tempo real. As previsões em lote são adequadas para processar grandes volumes de dados em intervalos programados, sendo ideais para casos como sistemas de recomendação que não exigem respostas imediatas. Já as previsões em tempo real fornecem respostas instantâneas, fundamentais para cenários que requerem decisões rápidas, como a deteção de algo suspeito \cite{cursoProf}.
+
+Para aproveitar ambas as abordagens, pode-se também adotar um sistema híbrido em que as previsões em lote atualizam periodicamente o modelo base, enquanto as previsões em tempo real garantem resposta imediata a novos eventos, equilibrando precisão e rapidez em produção.
+Foster \& Kumar (2022) aplicaram esta abordagem num \gls{saas}, atualizando periodicamente o modelo base através de lote e recorrendo a inferências imediatas para ajustar recomendações em tempo real, o que resultou em melhorias significativas na taxa de retenção de utilizadores e na satisfação dos clientes \cite{Agarwal2025}.
+
+
+\subsection{\textit{Edge Computing} e \textit{Cloud Computing}}
+Tecnologias como \textit{Edge Computing} e \textit{Cloud Computing} desempenham um papel importante nos sistemas de \acrshort{ml} em produção \cite{cursoProf2}. O \textit{Edge Computing} processa dados localmente, reduzindo a dependência de conectividade constante à internet, a latência e os custos de transferência de dados. Por exemplo, sensores industriais podem detetar e corrigir anomalias imediatamente, mesmo sem ligação contínua à nuvem \cite{QiTao2019}. Já o \textit{Cloud Computing} usa servidores remotos, que oferece maior capacidade de processamento, para treinar modelos com grandes volumes de dados históricos, mas exige uma ligação rápida à rede \cite{cursoProf}.  
+A combinação de ambos corta o tráfego na rede, torna as previsões mais rápidas e permite escalar o processamento, assegurando fiabilidade e bom desempenho \cite{Wang2020}.
+
+
+Em \textit{Edge Computing}, muitos dos modelos \acrshort{ml} são implantados no dispositivo, permitindo inferência local em tempo real e autonomia operacional mesmo quando a ligação à internet falha. Periodicamente, o dispositivo recebe apenas as atualizações de que necessita, mantendo o sistema leve e evitando sobrecarga da rede \cite{QiTao2019}.  
+
+\section{Rastreamento e Deteção em tempo real} \label{RastreamentoEDetenção}
+O rastreamento em tempo real foi identificado como um requisito inicial pela INM \cite{inm} para responder às necessidades de segurança e às exigências dos clientes em máquinas de autoatendimento. Esta tecnologia pode desempenhar um papel fundamental na deteção e monitorização de objetos em movimento contínuo. A tarefa de \gls{mot} envolve a localização de múltiplos alvos e a manutenção de suas identidades ao longo de sequências de vídeo, como é demonstrado pela a figura \ref{fig:tracking_mot}. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{pic/TrackDET.png} % Reduz o tamanho da imagem para evitar sobreposição
+    \caption{Ilustração de MOT em tempo real \cite{multipleobjecttracking}.}
+    \label{fig:tracking_mot}
+\end{figure}
+Este processo permite extrair informações do ambiente em tempo real, como o número de pessoas presentes ou a sua movimentação num determinado espaço, usando as capturas das câmaras \cite{MOT}.
+
+Embora o MOT ofereça soluções robustas, a sua implementação enfrenta desafios técnicos importantes. Por exemplo, um dos métodos mais utilizados, o "\textit{tracking-by-detection}", inicia a deteção ao identificar objetos em cada frame e, em seguida, associa essas deteções para formar trajetórias contínuas \cite{smallOBJDeteTrack}. No entanto, este método enfrenta desafios como as oclusões temporárias de objetos e os conhecidos "\textit{ID switches}", onde um objeto detetado muda inadvertidamente de identificação devido a alterações na sua aparência, iluminação ou ângulo de visão. Esses problemas dificultam o rastreamento eficiente em ambientes dinâmicos, especialmente em situações de rápida mudança no cenário \cite{MOT}.
+
+A deteção de objetos é uma etapa essencial no processo de rastreamento em tempo real, pois permite identificar e localizar alvos específicos em cada frame antes de associá-los para criar trajetórias contínuas. Esse processo torna-se ainda mais complexo quando se lida com objetos pequenos, que apresentam menos características visuais e são facilmente confundidos com ruído de fundo, o que impacta negativamente a precisão do tracking \cite{smallOBJDeteTrack}. Estratégias avançadas, através do uso de algoritmos de aprendizagem profunda, como o \gls{yolo} \cite{yoloOptimal} e o \gls{ssd}, têm sido aplicadas para superar esses desafios, tornando o sistema mais robusto para cenários com variabilidade de iluminação, oclusões e mudanças rápidas no ambiente. Além de serem reconhecidos pela sua eficiência na deteção de objetos, alguns desses algoritmos foram expandidos para suportar o MOT, integrando funcionalidades que permitem identificar e seguir vários alvos ao longo do tempo, como é o caso do YOLO \cite{yolov10Repositorio}. 
+
+
+Para sistemas de deteção e rastreamento em tempo real é habitual segmentar o fluxo de dados em três fases principais, como ilustrado na Figura~\ref{fig:pipeline}:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{pic/diagrama_pipeline_vertical_spacing.png}
+    \caption{Fluxo de processamento de um sistema de deteção e rastreamento em tempo real (elaboração própria).}
+    \label{fig:pipeline}
+\end{figure}
+
+\begin{enumerate}
+  \item \textbf{Aquisição e pré‐processamento:} captura de \textit{frames} e operações como redimensionamento e normalização;
+  \item \textbf{\gls{Inferencia}:} a rede neural processa cada frame para extrair características (\textit{backbone}), fundi-las em várias escalas (\textit{neck}) e localizar objetos.
+  \item \textbf{Pós‐processamento:} o \textit{head} ajusta as caixas detetadas, classifica cada objeto e prepara a saída visual ou de dados.
+\end{enumerate}
+
+
+Oh et al. demonstrou que, num sistema de CPU puro, como o HEFESTO, a fase de inferência pode corresponder a cerca de 63 \% do tempo total de processamento, sendo o principal gargalo para alcançar execução em tempo real. Medir e otimizar a distribuição temporal entre estas etapas (por exemplo, através de paralelismo de tarefas) é, portanto, crucial para garantir \textit{throughput} elevado sem sacrificar a latência \cite{oh2025optimizing}.
+
+
+Em ambientes de autoatendimento a integração de deteção de objetos e rastreamento em tempo real, como representado na figura \ref{fig:tracking_mot}, é uma ferramenta útil para implementar um sistema adicional de segurança, ao permitir a identificação de alvos específicos em cada frame e a sua associação a trajetórias contínuas de forma eficiente.
+
+
+\section{Análise comportamental}
+A análise comportamental tem-se mostrado essencial no reforço da segurança através da visão computacional \cite{CVSafety}, uma vez que possibilita identificar padrões de interação normais e, em contraste, comportamentos que se afastam do uso esperado. A Figura~\ref{fig:behavior_analysis} exemplifica estes desvios, que podem estar associados a situações de violência dirigidas ao utilizador, como agressões físicas ou tentativas de coação durante a utilização da máquina, mas também a riscos de fraude ou vandalismo \cite{Anomalybehavior}. Em máquinas de autoatendimento, onde a interação entre o utilizador e a máquina ocorre de forma autónoma e frequentemente sem supervisão direta, estas vulnerabilidades tornam os equipamentos alvos atrativos para atividades ilícitas. Nesses contextos, a monitorização automatizada das interações assegura um acompanhamento contínuo e a deteção precoce de comportamentos de risco, mesmo sem necessidade de intervenção humana \cite{AnaliseComportamental}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pic/ComportamentoAnomolo.png} % Reduz o tamanho da imagem para evitar sobreposição
+    \caption{Deteção automatizada de ação anómala, com as caixas verdes a representar o \textit{ground truth} e as caixas vermelhas as predições do sistema. \cite{AnaliseComportamental}.}
+    \label{fig:behavior_analysis}
+\end{figure}
+
+Uma das vantagens mais significativas da visão computacional aplicada à análise comportamental está na sua capacidade de ir além da identificação de eventos isolados. Assim pode oferecer uma análise mais ampla das sequências de ações, permitindo detetar padrões comportamentais associados a atividades suspeitas. Por exemplo, enquanto um utilizador legítimo interage com a máquina de autoatendimento de forma direta e sem hesitações, comportamentos como rondar repetidamente a máquina, observar o ambiente de forma excessiva, ou manter-se próximo por períodos prolongados sem interação concreta podem ser indicadores de potenciais tentativas de assalto ou vandalismo. Essas sequências de ações, quando capturadas e analisadas em tempo real, oferecem a capacidade de alertar para situações que requerem intervenção imediata \cite{AnaliseComportamental}. 
+
+
+Para além da análise de sequências de ações, um dos métodos que tem ganho relevância na área da visão computacional é a estimativa de pose. Esta técnica permite extrair, a partir de imagens ou vídeo, a posição relativa das articulações do corpo humano, representando o indivíduo como um conjunto de pontos-chave e ligações. Através desta representação torna-se possível descrever de forma objetiva a postura e os movimentos, fornecendo indicadores úteis para a identificação de situações de risco. Uma das suas principais vantagens é não depender do contexto visual, o que possibilita a deteção de comportamentos violentos ou suspeitos mesmo em ambientes complexos ou com fundos ruidosos \cite{DetectionViolentPoseEstimation}. O processo geral desta abordagem encontra-se representado na Figura~\ref{fig:pose_pipeline}.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{pic/pose_pipeline.png}
+    \caption{Visão geral do processo de deteção de comportamentos violentos baseado em estimativa de pose. Adaptado de \cite{DetectionViolentPoseEstimation}.}
+    \label{fig:pose_pipeline}
+\end{figure}
+
+No contexto das máquinas de autoatendimento, a \gls{estimativa de pose} pode ajudar a identificar situações de risco ou coação. Movimentos como murros, pontapés ou tentativas de obstruir a câmara apresentam padrões distintos das interações legítimas, como introduzir o PIN ou recolher numerário. A análise em tempo real destas variações, quando integrada em modelos de aprendizagem automática, fornece informação adicional sobre o comportamento do utilizador, tornando possível acionar alertas imediatos perante gestos que indiciem agressão ou vandalismo. Como ilustrado na Figura~\ref{fig:pose_example}, este tipo de abordagem permite acompanhar a evolução de uma interação violenta, neste caso uma luta, onde as articulações do corpo são identificadas e avaliadas em diferentes instantes. Em cada momento, o sistema atribui probabilidades a comportamentos normais (N) e violentos (V), possibilitando reconhecer indícios de agressão com base nos padrões corporais observados \cite{DetectionViolentPoseEstimation}.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{pic/pose_example.png}
+    \caption{Exemplo da aplicação da estimativa de pose na análise comportamental. Adaptado de \cite{DetectionViolentPoseEstimation}.}
+    \label{fig:pose_example}
+\end{figure}
+
+Um desafio adicional na análise comportamental está relacionado com a deteção de ações inesperadas, que não correspondem a interações previamente definidas como suspeitas. Para lidar com esse problema, têm sido utilizadas técnicas de aprendizagem supervisionada fraca, que permitem identificar comportamentos anómalos sem a necessidade de especificar todas as possibilidades de ações ilícitas. Uma das principais vantagens desta abordagem consiste em dispensar a anotação detalhada de cada movimento individual, sendo suficiente atribuir um rótulo global ao vídeo, classificando-o como normal ou anómalo, ficando a cargo do modelo a identificação autónoma dos segmentos relevantes. Estudos como o de Sultani et al. demonstraram a eficácia desta estratégia em contextos reais de vigilância, evidenciando que é possível detetar comportamentos imprevistos e gerar respostas rápidas a situações de risco sem recorrer a anotações \textit{frame a frame} \cite{VideoActionDetection,CameraUsingCVPollice,sultani2018real}.
+

@@ -1,0 +1,28 @@
+{
+  "image_path": "C:\\Vasco\\Tese\\Projeto\\ProjetoFinal\\SecurityDetectionML\\Sistema_de_Seguranca\\INFERENCE_ENGINE\\EvaluateModels\\Distribuicao\\test.jpg",
+  "predicted_class_idx": 1,
+  "predicted_class_name": "1",
+  "confidence": 0.9999212026596069,
+  "logits": [
+    -4.181893825531006,
+    5.266459941864014
+  ],
+  "probabilities": [
+    7.881299825385213e-05,
+    0.9999212026596069
+  ],
+  "top_k": [
+    {
+      "class_idx": 1,
+      "class_name": "1",
+      "probability": 0.9999212026596069,
+      "logit": 5.266459941864014
+    },
+    {
+      "class_idx": 0,
+      "class_name": "0",
+      "probability": 7.881299825385213e-05,
+      "logit": -4.181893825531006
+    }
+  ]
+}

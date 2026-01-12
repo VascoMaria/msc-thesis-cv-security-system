@@ -1,0 +1,1311 @@
+\chapter{Metodologia}
+\section{Exploração Inicial das Tecnologias de Visão Computacional}
+
+Durante os primeiros meses do estágio na empresa INM, foi iniciado o desenvolvimento de um sistema de segurança com base em visão computacional, com o foco de garantir uma integração fluida com o projeto HEFESTO. Antes de definir a arquitetura e os componentes do sistema, foi conduzida uma fase de exploração com o propósito de adquirir conhecimentos técnicos fundamentais e avaliar ferramentas e bibliotecas relevantes para esta área.
+
+Nesta fase inicial, foram analisadas algumas das principais tecnologias da visão computacional, com o intuito de compreender as suas funcionalidades, limitações e potencial de aplicação em cenários de segurança. A biblioteca \gls{opencv} \cite{OpenCV} foi utilizada para entender operações básicas como a captura e processamento de vídeo, conversão de frames e aplicação de transformações simples. Estes testes ajudaram a consolidar noções fundamentais, como a importância do desempenho em tempo real e a influência das condições de iluminação na qualidade da análise.
+
+Foram também estudados modelos de deteção de objetos baseados em redes neuronais convolucionais, em particular o YOLO \cite{yolov10}, com o objetivo de compreender o seu funcionamento e avaliar a sua adequação ao contexto do projeto. Ainda que nesta fase não tenha sido realizada uma validação aprofundada, foi possível perceber a capacidade do modelo em identificar e localizar objetos relevantes em imagens.
+
+Em paralelo, foram analisadas soluções de reconhecimento facial e análise emocional, nomeadamente a biblioteca DeepFace \cite{deepface}, com o objetivo de perceber de que forma a identificação de expressões faciais poderia ser usada para detetar sinais de stress, medo ou outras emoções associadas a situações de risco.
+
+Esta etapa exploratória permitiu estabelecer uma base sólida para as decisões técnicas que se seguiram, nomeadamente na seleção das tecnologias a integrar no sistema final e na definição dos requisitos funcionais para cada componente. O recurso à câmara integrada na máquina HEFESTO durante alguns dos testes iniciais contribuiu também para um melhor enquadramento das necessidades do sistema face ao ambiente real onde seria implementado.
+
+
+\section{Construção do Sistema de Segurança}
+
+\subsection{Objetivos Técnicos e Critérios de Conceção}
+
+Deu-se início à projeção de um sistema para operar de forma independente, expansível e capaz de garantir a sua integração com uma máquina de autoatendimento como o HEFESTO. Pretendeu-se desenvolver uma solução simples de implementar, eficiente e sem exigir alterações significativas na infraestrutura existente. O sistema foi pensado para ser suficientemente leve para funcionar localmente, mantendo também uma estrutura modular e flexível, preparada para evoluções futuras.
+
+Com base nas características do ambiente e nas limitações identificadas, foram definidos os seguintes critérios técnicos de conceção:
+
+
+\begin{itemize}
+
+  \item \textbf{Execução local otimizada}: preparado para funcionar diretamente no hardware do HEFESTO, de forma autónoma e eficiente no uso dos recursos.
+  
+
+  \item \textbf{Simplicidade tecnológica}: evitar ferramentas pesadas, como contentores Docker, devido às limitações de desempenho da máquina.
+  
+  \item \textbf{Independência tecnológica}: o sistema não deveria ficar limitado a tecnologias específicas, de modo a garantir maior portabilidade e facilidade de adaptação no futuro.
+
+   \item \textbf{Arquitetura modular}: cada componente deve ser independente, facilitando manutenção, substituições e atualizações sem afetar o restante do sistema.
+  
+
+  \item \textbf{Compatibilidade}: assegurar a integração com o HEFESTO sem necessidade de alterar a aplicação nativa da máquina de autoatendimento.
+\end{itemize}
+
+
+
+\subsection{Arquitetura Modular e Estrutura Plug-and-Play}
+
+O desenvolvimento inicial centrou-se na definição da arquitetura do sistema, concebida para identificar e responder a ameaças em tempo real.
+
+A arquitetura foi desenhada segundo um princípio modular, garantindo a separação clara entre componentes e permitindo que os modelos de computação visual sejam integrados ou substituídos sem impactar o restante sistema. Esta lógica \textit{plug-and-play} assegura extensibilidade, manutenção simplificada e evolução contínua da solução, desde que cada novo modelo seja disponibilizado como um serviço com uma \gls{api} compatível com o padrão de comunicação pré-definido pelo o sistema. Com este mecanismo, o sistema pode ser instalado rapidamente em diferentes máquinas de autoatendimento e integrar quase de imediato novos modelos de computação visual.
+
+A Figura~\ref{fig:Arquitetura_Sistema_Seguranca} apresenta a visão geral da arquitetura, evidenciando os componentes internos do Sistema de Segurança e o módulo externo (Modelos de Computação Visual). Evidencia-se ainda a ligação existente \textbf{(1)} entre o controlador e os serviços externos dos modelos, responsáveis por processar os \textit{frames} obtidos e devolver os resultados de inferência.
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \node[anchor=south west,inner sep=0] (img) at (0,0) {\includegraphics[width=1.1\textwidth]{pic/Arquitetura_Sistema_Segurança.png}};
+        \begin{scope}[x={(img.south east)},y={(img.north west)}]
+            % Coordenadas relativas à imagem (0 a 1 em cada eixo)
+            \node[fill=white, circle, inner sep=0.5pt] at (0.535,0.505) {\textbf{(1)}};
+        \end{scope}
+    \end{tikzpicture}
+    \caption{Arquitetura geral do Sistema de Segurança, com destaque na ligação assinalada em \textbf{(1)} para os serviços dos modelos de computação visual.}
+
+
+    \label{fig:Arquitetura_Sistema_Seguranca}
+\end{figure}
+
+
+\subsection{Descrição da Arquitetura e dos seus Componentes}
+
+Após o desenho geral e das definições técnicas iniciais, tornou-se necessário detalhar cada componente funcional do sistema, de modo a assegurar uma implementação alinhada com os objetivos definidos. A arquitetura, já ilustrada na Figura~\ref{fig:Arquitetura_Sistema_Seguranca}, está organizada em três módulos principais: API, módulo comum e controlador, aos quais se liga um módulo externo que representa os serviços associados aos modelos de computação visual utilizados. Os módulos principais foram desenvolvidos em \textit{Python}, devido ao seu suporte robusto a bibliotecas de computação visual e inteligência artificial, consideradas essenciais para este projeto \cite{van1995python}.
+
+\subsubsection{API}
+
+A API constitui o ponto de entrada e de saída do sistema de segurança, implementada utilizando a framework \gls{fastapi} \cite{fastapi}. É responsável por intermediar a comunicação máquina-a-máquina com a aplicação cliente já existente na máquina de autoatendimento. Essa aplicação cliente, que corre de forma independente, é a responsável por captar os \textit{frames} da câmara integrada na própria máquina e enviá-los para a API através de requisições \gls{http} segundo o serviço \gls{restful}.
+
+
+A cada requisição enviada pela aplicação cliente, contendo um \textit{frame} captado pela câmara, a API procede à descodificação da imagem e a uma verificação de qualidade com base na luminosidade, convertendo o \textit{frame} para escala de cinzentos de modo a considerar apenas a intensidade luminosa de cada pixel e calculando o histograma de níveis de cinzento para analisar a distribuição global da luminosidade, sendo o \textit{frame} descartado quando mais de 90\% dos pixels apresentam intensidades próximas do preto, indicando uma possível obstrução da câmara, ou próximas do branco, indicando excesso de luz, sendo apenas encaminhados para processamento posterior os \textit{frames} que apresentam condições adequadas de iluminação, otimizando assim o uso dos recursos computacionais.
+
+
+Para garantir um desempenho eficiente e assegurar que a análise seja realizada com dados recentes, a API mantém um \textit{buffer} temporário de \textit{frames}, no qual apenas os mais atuais são preservados durante cada ciclo de processamento. Sempre que o limite do \textit{buffer} é atingido, os \textit{frames} mais antigos são automaticamente descartados, seguindo uma política \gls{fifo}. Em paralelo, o sistema garante que todos os pedidos recebem resposta, seja com resultados da análise ou com a indicação de descarte, evitando bloqueios na comunicação.
+Em segundo plano, a API procede à seleção periódica de um conjunto de \textit{frames} representativos, de forma a evitar a análise de imagens demasiado semelhantes. Esses \textit{frames} são depois agrupados e enviados em lote para o controlador, onde ocorre a análise.
+
+Para além de receber os \textit{frames}, a API também devolve à aplicação cliente os resultados da análise, incluindo o estado do alarme, o tempo de processamento e as principais deteções identificadas. Inclui ainda mecanismos de tolerância a falhas, assegurando que mesmo em situações anómalas, como atrasos excessivos ou erros, o cliente obtém sempre uma resposta adequada.
+
+
+Apesar de eficaz esta abordagem pode apresentar algumas limitações, uma vez que o envio \textit{frame a frame} gera vários pedidos por segundo, o que pode acrescentar algum overhead embora pouco significativo em contexto local, e a amostragem temporal implica o descarte de certas imagens, podendo perder-se eventos muito breves. A dimensão do \textit{buffer} também influencia o desempenho, exigindo ajuste consoante os \acrshort{fps} da câmara e do tempo de processamento.
+
+
+
+
+
+\subsubsection{Controlador}
+
+O controlador atua como o núcleo lógico do sistema e é responsável por gerir o \textit{pipeline} de processamento dos frames validados provenientes da API. Após a receção destes dados, o controlador coordena todo o fluxo interno, desde a identificação das categorias de inferência ativas até à consolidação dos resultados finais.
+
+
+Uma das responsabilidades do controlador é a invocação dos modelos externos de computação visual. Para isso, utiliza mecanismos de execução assíncrona que permitem o envio paralelo de requisições HTTP para os serviços de inferência de cada modelo ativo, evitando o bloqueio da execução principal. Cada conjunto de frames é enviado em lote para as APIs específicas dos serviços dos modelos as quais foram desenvolvidas de forma dedicada para possibilitar a integração com o sistema de segurança. Os resultados devolvidos por cada modelo são recolhidos e estruturados para posterior análise de decisão.
+
+
+
+Para além de estruturar as respostas recebidas dos modelos, o controlador executa também um processo complementar com base nas áreas das faces detetadas. Essas áreas são fornecidas pelos serviços de reconhecimento facial e utilizadas para calcular o rácio entre a face principal do utilizador e uma eventual segunda face presente no mesmo frame. Se esse rácio ultrapassar o limiar configurado, o controlador regista informação adicional que não altera diretamente o estado do alarme, mas sinaliza a possível presença de um intruso demasiado próximo do utilizador da máquina. Esta informação suplementar fornece contexto útil para a análise de segurança, podendo apoiar decisões futuras
+
+Após este processamento complementar, o controlador aplica as regras de decisão configuráveis. Inicialmente, são aplicadas regras ao nível de cada categoria individual (por exemplo, regras específicas para deteção de armas ou reconhecimento de expressões faciais), sendo que cada categoria tem modelos associados. De seguida, realiza-se uma avaliação ao nível global, combinando os resultados das várias categorias com base em limiares ou critérios lógicos específicos. Este mecanismo assegura flexibilidade na definição do que constitui uma situação de alarme com base nos modelos em comunicação.
+
+Caso seja identificado um alarme, o controlador extrai as deteções mais relevantes por categoria, selecionando as que apresentam maior confiança. O resultado final inclui o estado do alarme, o tempo total de processamento e um resumo das principais deteções, sendo então devolvido à API.
+
+Em caso de falha na comunicação com algum dos modelos ou de respostas fora do tempo limite esperado, o controlador regista o incidente e continua o processamento com os dados disponíveis.
+
+
+\subsubsection{Módulo Comum}
+
+O módulo comum agrega um conjunto de funcionalidades de suporte utilizadas pelos restantes componentes do sistema. Entre as suas principais responsabilidades está a leitura das configurações do sistema, centralizadas num ficheiro \texttt{config.json} em \gls{json}. Essas configurações são carregadas apenas uma vez e mantidas em memória, ficando disponíveis para acesso eficiente pelos restantes módulos, o que garante consistência e evita redundância no carregamento dos parâmetros.
+
+Este módulo disponibiliza funções auxiliares que permitem consultar, em tempo de execução, as categorias de modelos ativas, os modelos associados a cada categoria, as regras de decisão definidas (por categoria e globais), os limiares e os pesos aplicáveis. Essas funções não implementam as regras de decisão, mas fornecem ao controlador os elementos necessários para a sua execução e para o encaminhamento dos dados para os modelos.
+
+Adicionalmente, o módulo comum centraliza a lógica de registo de logs, que assegura o acompanhamento de operações internas, decisões tomadas e eventuais anomalias durante o funcionamento do sistema. Esta componente é essencial para diagnóstico, manutenção e auditoria do comportamento do sistema.
+
+\subsubsection{Módulo Externo: Modelos de Computação Visual}
+
+O módulo externo representa os modelos de computação visual utilizados pelo sistema. Estes modelos não fazem parte da arquitetura interna do Sistema de Segurança e são executados como serviços externos independentes. O módulo externo é responsável apenas por fornecer as inferências solicitadas, comunicando com o sistema através das interfaces específicas implementadas para esse efeito.
+
+
+\subsubsection{Modelos de Computação Visual em Utilização pelo o Sistema}
+
+A escolha dos modelos de computação visual que foram selecionados para comunicar com o Sistema de Segurança resultou de uma fase de pesquisa e experimentação, na qual foram analisadas várias soluções disponíveis em repositórios públicos e plataformas \textit{open-source}. Os principais critérios de seleção incluíram:
+
+
+\begin{itemize}
+  \item Disponibilidade de modelos pré-treinados com classes relevantes para o contexto do sistema (armas, expressões emocionais de risco, comportamentos violentos).
+  \item Capacidade de execução eficiente em hardware limitado, recorrendo a arquiteturas leves de computação visual que conciliem baixo consumo de recursos com tempos de resposta adequados.
+  \item Facilidade de integração com o sistema, incluindo a possibilidade de expor o modelo através de uma API simples e compatível com a arquitetura definida.
+
+\end{itemize}
+
+No âmbito do Sistema de Segurança, os modelos de computação visual utilizados encontram-se organizados em três categorias principais, correspondentes aos tipos de análise considerados relevantes para o contexto da aplicação: deteção de armas, reconhecimento de expressões emocionais e deteção de ambiente violento. 
+
+Cada categoria agrega um ou mais modelos dedicados à sua função específica, os quais comunicam com o sistema como serviços independentes. A seguir descrevem-se os modelos em utilização e a respetiva associação às categorias de análise.
+
+\subsubsection*{Categoria: Deteção de armas}
+\label{subsubsec:modelos_utilizados}
+
+Esta categoria é responsável pela identificação de armas de fogo ou brancas nos \textit{frames} analisados pelo sistema. Para esta função, foram utilizados quatro modelos de computação visual disponibilizados em repositórios públicos, cujos pesos e configuração foram mantidos conforme fornecido pelos respetivos autores. Os modelos foram postos em funcionamento como serviços externos, e o sistema comunica com eles através dos seus endpoints definidos.
+
+\begin{itemize}
+  \item \textbf{YOLOv8 (3 instâncias)}: três modelos YOLOv8 pré-treinados, utilizados para a deteção de armas de fogo e armas brancas nos frames analisados. Cada modelo foi obtido diretamente de repositórios públicos, como \cite{joaoassalim_yolo}, \cite{becayesoft_yolo} e \cite{gingerbrains_yolo}, e cada um foi integrado para operar como um serviço externo.
+  
+A utilização de múltiplas instâncias do YOLOv8 explora a complementaridade entre modelos treinados com diferentes conjuntos de dados, permitindo abranger variações de classes, escala e condições visuais associadas à deteção de armas. Esta estratégia aumenta a robustez do sistema e reduz a probabilidade de situações de risco envolvendo o uso de armas não serem detetadas.
+
+  \item \textbf{EfficientNet}: modelo de classificação binária utilizado também para fornecer ao sistema informação sobre a presença ou ausência de armas nos \textit{frames}, com base numa abordagem de classificação geral da imagem. A sua utilização comprova a compatibilidade do sistema de segurança com diferentes tipos de modelos de computação visual além do padrão YOLO. \cite{jacobm_efficientnet}.
+\end{itemize}
+
+\textit{Fluxo de processamento dos modelos:}
+
+\textbf{YOLOv8}: os serviços dos modelos recebem os \textit{frames} em lote, enviados pelo controlador através dos respetivos \textit{endpoints}. O fluxo do modelo pode também ser visualizado de forma genérica na Figura~\ref{fig:yolo_arq}, apresentada na secção de Trabalho Relacionado. Cada modelo realiza as seguintes etapas:
+
+
+\begin{itemize}
+  \item Redimensionamento de cada imagem do lote para as dimensões esperadas pelo modelo (ex.: 640×640), mantendo a proporção através de \textit{padding} quando necessário.
+  \item Conversão das imagens para o formato de tensores e normalização dos valores de pixel.
+  \item \textit{Forward pass} na rede YOLOv8, em que o lote de frames é processado sequencialmente pela \textit{backbone} (responsável pela extração de características), pela \textit{neck} (que realiza a fusão e enriquecimento das características) e pela \textit{head}. Esta última gera como saída um \gls{tensor} no formato \([ \textit{Batch}, N+5 ]\), onde cada previsão corresponde a um vetor do tipo \([x, y, w, h, \text{obj\_conf}, \text{prob(classe 0)}, \ldots, \text{prob(classe N-1)}]\), contendo as coordenadas da caixa delimitadora, a confiança na presença de um objeto e as probabilidades atribuídas a cada classe.
+  \item Pós-processamento com eliminação de deteções redundantes através de NMS.
+  \item Devolução ao sistema de segurança as classes detetadas, as caixas delimitadoras e os graus de confiança associados.
+\end{itemize}
+
+
+\textbf{EfficientNet}: o serviço do modelo recebe os \textit{frames} em lote através do respetivo endpoint, onde são realizadas as seguintes operações:
+\begin{itemize}
+  \item Redimensionamento das imagens para as dimensões de entrada do modelo (ex.: 224×224).
+  \item Normalização dos valores de pixel para o intervalo [0, 1] e conversão para tensores.
+  \item \textit{Forward pass} na rede EfficientNet, no qual os dados são processados sequencialmente pelos blocos da rede (por exemplo, camadas convolucionais, totalmente conectadas e MBConv), até à obtenção de um vetor com os logits de cada classe.
+  \item Aplicação de pós-processamento: os logits são passados por uma função de ativação \textit{softmax}, que converte os valores em probabilidades, e é calculado o \textit{argmax} para determinar a classe predita.
+  \item Por fim devolve ao sistema de segurança uma classificação binária (presença ou ausência de arma) acompanhada do grau de confiança.
+\end{itemize}
+\paragraph{}
+
+\subsubsection*{Categoria: Reconhecimento de expressões emocionais}
+\label{sec:metrica_faces}
+
+Esta categoria tem como principal função identificar expressões faciais associadas a estados emocionais de risco, nomeadamente medo e raiva, nos frames analisados pelo sistema. Para essa finalidade são utilizados dois recursos de computação visual disponibilizados em repositórios públicos: \textit{DeepFace} \cite{deepface} e \textit{FER} \cite{fer_model}, ambos integrados como serviços externos que comunicam com o sistema através de \textit{endpoints} definidos.
+
+
+\begin{itemize}
+
+  \item \textbf{DeepFace}: funciona como serviço externo que recebe os \textit{frames}, deteta e alinha as faces e devolve a análise das expressões. Internamente, recorre à biblioteca DeepFace, que por sua vez utiliza diferentes métodos de deteção de face (nesta implementação foi usado o detetor OpenCV Haar, pela sua rapidez) e utiliza um modelo integrado baseado numa CNN leve (\textit{mini-Xception}) treinada no conjunto FER-2013 \cite{Fer}, que produz a distribuição de probabilidades pelas várias emoções (felicidade, tristeza, raiva, surpresa, medo, nojo e neutro).
+
+  \item \textbf{FER}: também integrado como serviço externo, recebe os \textit{frames} e realiza a deteção da face (neste caso com o MTCNN, escolhido pela maior robustez a ângulos e variações de pose) antes de classificar a emoção. Trata-se de uma biblioteca simples e focada exclusivamente no reconhecimento de expressões emocionais. Tal como o DeepFace, utiliza uma CNN leve treinada no FER-2013 \cite{Fer}, e devolve apenas a emoção dominante de cada face com o respetivo grau de confiança.
+\end{itemize}
+
+
+Para que o reconhecimento emocional seja possível é necessário que os serviços identifiquem previamente as faces presentes em cada \textit{frame}. Todas as faces detetadas são então ordenadas de acordo com a sua área seguindo o critério de maior dimensão. Cada serviço seleciona internamente no máximo as duas faces de maior área enquanto se existir apenas uma face apenas essa é processada e quando não for detetada nenhuma não é realizada classificação emocional nesse \textit{frame}. Esta opção privilegia as faces mais próximas da máquina de autoatendimento seguindo a lógica de abranger o utilizador e um eventual agressor ou transeunte próximo.  
+
+
+As áreas das faces selecionadas são incluídas na resposta dos serviços e reutilizadas como métrica complementar de contexto. A métrica é transmitida ao controlador apenas como informação adicional, sem influenciar a decisão de alarme, sendo posteriormente utilizada para calcular o rácio entre a área da segunda face e a do utilizador principal. Sempre que esse rácio ultrapassa o limiar definido nas configurações do sistema, é emitido um aviso que sugere a presença de um intruso demasiado próximo. 
+Em cenários típicos, a face do utilizador legítimo ocupa a maior área da imagem por estar em primeiro plano.
+
+
+A Figura~\ref{fig:face_areas} ilustra estes dois cenários: à esquerda observa-se uma situação normal, em que a segunda face corresponde a uma pessoa em segundo plano, claramente afastada do utilizador principal, e à direita apresenta-se um caso em que a segunda face surge demasiado próxima, simulando a presença de um intruso a invadir o espaço pessoal do utilizador.  
+
+A decisão de implementar esta funcionalidade com base nos métodos já usados para a análise emocional deve-se à eficiência computacional, uma vez que técnicas mais sofisticadas como RetinaFace ou Dlib CNN exigem maior processamento e não são adequadas a máquinas de autoatendimento. Como o reconhecimento facial ou biométrico não é objetivo desta dissertação, aproveitou-se a deteção de faces já necessária para as emoções, acrescentando esta capacidade sem impacto significativo no tempo de inferência.
+
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{pic/faces_blurred_bboxes.png}
+    \caption{Exemplo de utilização da métrica de áreas faciais para informar sobre situações de intrusão.}
+    \label{fig:face_areas}
+\end{figure}
+
+
+
+\subsubsection*{Fluxo de processamento dos modelos}
+
+Apesar de utilizarem mecanismos distintos de deteção e alinhamento, os serviços DeepFace e FER seguem um fluxo de processamento semelhante. 
+A Figura~\ref{fig:flow_emotions} ilustra de forma resumida as etapas que compõem esse fluxo, enquanto a descrição seguinte detalha cada uma delas:
+
+\begin{enumerate}
+  \item \textbf{Pré-processamento}: o \textit{frame} é convertido para um formato de imagem manipulável (\gls{arrayNumPy}).
+  \item \textbf{Deteção da face}: cada serviço de emoções recorre ao seu modelo interno para localizar as faces no \textit{frame}. No máximo, as duas maiores são enviadas para as etapas seguintes de alinhamento e classificação.
+  \begin{itemize}
+    \item \textit{DeepFace} – recorre à sua pipeline interna (nesta implementação configurada com o detetor OpenCV Haar).
+    \item \textit{FER} – utiliza o detetor MTCNN, com pontos-chave (olhos, nariz, boca) para maior precisão.
+  \end{itemize}
+  \item \textbf{Alinhamento}: a face é padronizada em termos de posição e orientação.
+  \begin{itemize}
+    \item \textit{DeepFace} – alinhamento interno automático.
+    \item \textit{FER} – alinhamento explícito baseado na posição dos olhos.
+  \end{itemize}
+  \item \textbf{Normalização}: a região da face é convertida para escala de cinzento, redimensionada para 48×48 píxeis e normalizada para o intervalo de entrada da rede.
+  \item \textbf{Classificação}: é executada a CNN de cada serviço para atribuição de probabilidades às sete classes de emoção (felicidade, tristeza, raiva, surpresa, medo, nojo e neutro).
+ \item \textbf{Saída}: a API de cada serviço devolve, para até duas faces por \textit{frame}, as emoções dominantes com o respetivo grau de confiança e as áreas faciais. As áreas são reutilizadas no controlador como métrica de proximidade entre indivíduos.
+
+\end{enumerate}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{pic/Screenshot_12.png}
+    \caption{Fluxo global de processamento dos serviços de análise emocional (DeepFace e FER).}
+    \label{fig:flow_emotions}
+\end{figure}
+
+
+
+\subsubsection*{Categoria: Deteção de ambiente violento}
+
+Esta categoria visa identificar situações de violência física ou comportamentos agressivos no ambiente. Para esta tarefa foi utilizado um modelo YOLOv8 pré-treinado, disponibilizado em repositório público \cite{musawer14_yolo_fight}. O modelo está em funcionamento como serviço externo, comunicando com o sistema através do respetivo \textit{endpoint}.
+
+O fluxo de processamento deste modelo segue o mesmo padrão técnico descrito para os modelos YOLOv8 da categoria de deteção de armas, incluindo as etapas de redimensionamento e normalização dos \textit{frames}, passagem pela \textit{backbone}, \textit{neck} e \textit{head} da CNN, e aplicação de NMS. 
+
+A principal diferença reside nas classes detetadas, que neste modelo são específicas para cenários de violência e restringem-se a duas possibilidades:
+\begin{itemize}
+  \item \textit{\textbf{Violence/Fight}} – instâncias em que ocorre violência física ou confrontos agressivos. 
+  \item \textit{\textbf{NoViolence/NoFight}} – instâncias em que não há qualquer tipo de confronto físico.
+\end{itemize}
+
+
+\subsection{Regras de Decisão}
+\label{subsec:regras-decisao}
+O Sistema de Segurança não se limita a receber passivamente as análises e deteções produzidas pelos diferentes modelos, sendo necessário transformar esses resultados em decisões concretas sobre a ativação ou não do alarme.
+É neste ponto que entram as \textbf{regras de decisão}, responsáveis por definir como os diferentes outputs dos modelos são combinados para determinar o resultado final. 
+No sistema, essas regras são aplicadas pelo controlador com base nos parâmetros definidos no ficheiro de configuração.
+
+As regras de decisão estão organizadas em dois níveis hierárquicos, conforme ilustrado na Figura~\ref{fig:ConfigRegrasDecisao}:
+
+\begin{itemize}
+  \item \textbf{Nível de categoria}: as decisões são tomadas com base nos resultados dos modelos que integram cada categoria (por exemplo, armas, emoções ou ambiente). Em cada categoria, o controlador aplica a regra definida na configuração para efetuar a fusão dos outputs dos respetivos modelos, produzindo um resultado agregado representativo dessa categoria.
+
+  \item \textbf{Nível global}: após a avaliação individual das categorias, os resultados agregados de cada uma são combinados de acordo com a regra global definida, a fim de determinar de forma unificada se o sistema deve ou não proceder à ativação do alarme.
+
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.71\textwidth]{pic/Screenshot_16.png}
+    \caption{Diagrama dos níveis de decisão realizados pelo controlador no Sistema de Segurança.}
+    \label{fig:ConfigRegrasDecisao}
+\end{figure}
+
+Definidos os dois níveis hierárquicos de decisão, importa detalhar os mecanismos aplicados em cada um deles. Antes da aplicação das regras propriamente ditas, o controlador realiza uma verificação preliminar sobre as respostas brutas de cada modelo relativas ao lote de \textit{frames} analisado: considera-se \textit{positivo} se existir pelo menos um \textit{frame} no lote com uma deteção cuja classe pertença ao conjunto de classes alarmantes $\mathcal{A}_m$ e cuja confiança seja superior ou igual ao limiar individual $t_m$. Basta que um único \textit{frame} do lote satisfaça estes critérios para que o modelo seja considerado como positivo. Esta condição encontra-se representada no pseudocódigo do Algoritmo~\ref{alg:cat-decision-optimized} (linhas 5 e 15). Apenas os modelos que satisfazem esta condição prosseguem para a decisão ao nível da categoria, segundo as regras de \textit{consensus} ou \textit{scoring}, apresentadas de seguida. A decisão global segue o mesmo princípio, mas combina as categorias ativas em vez dos modelos.
+
+\begin{itemize}
+  \item \textbf{Consensus}: implementa-se de forma hierárquica em dois níveis. No nível de \textit{categoria}, considera-se alarmante a categoria em que pelo menos metade dos modelos associados confirmam uma deteção relevante, isto é, uma classe alarmante com confiança igual ou superior ao limiar definido para cada modelo. No nível \textit{global}, o sistema apenas ativa o alarme quando a maioria das categorias avaliadas são alarmantes, garantindo assim que a decisão final decorre de um acordo entre diferentes áreas de análise. Esta abordagem é particularmente útil em cenários onde não se dispõe de informação detalhada sobre o desempenho individual dos modelos, permitindo combinar os seus \textit{outputs} de forma equitativa e aumentando a robustez face a erros isolados \cite{ala2016classifiers}.
+    
+  
+  \item \textbf{Scoring}: no nível de \textit{categoria} cada modelo contribui com uma pontuação igual ao seu peso quando deteta uma classe alarmante com confiança acima do seu limiar individual. A soma destas pontuações é comparada com o limiar da categoria. No nível \textit{global} cada categoria ativa contribui com um peso fixo definido na configuração \texttt{config.json}. A soma dos pesos das categorias alarmantes é comparada com o limiar global para decidir a ativação do alarme. Esta abordagem é mais adequada quando existe conhecimento detalhado sobre o desempenho relativo dos modelos envolvidos, permitindo atribuir-lhes pesos proporcionais à sua fiabilidade \cite{jabbar2024advanced}.
+\end{itemize}
+
+
+\begin{algorithm}[H]
+\caption{Decisão por Categoria (regra \textit{consensus} ou \textit{scoring}).}
+\label{alg:cat-decision-optimized}
+\KwIn{Categoria $c$ ativa; regra $R_c \in \{\textit{consensus}, \textit{scoring}\}$;
+limiar da categoria $T_c$; modelos $\mathcal{M}_c$ (cada $m$ com $w_m$, $t_m$, $\mathcal{A}_m$) e respetivas detecções.}
+\KwOut{Resultado booleano $y_c$.}
+
+$N \gets |\mathcal{M}_c|$;\quad $y_c \gets \mathsf{falso}$\;
+
+\If{$R_c = \textit{consensus}$}{
+  $votos \gets 0$;\quad $maj \gets \lfloor N/2 \rfloor + 1$\;
+  \ForEach{modelo $m \in \mathcal{M}_c$}{
+    $positivo \gets \exists (label,conf)$ tal que $label \in \mathcal{A}_m \land conf \ge t_m$\;
+    \If{$positivo$}{$votos \gets votos+1$}
+    \If{$votos \ge maj$}{$y_c \gets \mathsf{verdadeiro}$;\ \Return $y_c$ \tcp*{short-circuit}}
+  }
+  \Return $y_c$ \tcp*{verdadeiro se maioria alcançada; caso contrário, falso}
+}
+\Else(\tcp*[f]{$R_c = \textit{scoring}$}){%
+  $score \gets 0$;\quad \If{$T_c = \varnothing$}{$T_c \gets 1$}
+  \ForEach{modelo $m \in \mathcal{M}_c$}{
+    $positivo \gets \exists (label,conf)$ tal que $label \in \mathcal{A}_m \land conf \ge t_m$\;
+    \If{$positivo$}{$score \gets score + w_m$}
+    \If{$score \ge T_c$}{$y_c \gets \mathsf{verdadeiro}$;\ \Return $y_c$ \tcp*{short-circuit}}
+  }
+  \Return $y_c$
+}
+\end{algorithm}
+
+
+
+Em termos conceptuais, as regras de decisão definem como os outputs dos modelos e das categorias são combinados. Na prática, o ficheiro de configuração (\texttt{config.json}) especifica as regras a aplicar por categoria e a nível global, também reúne limiares, pesos e o estado de cada categoria. A configuração é carregada no arranque e permanece em memória para acesso eficiente. A sua estrutura organiza-se em três blocos: \textbf{Decisão global} inclui a regra de combinação das categorias, o limiar global e pode incluir parâmetros adicionais como a razão entre áreas faciais. \textbf{Categorias} inclui o nome, o estado ativo, a próprios regra e o limiar, o peso na decisão global e o conjunto de modelos associados. \textbf{Modelos} inclui o endpoint, as classes alarmantes, o limiar individual e o peso na decisão da categoria. A Figura~\ref{excerto:config} apresenta um excerto representativo do \texttt{config.json} e evidencia a função de cada parâmetro.
+
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.9\linewidth}
+\small
+\textbf{Estrutura do \texttt{config.json}:}
+\begin{description}
+  \item[categories\_decision\_rule:] regra global de combinação das categorias (\textit{consensus} ou \textit{scoring}).
+  \item[threshold:] limiar global aplicado à decisão final.
+  \item[faces\_areas\_ratio\_threshold:] percentagem que define o rácio mínimo entre a área da segunda face e a área da face do utilizador para sinalizar proximidade.
+  \item[categories:] definição das categorias do sistema.
+    \begin{description}
+      \item[name:] identificador da categoria (ex.: \textit{weapon\_detection}).
+      \item[active:] indica se a categoria está ativa ou inativa.
+      \item[decision\_rule:] regra de decisão da categoria (\textit{consensus} ou \textit{scoring}).
+      \item[threshold:] limiar associado à decisão da categoria.
+      \item[weight:] peso atribuído à categoria na decisão global.
+      \item[models:] lista de modelos associados à categoria.
+        \begin{description}
+          \item[name:] nome do modelo.
+          \item[url:] endereço de comunicação com o modelo (endpoint).
+          \item[classes:] classes alarmantes do modelo.
+          \item[thresholdDetection:] confiança mínima exigida para considerar uma deteção válida do modelo.
+          \item[weight:] peso do modelo na decisão da categoria, caso a categoria seja por \textit{scoring}.
+        \end{description}
+    \end{description}
+\end{description}
+\end{minipage}
+\caption{Excerto descritivo do \texttt{config.json}, com indicação da função de cada parâmetro.}
+\label{excerto:config}
+\end{figure}
+
+A Tabela~\ref{tab:regras-evidencia} mostra um exemplo de entradas agregadas por lote de dois \textit{frames} com uma resolução de 720$\times$1280. O controlador aplica a regra \textit{scoring} por categoria: sempre que um modelo apresenta pelo menos uma deteção ou classificação com confiança $\geq \mathrm{\textit{thr}}$ (\textit{thresholdDetection}) em qualquer um dos \textit{frames} do lote, o seu peso $w$ é somado à pontuação da categoria. Esta torna-se \textit{alarmante} quando a soma dos pesos atinge ou excede $T_c$. Na tabela~\ref{tab:regras-evidencia}, $\mathrm{thr}$ corresponde ao limiar de confiança definido individualmente para cada modelo (\textit{thresholdDetection} na Figura~\ref{excerto:config}), $w$ representa o peso atribuído ao modelo na decisão da respetiva categoria (\textit{weight}), e $T_c$ é o limiar da própria categoria, isto é, a soma mínima de pesos necessária para que esta seja considerada \textit{alarmante}.
+
+Concretamente, na linha da categoria \textbf{Armas}, os modelos \texttt{YoloA} e \texttt{YoloB} apresentam, no primeiro frame do lote, a classe \textit{gun} com confiança $\geq \mathrm{thr}$, contribuindo respetivamente com $w=3$ e $w=2$. A soma destes pesos atinge $T_c=5$, pelo que a categoria \textbf{Arma} é considerada \textit{alarmante}, enquanto \texttt{YoloC} e \texttt{EfficientNet} não apresentam deteções em nenhum dos frames e, por isso, não contribuem para a decisão.
+
+
+Importa salientar que os valores de limiar e peso ilustrados nesta tabela têm caráter exemplificativo. A definição destes parâmetros resulta de análise experimental, explorada em detalhe na Secção~\ref{subsubsec:thresholds-categorias}, com recurso a métricas como curvas ROC.
+
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{p{1.3cm} p{5.5cm} p{2.4cm} p{1.5cm} p{1.5cm}}
+\toprule
+\textbf{Categoria} & \textbf{Exemplo de entradas (JSON)} & \textbf{thr / w} & \textbf{Regra} & \textbf{Janela} \\
+\midrule
+\textbf{Arma} &
+\texttt{\{'model': 'YoloA', 'detections': [ [\{'label': 'gun', 'conf': 0.87\}], [] ]\}} \newline
+\texttt{\{'model': 'YoloB', 'detections': [ [\{'label': 'gun', 'conf': 0.91\}], [] ]\}} \newline
+\texttt{\{'model': 'YoloC', 'detections': [ [], [] ]\}} \newline
+\texttt{\{'model': 'EfficientNet', 'detections': [ [], [] ]\}} &
+YoloA: thr=0.4 / w=3 \newline
+YoloB: thr=0.2 / w=2 \newline
+YoloC: thr=0.4 / w=1 \newline
+eff: thr=0.2 / w=1 &
+\textit{scoring}, $T_c=5$ &
+lote com 2 frames (720×1280) \\
+\midrule
+\textbf{Emoções} &
+\texttt{\{'model': 'deepface', 'detections': [ [\{'emotion': 'fear', 'conf': 0.82\}], [\{'emotion': 'neutral', 'conf': 0.72\}] ]\}} \newline
+\texttt{\{'model': 'fer', 'detections': [ [\{'emotion': 'neutral', 'conf': 0.78\}], [\{'emotion': 'neutral', 'conf': 0.87\}] ]\}} &
+deepface: thr=0.4 / w=2 \newline
+fer: thr=0.4 / w=1 &
+\textit{scoring}, $T_c=1$ &
+lote com 2 frames (720×1280) \\
+\midrule
+\textbf{Violência} &
+\texttt{\{'model': 'violence', 'detections': [ [], [] ]\}} &
+thr=0.3 / w=5 &
+\textit{scoring}, $T_c=1$ &
+lote com 2 frames (720×1280) \\
+\bottomrule
+\end{tabular}
+\caption{Exemplo de entradas agregadas por lote de 2 \textit{frames}, onde cada modelo aparece uma vez e o campo \texttt{detections} inclui os resultados de ambos os \textit{frames}.}
+\label{tab:regras-evidencia}
+\end{table}
+
+
+
+
+
+
+
+\section{Dinâmica Operacional do Sistema de Segurança}
+
+Após a definição da arquitetura modular e dos componentes funcionais do sistema, importa compreender a dinâmica de funcionamento em tempo de execução. Esta secção descreve o fluxo de operação do Sistema de Segurança, desenvolvido como solução de segurança adicional para as máquinas de autoatendimento, que destaca o modo como os diferentes módulos interagem para processar os dados recebidos, executar inferências com os modelos de computação visual e tomar decisões baseadas em regras configuradas.
+
+A explicação está dividida em duas perspetivas complementares: o \textbf{fluxo interno} do sistema, que detalha o percurso dos dados no interior do sistema e a sua interação com os modelos de computação visual, e o \textbf{fluxo cíclico}, que representa o ciclo completo para demonstrar como o sistema lida com a receção de múltiplos frames, ilustrando a forma como organiza, processa e responde continuamente aos dados visuais recebidos.
+
+\subsection{Fluxo Interno de Processamento}
+
+O fluxo interno de processamento representa a sequência completa de operações realizadas dentro do Sistema de Segurança, desde a receção dos \textit{frames} até à emissão da decisão final. A Figura~\ref{fig:fluxo-interno} ilustra esse percurso, detalhando a interação entre os módulos internos do sistema e os modelos de computação visual.
+
+\begin{figure}[H]
+    \hspace*{-0.1\textwidth}
+    \includegraphics[width=1.2\textwidth]{pic/Fluxo Interno - Sistema de Segurança_Batch.png}
+    \caption{Fluxo interno de processamento no Sistema de Segurança, desde a receção dos frames até à decisão final.}
+    \label{fig:fluxo-interno}
+\end{figure}
+
+
+O processo inicia-se na máquina de autoatendimento como o HEFESTO, que captura os frames através da sua câmara embutida. Esses frames são enviados sequencialmente para a API do sistema de segurança. A API é responsável por receber os frames em formato de \gls{bytes} e validar a sua qualidade antes de permitir o seu processamento.
+
+Cada frame recebido passa por uma verificação de integridade, realizada pela função \texttt{check\_camera\allowbreak\_status}. Esta validação serve para assegurar que a câmara não está bloqueada, coberta, exposta a uma iluminação excessiva ou com sinais de adulteração (como coloração anormal por pintura). Caso os frames estejam em condições aceitáveis, são considerados válidos para análise.
+
+A API mantém uma estrutura interna baseada num buffer circular (\texttt{deque}) que armazena os frames válidos recebidos. No entanto, ao contrário de uma abordagem que simplesmente processaria os últimos cinco frames recebidos, o sistema foi concebido para selecionar, dentro desse buffer, um conjunto de frames espaçados temporalmente. Esta estratégia permite aumentar o valor informativo da análise, evitando que os frames processados sejam demasiado semelhantes entre si, um problema comum quando os dados provêm de uma fonte com um elevado FPS. Desse modo, o sistema distribui os frames escolhidos ao longo do tempo de forma mais equilibrada, que dá uma visão mais ampla da cena capta.
+
+Quando a API acumula o número necessário de frames, e todos são validados com sucesso, o lote é encaminhado para o controlador através do método \texttt{process\_frame}. A partir deste ponto, o controlador assume a responsabilidade pelo pipeline de processamento.
+
+O controlador começa por consultar o módulo \textit{Comum} para obter a lista de categorias ativas e a seguir vai opter os modelos associados a cada categoria, com base nas configurações definidas no ficheiro \texttt{config.json}.
+Com essa informação, o controlador envia em paralelo os \textit{frames} para a API de cada serviço correspondente a um modelo de computação visual ativo. Cada serviço recebe os dados, executa a inferência em lote e devolve ao controlador os resultados, incluindo as deteções e os respetivos níveis de confiança.
+
+A partir destas respostas, o controlador realiza também uma avaliação complementar, centrada na proximidade entre as faces detetadas. Para tal, calcula o rácio entre a área da face do utilizador e a área de uma segunda face identificada. Caso esse rácio ultrapasse o limiar definido na configuração, é registada informação adicional que, embora não altere diretamente o estado do alarme, fornece contexto útil sobre a presença de uma potencial segunda pessoa junto ao utilizador.
+
+
+Com a posse das respostas dos modelos, o controlador avança para a etapa de lógica de decisão. 
+Esta etapa decorre em duas fases: decisão por categoria e decisão global, aplicadas de acordo com as regras e parâmetros definidos no ficheiro \texttt{config.json}, tal como detalhado na Secção~\ref{subsec:regras-decisao}.
+
+O resultado final do controlador é um objeto que inclui o estado de alarme final, o tempo total de processamento, as deteções mais relevantes associadas às categorias que dispararam alarme e também a informação adicional sobre o rácio das faces. Esta resposta é enviada de volta para a API, que a devolve ao cliente em formato JSON, pronto para ser interpretado pela aplicação da máquina de autoatendimento.
+
+
+\subsection{Fluxo Cíclico do Sistema}
+
+
+O funcionamento do Sistema de Segurança baseia-se num ciclo contínuo de receção, análise e resposta, que decorre em paralelo com o envio permanente de \textit{frames} por parte da aplicação da máquina de autoatendimento (neste caso representada pelo HEFESTO). A Figura~\ref{fig:fluxo-ciclico} ilustra esse ciclo, utilizando como exemplo o envio de 5~FPS pelo HEFESTO e a análise realizada pelo sistema em lotes de 5 \textit{frames}.
+
+
+\begin{figure}[H]
+    \centering
+    \hspace*{-0.07\textwidth}
+    \includegraphics[width=1.1\textwidth]{pic/Fluxo Cíclico de Frames_Batch_2s.png}
+    \caption{Exemplo de ciclo de análise no Sistema de Segurança, com receção contínua de 5~FPS e envio em lote para os modelos de computação visual, sendo $W$ a janela de decisão.}
+    \label{fig:fluxo-ciclico}
+\end{figure}
+
+
+
+Neste contexto, o sistema de segurança necessita de ter disponíveis pelo menos 5 \textit{frames} para iniciar o processamento de uma análise. Os \textit{frames} recebidos são armazenados no buffer da API, que acumula todos os que ainda não foram utilizados em análises anteriores. Assim que o buffer contém o número mínimo de 5 \textit{frames}, estes são selecionados e enviados para os modelos de computação visual ativos. O sistema aguarda pelas respostas de inferência e aplica a lógica de decisão previamente descrita. A decisão final é então enviada de volta para a máquina de autoatendimento, marcando o fim de um ciclo de análise.
+
+
+Enquanto o sistema realiza o processamento e a inferência dos \textit{frames} do ciclo atual, novos \textit{frames} continuam a chegar. Esses \textit{frames} são todos armazenados no \textit{buffer}, e quando a análise em curso termina, são utilizados apenas os novos para iniciar o ciclo seguinte. A seleção dos novos 5 \textit{frames} baseia-se num critério de espaçamento uniforme ao longo do conjunto de \textit{frames} acumulados, garantindo uma representação equilibrada de todo o intervalo temporal. O processo de seleção e análise dos \textit{frames} pode ser descrito em quatro elementos principais: como são escolhidos (\textit{Amostragem}), como as janelas avançam (\textit{Janelamento}), como os resultados são combinados (\textit{Agregação}) e quanto tempo decorre até à decisão (\textit{Latência}).
+
+\begin{itemize}
+    \item \textbf{Amostragem}: no exemplo ilustrado na Figura~\ref{fig:fluxo-ciclico}, os \textit{frames} são recebidos da câmara a uma taxa de $r=5$~FPS. Durante cada janela de decisão $W$, esses \textit{frames} são acumulados no \textit{buffer}, mas apenas uma parte é selecionada para análise. Cada lote é constituído por $N=5$ \textit{frames}, escolhidos do \textit{buffer} de forma equidistante, garantindo diversidade temporal no conjunto enviado aos modelos de computação visual. Os índices $i$ dos \textit{frames} escolhidos são calculados por:
+    \begin{equation}
+    i = \text{int}\!\left(\frac{k \cdot T}{N}\right), \quad k = 0,1,\dots,N-1
+    \end{equation}
+    em que $i$ corresponde ao índice do \textit{frame} selecionado no \textit{buffer}, $T$ representa o número total de \textit{frames} disponíveis na janela, $N$ é o número de \textit{frames} a incluir no lote (neste caso, cinco) e $k$ é o contador que percorre os valores de $0$ a $N-1$, permitindo selecionar sucessivamente os diferentes \textit{frames}. 
+    
+    Por exemplo, com $T=50$ \textit{frames} acumulados no \textit{buffer} ao longo de uma janela, seriam escolhidos aproximadamente os índices 0, 10, 20, 30 e 40, assegurando o espaçamento uniforme.
+    
+    
+    \item \textbf{Janelamento}: a janela de decisão $W$ corresponde ao intervalo temporal de vídeo considerado para cada análise, sendo representada por um conjunto de \textit{frames} amostrados do \textit{buffer}. O avanço $H$ define o deslocamento entre o início de duas janelas consecutivas. No sistema implementado, foi definido $H=W$, o que significa que uma nova janela só é iniciada após a conclusão da anterior, sem sobreposição temporal entre elas. Na implementação de exemplo ilustrada na Figura~\ref{fig:fluxo-ciclico}, o valor de $W$ correspondeu a aproximadamente 2 segundos, servindo apenas como exemplo ilustrativo da política adotada. Nesta configuração, cada janela $W$ corresponde ao conjunto de \textit{frames} recebidos da câmara durante o período em que um ciclo de análise está em execução. Esses \textit{frames} são acumulados no \textit{buffer} e apenas processados no ciclo seguinte, o que evita redundância mas atrasa a sua utilização efetiva. Como consequência, o sistema só produz uma decisão a cada $W$ segundos, o que reduz a frequência de atualização em comparação com políticas em que $H<W$ e as janelas se sobrepõem. A escolha de $H=W$ foi motivada por restrições computacionais, uma vez que um avanço inferior implicaria o processamento simultâneo de janelas sobrepostas, resultando em maior custo computacional e em maior consumo de memória para armazenar múltiplos conjuntos de \textit{frames}.
+
+
+    
+    \item \textbf{Agregação}: os \textit{frames} escolhidos segundo a política de espaçamento temporal definida são analisados em lote no sistema, considerando-se que um modelo contribui para a decisão da categoria se apresentar pelo menos uma deteção válida com confiança $\geq \mathrm{thresholdDetection}$ em qualquer dos \textit{frames}. Não se aplica média ou máximo das confianças ao longo do lote, mas sim a verificação da existência de uma ocorrência válida. A seguir, é feita a decisão para cada categoria e, posteriormente, a decisão final do ciclo de análise.
+
+    \item \textbf{Latência}: a latência do evento é definida como o intervalo entre o instante em que ocorre o primeiro \textit{frame} de um evento real (por exemplo, o primeiro \textit{frame} violento) e o final da primeira janela de decisão que o reconhece. No sistema implementado, as janelas têm duração $W$ e são contíguas ($H=W$). No entanto, como os \textit{frames} captados durante uma janela apenas são processados no ciclo seguinte, a latência não pode ser inferior a $W$, situando-se no intervalo $[W, 2W]$. O valor mínimo ocorre quando o evento se inicia no final de uma janela, pois será rapidamente incluído no ciclo seguinte e reconhecido no seu final, resultando numa latência próxima de $W$. O valor máximo ocorre quando o evento começa no início de uma janela, já que os seus \textit{frames} apenas serão processados no ciclo seguinte e a decisão só estará disponível no final deste, resultando numa latência próxima de $2W$. No exemplo da Figura~\ref{fig:fluxo-ciclico}, com $W \approx 2$ segundos, um evento iniciado no \textit{frame}~14 (t = 2.8\,s) foi reconhecido apenas no final do Ciclo~2 (t = 5\,s), resultando numa latência de 2.2\,s.
+
+
+\end{itemize}
+
+Na Figura~\ref{fig:fluxo-ciclico}, o Ciclo~1 inicia-se com os primeiros 5 \textit{frames} válidos recebidos, sem intervalos. Já no Ciclo~2, os lotes são formados apenas a partir dos \textit{frames} captados durante o processamento do ciclo anterior.  No exemplo, foram selecionados os \textit{frames} 6, 8, 12, 14 e 15, ilustrando a política de espaçamento temporal definida.
+Esta abordagem cíclica garante que o sistema mantém um fluxo contínuo de perceção e análise, privilegiando a diversidade temporal dos dados. Importa salientar que os valores usados nesta secção têm apenas caráter ilustrativo, servindo para descrever o funcionamento dos ciclos do sistema. A análise experimental que fundamenta a escolha do número de \textit{frames} por lote é apresentada na \autoref{subsubsec:analise_batch}.
+
+
+
+\subsection{Implantação Local, Integração com o HEFESTO e Considerações de Privacidade}
+
+
+O Sistema de Segurança foi concebido para execução local nas máquinas de autoatendimento, como o HEFESTO, garantindo operação autónoma e em tempo real, sem necessidade de ligação constante a servidores externos.
+
+
+A instalação é efetuada por técnicos que transferem os executáveis do sistema e dos modelos de inferência, acompanhados dos ficheiros de configuração. O processo é modular: um executável principal para o sistema de segurança e outros independentes para cada modelo, o que permite substituir ou adicionar modelos sem reconfigurar o executável do sistema.
+
+
+Figura~\ref{fig:Vista_Macro} apresenta uma visão macro da arquitetura local do sistema de segurança instalado na máquina de autoatendimento, evidenciando não apenas a sua separação em relação à aplicação principal do HEFESTO, mas também a sua estrutura modular composta por API, controlador, modelos de inferência e componentes auxiliares. Nesta representação, destaca-se ainda a separação entre os executáveis: o contorno rosa representa o executável principal do sistema de segurança, enquanto o contorno amarelo identifica os executáveis independentes dos modelos de computação visual.
+
+\begin{figure}[H]
+    \centering
+    \hspace{-0.5cm}
+    \includegraphics[width=0.9\textwidth]{pic/VistaMacro.png}
+    \caption{Arquitetura local do sistema de segurança e sua integração com o HEFESTO.}
+    \label{fig:Vista_Macro}
+\end{figure}
+
+
+A integração com o HEFESTO ocorre sem alterações na lógica da aplicação principal: os executáveis são definidos no ficheiro de inicialização, que estabelece as portas e endereços de comunicação tanto do sistema principal como de cada modelo de inferência. A aplicação do HEFESTO apenas precisa de capturar os \textit{frames} da câmara e enviá-los, via HTTP, para o sistema de segurança, o que simplifica a integração e permite o acoplamento a diferentes aplicações.
+
+Quanto à privacidade, o sistema adota uma política de não armazenamento. Nenhum \textit{frame} é guardado em disco, mesmo em situações de alarme, sendo processados apenas em memória e descartados após a análise. Esta decisão garante conformidade com os princípios de proteção de dados, especialmente relevantes em contextos bancários.
+
+
+
+\chapter{Análise}
+
+\section{Avaliação dos modelos de Computação Visual}
+
+Esta secção descreve o processo de avaliação dos modelos de computação visual utilizados no Sistema de Segurança, desenvolvido com o objetivo de verificar o desempenho dos modelos em tarefas específicas, como a deteção de armas, o reconhecimento de expressões emocionais e a identificação de comportamentos violentos.
+
+Para isso, foram selecionados conjuntos de dados adequados a cada uma destas categorias, com base em critérios de relevância e disponibilidade. A avaliação foi realizada de forma controlada, utilizando scripts dedicados para a execução e medição de métricas como precisão, \textit{recall} e \textit{F1-score}. Esta análise permitiu observar o comportamento individual de cada modelo e identificar limitações ou pontos fortes relevantes para a integração com o sistema de segurança. Os resultados obtidos serviram também de apoio à fase de validação do sistema, permitindo uma melhor compreensão do impacto de cada modelo na decisão final.
+
+
+\subsection{Pesquisa e Seleção de Datasets}
+\label{subsec:datasets}
+
+Para a avaliação dos modelos de computação visual utilizados pelo Sistema de Segurança, foi necessário proceder à recolha de \gls{Datasets} adequados às categorias em análise, nomeadamente armas, expressões emocionais e ambientes violentos. No caso da deteção de armas, a seleção de datasets revelou-se particularmente desafiante devido à ausência de um conjunto de dados padrão amplamente aceite pela comunidade científica. Esta limitação é referida na literatura, que aponta a inexistência de um \textit{benchmark} universal para deteção de armas e a consequente dificuldade na criação de bases de dados fiáveis e consistentes para avaliar os modelos \cite{NoDatasetsWeapons1,NoDatasetsWeapons2}.
+
+Face a esta realidade, os datasets utilizados nesta análise aos modelos de deteção de armas foram obtidos maioritariamente a partir de plataformas abertas como o Roboflow \cite{roboflow}. Apesar de fornecerem um volume significativo de dados, estas plataformas têm limitações, sobretudo por permitirem o envio de conteúdos por vários utilizadores. Isso levanta a possibilidade de que alguns dos conjuntos usados na avaliação incluam imagens que já foram utilizadas no treino dos próprios modelos analisados. Tal pode enviesar os resultados, ao testar os modelos com imagens que já conhecem.
+
+Um aspeto crítico identificado na utilização de dados abertos é o risco de \textit{leakage}. Alguns conjuntos disponíveis no Roboflow podem incluir imagens que foram utilizadas no treino de modelos de deteção de armas de uso público, o que pode enviesar a avaliação ao expor os modelos a exemplos previamente conhecidos. Para além disso, existe também o desafio da mudança de domínio, uma vez que a maioria dos conjuntos foi recolhida em contextos diferentes do previsto para a aplicação final (ambientes de autoatendimento), o que pode impactar a capacidade de generalização dos modelos.
+
+Para as restantes categorias (emoções e ambiente violento), os datasets foram selecionados pela sua relevância face ao contexto do sistema, procurando conjuntos que incluíssem as classes de maior interesse. Assim, optou-se por datasets já utilizados e reconhecidos em trabalhos científicos anteriores, ou com anotações de qualidade verificável e adequadas ao objetivo da análise.
+
+Antes de apresentar os conjuntos de dados utilizados, importa esclarecer que as métricas de precisão e \textit{recall} associadas aos datasets de deteção de armas foram disponibilizadas pelas próprias plataformas. Estas métricas referem-se ao desempenho de modelos demonstrativos treinados nesses datasets, que servem como referência para comparar os resultados obtidos pelos modelos utilizados neste trabalho. Para as restantes categorias, os datasets foram utilizados sem métricas associadas às suas plataformas, sendo descritos com base na literatura ou documentação oficial.
+
+
+\subsubsection*{Datasets para deteção de armas}
+
+A Tabela~\ref{tab:datasets_armas} apresenta os conjuntos de dados utilizados neste trabalho para a análise da categoria de deteção de armas. As métricas de precisão e \textit{recall} indicadas correspondem aos valores publicados pelas plataformas que fornecem os datasets, obtidos a partir de modelos demonstrativos treinados nos próprios conjuntos. Estes valores são incluídos como referência e não refletem os resultados obtidos pelos modelos avaliados neste trabalho.
+
+\begin{table}[H]
+\centering
+\caption{Datasets de deteção de armas e respetivas métricas publicadas.}
+\label{tab:datasets_armas}
+\begin{tabularx}{\textwidth}{l X c c}
+\toprule
+\textbf{Origem} & \textbf{Descrição breve} & \textbf{Precisão (\%)} & \textbf{Recall (\%)} \\
+\midrule
+\cite{roboflow_weapon_cctv} & Imagens de armas (pistolas, facas) em contexto de CCTV & 84,6 & 73,6 \\
+\cite{roboflow_yolo_weapon} & Armas de fogo e facas em múltiplos cenários & 68,7 & 78,9 \\
+\cite{roboflow_suspicious_movement} & Dataset com classes \textit{normal}, \textit{suspicious (suspeitos com armas)}, \textit{victim} e \textit{weapon} & 77,1 & 73,8 \\
+\cite{roboflow_silah} & Imagens da classe \textit{silah} (arma de fogo) & 97,2 & 95,0 \\
+\cite{roboflow_knife} & Imagens de facas para deteção de armas brancas & 88,5 & 83,8 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection*{Datasets para reconhecimento de emoções}
+
+Para a categoria de reconhecimento de expressões emocionais foram utilizados dois conjuntos de dados amplamente reconhecidos na literatura, selecionados pela sua relevância para o contexto do Sistema de Segurança.
+
+O \textit{\gls{fer2013}} \cite{fer2013_dataset} contém cerca de 35000 imagens faciais em tons de cinzento (48×48 px), recolhidas de fontes online e anotadas em sete emoções básicas: felicidade, tristeza, raiva, surpresa, medo, nojo e neutro. É amplamente usado em estudos de referência e disponibiliza um volume significativo de amostras para tarefas de classificação de emoções.
+
+O \textit{\gls{rafdb}} \cite{rafdb_dataset} inclui aproximadamente 15000 imagens faciais anotadas nas mesmas sete emoções, recolhidas em condições não controladas, com variações de pose, iluminação e expressão. É amplamente utilizado como \textit{benchmark} na literatura, com estudos a reportarem valores de \textit{accuracy} entre 77\% e 85\% em tarefas de classificação emocional. Este conjunto oferece maior diversidade e aproxima-se melhor das condições reais de utilização em sistemas de vigilância.
+
+Ambos os conjuntos de dados forneceram uma base adequada para avaliar os modelos na classificação de expressões associadas a situações de risco, como medo e raiva, que são o foco deste projeto.
+
+\subsubsection*{Dataset para deteção de ambiente violento}
+Para a categoria de deteção de ambientes violentos, foi selecionado um dataset de vídeo especificamente desenvolvido para representar cenários reais de segurança.
+
+O \textit{\gls{rwf2000}} \cite{violence_dataset} contém cerca de 2000 vídeos captados por câmaras de vigilância em espaços públicos, com distribuição equilibrada entre sequências violentas e não violentas. Este conjunto de dados foi escolhido por refletir situações reais de vigilância e pela sua ampla adoção em estudos sobre deteção de violência em vídeo.
+
+\paragraph{}
+Como síntese, a Tabela~\ref{tab:datasets_resumo} apresenta em conjunto os datasets utilizados, organizados por categoria, tipo de dados e volume.
+
+\begin{table}[H]
+\centering
+\caption{Resumo dos datasets organizados por categoria, utilizados na avaliação dos modelos.}
+\label{tab:datasets_resumo}
+\begin{tabularx}{\textwidth}{>{\hsize=0.55\hsize}X 
+                                >{\hsize=0.25\hsize}c 
+                                >{\hsize=0.20\hsize}r}
+\toprule
+\textbf{Dataset} & \textbf{Tipo de dados} & \textbf{Volume} \\
+\midrule
+\multicolumn{3}{l}{\textbf{\textit{Categoria: Deteção de Armas}}} \\
+Roboflow Weapon CCTV \cite{roboflow_weapon_cctv} & Imagens & $\sim$ 7.000 \\
+Roboflow YOLO Weapon \cite{roboflow_yolo_weapon} & Imagens & $\sim$ 18.210 \\
+Roboflow Suspicious with Weapons \cite{roboflow_suspicious_movement} & Imagens & $\sim$ 7.000 \\
+Roboflow Silah \cite{roboflow_silah} & Imagens & $\sim$ 28.962 \\
+Roboflow Knife \cite{roboflow_knife} & Imagens & $\sim$ 5.000 \\
+\midrule
+\multicolumn{3}{l}{\textbf{\textit{Categoria: Reconhecimento de Emoções}}} \\
+FER-2013 \cite{fer2013_dataset} & Imagens & $\sim$ 35.000 \\
+RAF-DB \cite{rafdb_dataset} & Imagens & $\sim$ 15.000 \\
+\midrule
+\multicolumn{3}{l}{\textbf{\textit{Categoria: Deteção de Ambiente Violento}}} \\
+RWF-2000 \cite{violence_dataset} & Vídeos & 2.000 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{}
+
+\subsection{Procedimento de Avaliação dos Modelos}
+\label{subsec:Avaliação}
+Para avaliar os modelos de computação visual utilizados no Sistema de Segurança, foi desenvolvido um conjunto de \textit{scripts} em \textit{Python} que permitiu aplicar de forma sistemática os datasets recolhidos aos modelos em análise e calcular as métricas de desempenho. O processo incluiu as seguintes etapas:
+
+\begin{itemize}
+    \item \textbf{Execução dos modelos sobre os datasets}: cada modelo foi testado com os conjuntos de dados selecionados, através de um \textit{script} dedicado que realizava a inferência sobre todas as imagens ou vídeos e armazenava os resultados.
+    
+    \item \textbf{Comparação com as anotações dos datasets}: os resultados produzidos pelos modelos foram automaticamente comparados com os \textit{\gls{ground truths}} disponibilizados nos datasets, para calcular as métricas de desempenho.
+    
+    \item \textbf{Cálculo de métricas}: foi criado um \textit{script} específico para o cálculo das métricas principais (precisão, recall, F1-score, IoU médio, entre outras), permitindo uma análise quantitativa consistente dos modelos.
+    
+    \item \textbf{Análise de balanceamento}: foi ainda implementado um \textit{script} para avaliar o balanceamento das classes em cada dataset, identificando possíveis desequilíbrios que pudessem influenciar a avaliação.
+\end{itemize}
+
+Este procedimento assegurou uma avaliação uniforme dos modelos e possibilitou a recolha de métricas fiáveis, úteis não apenas para comparação e análise, mas também para orientar a uma configuração do Sistema de Segurança, em particular no ajuste dos pesos atribuídos a cada modelo.
+
+\paragraph{}
+
+\subsection{Avaliação dos Modelos de Deteção de Armas}
+
+Para a categoria de deteção de armas, os modelos pré-treinados utilizados pelo Sistema de Segurança foram avaliados com base nos datasets apresentados em \textbf{~\ref{subsec:datasets}} e nos modelos descritos em \textbf{~\ref{subsubsec:modelos_utilizados}}. O objetivo foi aferir o desempenho individual de cada modelo na identificação das classes relevantes para o sistema.
+
+\paragraph{}
+A avaliação foi orientada por um conjunto de métricas quantitativas, entre as quais se destacam a precisão, o \textit{recall}, o \textit{F1-score} e a média do \textit{IoU}.
+
+\begin{equation}
+\begin{array}{ccc}
+\text{\textit{Recall}} = \dfrac{\text{TP}}{\text{TP} + \text{FN}} & \quad\quad
+\text{Precisão} = \dfrac{\text{TP}}{\text{TP} + \text{FP}} & \quad\quad
+\text{F1-score} = 2 \cdot \dfrac{\text{Precisão} \cdot \text{\textit{Recall}}}{\text{Precisão} + \text{\textit{Recall}}}
+\end{array}
+\end{equation}
+
+\begin{itemize}
+  \item \textbf{TP} (\textit{True Positives}) – número de casos positivos corretamente identificados pelo modelo.
+  \item \textbf{FP} (\textit{False Positives}) – número de casos incorretamente classificados como positivos.
+  \item \textbf{FN} (\textit{False Negatives}) – número de casos positivos que o modelo não conseguiu detetar.
+\end{itemize}
+
+\paragraph{}
+Neste contexto, o \textit{recall} assume especial relevância, dado que o principal objetivo de um sistema de segurança é maximizar a deteção de eventos potencialmente perigosos. Uma taxa elevada de \textit{recall} indica que o sistema consegue detetar a maioria das ocorrências relevantes, mesmo que isso implique um número superior de falsos positivos. Por essa razão, é preferível que o sistema gere um alarme falso do que falhe na deteção de uma ameaça real.
+
+No contexto específico das máquinas de autoatendimento, os falsos positivos não constituem um problema crítico, uma vez que podem ser facilmente geridos através de mecanismos operacionais, como solicitar ao utilizador que volte a tentar, redirecionar o atendimento para um balcão físico ou aplicar verificações adicionais. Já os falsos negativos representam uma falha muito mais grave, pois significam a não deteção de uma ameaça efetiva. Assim, o sistema foi concebido para dar prioridade à sensibilidade da deteção, ainda que isso implique lidar com alguns alarmes indevidos.
+
+No entanto, a ocorrência excessiva de falsos positivos pode reduzir a confiança no sistema, tornando essencial encontrar um equilíbrio entre sensibilidade e fiabilidade. Para esse efeito, são também utilizadas métricas como o \textit{F1-score}, que combina precisão e \textit{recall} numa medida única, permitindo avaliar simultaneamente a capacidade de deteção e a robustez do sistema face a alarmes indevidos.
+
+Outras métricas complementares, como a taxa de falsos positivos (\textit{FPR}) e falsos negativos (\textit{FNR}), foram também consideradas para caracterizar o comportamento dos modelos em diferentes cenários.
+
+
+
+\subsubsection*{Resultados}
+
+Os resultados obtidos estão apresentados na Tabela~\ref{tab:resultados_armas_citacoes_diretas}. Os valores apresentados correspondem às métricas obtidas a partir da avaliação dos modelos efetivamente utilizados no sistema de segurança, aplicados sobre cada um dos conjuntos de dados selecionados. Esta avaliação permite verificar o desempenho real dos modelos usados neste trabalho, em comparação com as métricas publicadas pelas plataformas de origem dos datasets.
+
+
+\begin{table}[H]
+\centering
+\caption{Desempenho dos modelos na deteção de armas, avaliados sobre múltiplos datasets.}
+\label{tab:resultados_armas_citacoes_diretas}
+\begin{tabularx}{\textwidth}{l X c c c c}
+\toprule
+\textbf{Modelo} & \textbf{Dataset} & \textbf{Precisão} & \textbf{Recall} & \textbf{F1-score} & \textbf{IoU médio (\%)} \\
+\midrule
+YoloA \cite{joaoassalim_yolo} & Yolo Weapon Detection \cite{roboflow_yolo_weapon} & 0.798 & 0.660 & 0.722 & 43.24 \\
+ & Knife Detection \cite{roboflow_knife} & 0.999 & \textbf{0.838} & 0.912 & 54.71 \\
+ & Silah \cite{roboflow_silah} & 0.975 & 0.690 & 0.808 & 42.08 \\
+ & Suspicious Detection \cite{roboflow_suspicious_movement} & 0.399 & 0.556 & 0.465 & 23.56 \\
+ & Weapon CCTV \cite{roboflow_weapon_cctv} & 0.807 & \textbf{0.713} & 0.757 & 48.65 \\
+\midrule
+YoloB \cite{becayesoft_yolo} & Yolo Weapon Detection \cite{roboflow_yolo_weapon} & 0.779 & 0.421 & 0.546 & 48.24 \\
+ & Silah \cite{roboflow_silah} & 0.982 & 0.344 & 0.509 & 44.13 \\
+ & Suspicious Detection \cite{roboflow_suspicious_movement} & 0.429 & 0.508 & 0.465 & 19.51 \\
+ & Weapon CCTV \cite{roboflow_weapon_cctv} & 0.798 & 0.533 & 0.639 & 48.87 \\
+\midrule
+EfficientNet \cite{jacobm_efficientnet} & Yolo Weapon Detection \cite{roboflow_yolo_weapon} & 0.699 & 0.192 & 0.301 & 0.00 \\
+ & Silah \cite{roboflow_silah} & 0.831 & 0.053 & 0.100 & 0.00 \\
+ & Suspicious Detection \cite{roboflow_suspicious_movement} & 0.242 & 0.129 & 0.168 & 0.00 \\
+ & Weapon CCTV \cite{roboflow_weapon_cctv} & 0.702 & 0.321 & 0.441 & 0.00 \\
+\midrule
+YoloC \cite{gingerbrains_yolo} & Yolo Weapon Detection \cite{roboflow_yolo_weapon} & 0.840 & \textbf{0.713} & 0.771 & 65.30 \\
+ & Knife Detection \cite{roboflow_knife} & 1.000 & 0.567 & 0.724 & 55.46 \\
+ & Silah \cite{roboflow_silah} & 0.987 & 0.482 & 0.648 & 49.69 \\
+ & Suspicious Detection \cite{roboflow_suspicious_movement} & 0.383 & 0.371 & 0.377 & 28.55 \\
+ & Weapon CCTV \cite{roboflow_weapon_cctv} & 0.833 & \textbf{0.738} & 0.782 & 64.95 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+A comparação com os valores publicados na Subsecção~\ref{subsec:datasets} mostra que os modelos avaliados apresentaram desempenhos consistentes, mesmo quando testados diretamente nos datasets selecionados, sem treino ou ajuste específico para esses dados. Destacam-se os modelos YoloA \cite{joaoassalim_yolo} e YoloC \cite{gingerbrains_yolo}, ambos com valores de \textit{recall} superiores a 0.70 em múltiplos conjuntos (por exemplo, 0.713 no \textit{Weapon CCTV} e 0.738 no mesmo dataset, respetivamente), o que demonstra capacidade de identificar a maioria das ocorrências relevantes. O modelo YoloA alcançou ainda um desempenho particularmente elevado no dataset \textit{Knife Detection}, com precisão de 0.999 e \textit{recall} de 0.838, refletindo um equilíbrio robusto entre sensibilidade e fiabilidade. Já o modelo YoloC evidenciou os melhores valores de IoU médio, atingindo 65.30\% no dataset \textit{Yolo Weapon Detection}, o que reforça a qualidade da deteção espacial.
+
+Estes resultados evidenciam uma boa capacidade de generalização dos modelos, e permitem, caso esteja configurada a regra de decisão por \textit{scoring}, ajustar os pesos atribuídos a cada modelo no ficheiro de configuração do sistema, contribuindo para decisões mais eficazes.
+
+
+\subsection{Avaliação dos Modelos de Reconhecimento de Emoções}
+
+Tal como na deteção de armas, foram avaliados os modelos pré-treinados de reconhecimento de emoções utilizados no Sistema de Segurança, nomeadamente o \textit{DeepFace} e o \textit{FER}.
+
+A avaliação centrou-se nas emoções \textit{fear} e \textit{angry}, consideradas mais relevantes em cenários de segurança. Para tal, foram usados os conjuntos de dados FER-2013 \cite{fer2013_dataset} e RAF-DB \cite{rafdb_dataset}, sendo cada imagem processada pelos modelos para inferência. No FER-2013 estavam disponíveis aproximadamente 1000 imagens de \textit{Angry} e 1000 de \textit{Fear}, dentro de um total de cerca de 35.000 imagens. No RAF-DB, a análise incidiu sobre cerca de 700 imagens de \textit{Angry} e 300 de \textit{Fear}, num total aproximado de 15.000 imagens.
+
+As previsões geradas foram comparadas com as anotações reais de cada conjunto, permitindo calcular métricas como precisão, \textit{recall} e \textit{F1-score}, de forma a aferir o desempenho dos modelos na identificação das duas emoções alvo.
+
+\subsubsection*{Resultados}
+
+
+A análise evidenciou que o modelo \textit{DeepFace} \cite{deepface} apresentou melhor desempenho global, alcançando valores de \textit{recall} superiores a 0.68 na classe \textit{Fear} no dataset FER-2013, o que demonstra elevada sensibilidade para esta emoção crítica. Em contraste, o modelo \textit{FER} \cite{fer_model} revelou fortes limitações na mesma classe, com valores de \textit{recall} bastante reduzidos no dataset RAF-DB (inferiores a 0.30), indicando dificuldade na deteção de situações de medo. Para a classe \textit{Angry}, o FER mostrou-se mais consistente, mas ainda assim o DeepFace obteve valores superiores de F1-score, confirmando a sua maior robustez geral.
+
+Estes resultados encontram-se sintetizados na Tabela~\ref{tab:resultados_emocoes}, que apresenta as métricas de desempenho por modelo e emoção, testadas sobre os dois datasets. A diferença de comportamento entre os modelos pode ser explorada pelo sistema através da regra de decisão por \textit{scoring}, ajustando o contributo de cada um. Apenas com estes dados, seria recomendável atribuir ao \textit{DeepFace} um peso ligeiramente superior, dada a sua maior capacidade de identificar a emoção \textit{Fear}, considerada crítica em cenários de risco.
+
+
+\begin{table}[H]
+\centering
+\caption{Desempenho dos modelos de reconhecimento de emoções nas classes \textit{Angry} e \textit{Fear}.}
+\label{tab:resultados_emocoes}
+\begin{tabularx}{\textwidth}{l l X c c c}
+\toprule
+\textbf{Modelo} & \textbf{Dataset} & \textbf{Emoção} & \textbf{Precisão} & \textbf{Recall} & \textbf{F1-score} \\
+\midrule
+DeepFace \cite{deepface} & FER-2013 \cite{fer2013_dataset} & Angry & 0.918 & 0.696 & 0.792  \\
+                         & FER-2013 \cite{fer2013_dataset} & Fear  & 0.927 & 0.689 & 0.791  \\
+                         & RAF-DB \cite{rafdb_dataset}     & Angry & 0.898 & 0.435 & 0.586  \\
+                         & RAF-DB \cite{rafdb_dataset}     & Fear  & 0.426 & 0.132 & 0.201  \\
+\midrule
+FER \cite{fer_model} & FER-2013 \cite{fer2013_dataset} & Angry & 0.694 & 0.384 & 0.494  \\
+                             & FER-2013 \cite{fer2013_dataset} & Fear  & 0.708 & 0.262 & 0.233  \\
+                             & RAF-DB \cite{rafdb_dataset}     & Angry & 0.790 & 0.454 & 0.576  \\
+                             & RAF-DB \cite{rafdb_dataset}     & Fear  & 0.937 & 0.053 & 0.101 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Importa referir que o modelo FER foi treinado no FER-2013, o que pode enviesar a sua avaliação nesse mesmo conjunto. Para mitigar esse efeito recorreu-se ao RAF-DB, que permitiu avaliar o comportamento do modelo. Ainda assim, o FER obteve resultados fracos, refletindo limitações da sua arquitetura e confirmando problemas já descritos na literatura relativamente ao FER-2013, como a baixa resolução das imagens e o desequilíbrio entre classes \cite{fer2013_dataset,li2020deep}.
+
+
+\subsection{Avaliação do Modelo de Deteção de Ambiente Violento}
+
+A avaliação da capacidade do sistema para identificar comportamentos violentos foi realizada com base no modelo pré-treinado \textit{ViolenceModel} \cite{musawer14_yolo_fight}, que se encontra integrado no Sistema de Segurança como serviço externo. O teste foi conduzido com recurso ao conjunto de dados RWF-2000 \cite{violence_dataset}, que é constituído por cerca de 2000 vídeos de câmaras de vigilância, equilibrados entre sequências violentas e não violentas. Para efeitos desta avaliação, foi utilizada a partição de validação disponibilizada pelo dataset, composta por 400 vídeos distintos (200 violentos e 200 não violentos). Durante os testes, cada vídeo foi processado com extração de frames, sendo considerado apenas um frame a cada dez, de forma a reduzir o número total de imagens analisadas. Esses frames foram posteriormente agrupados em pequenos segmentos correspondentes a intervalos curtos do vídeo. Cada frame foi classificado individualmente pelo modelo como \textit{Violence} ou \textit{NoViolence}, e a decisão de cada segmento resultou de um voto maioritário sobre as classificações dos seus frames. Por fim, a decisão ao nível do vídeo foi obtida de forma permissiva: um vídeo foi considerado violento sempre que pelo menos um dos seus segmentos fosse classificado como tal. Esta abordagem permite reduzir o impacto de erros em frames isolados e aproxima a avaliação da noção de evento, refletindo de forma mais adequada a natureza sequencial dos vídeos.
+
+
+\subsubsection*{Resultados}
+
+
+A Tabela~\ref{tab:resultados_violencia} apresenta o desempenho do modelo \textit{ViolenceModel} \cite{musawer14_yolo_fight} após aplicação da estratégia de agregação temporal, em que a decisão final é obtida ao nível do vídeo. Os resultados revelam valores equilibrados de precisão e \textit{recall} (ambos próximos de 0.75), demonstrando que o modelo consegue identificar uma parte significativa dos vídeos violentos sem comprometer excessivamente a taxa de falsos positivos. Esta abordagem mostrou-se mais adequada do que a análise isolada de frames ou segmentos, permitindo reduzir o impacto de erros pontuais e refletir melhor a noção de evento característica de cenários de segurança. A matriz de confusão representada na Figura~\ref{fig:confusao_violencia} evidencia este comportamento, mostrando que as principais falhas continuam a corresponder a episódios violentos não detetados, embora em menor número face a abordagens mais simplistas.
+
+
+\begin{table}[H]
+\centering
+\caption{Desempenho do modelo \textit{ViolenceModel} ao \textit{dataset} RWF-2000 \cite{violence_dataset}.}
+\label{tab:resultados_violencia}
+\begin{tabularx}{\textwidth}{l l c c c c c}
+\toprule
+\textbf{Modelo} & \textbf{Dataset} & \textbf{Precisão} & \textbf{Recall} & \textbf{F1-score} & \textbf{FPR} & \textbf{FNR} \\
+\midrule
+ViolenceModel \cite{musawer14_yolo_fight} & RWF-2000 \cite{violence_dataset} & 0{,}75 & 0{,}74 & 0{,}75 & 0{,}25 & 0{,}26 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.55\textwidth]{pic/confusao_video_level.png}
+\caption{Matriz de confusão resultante da avaliação do modelo \textit{ViolenceModel} no \textit{dataset} RWF-2000 \cite{violence_dataset}.}
+\label{fig:confusao_violencia}
+\end{figure}
+
+
+
+\section{Validação do Sistema de Segurança}
+
+Conforme previsto no plano de trabalho, foi realizada uma etapa dedicada à \textbf{validação global do sistema de segurança}. Esta fase teve como objetivo analisar o funcionamento do sistema em cenários representativos do seu contexto de aplicação.
+
+\subsection{Criação do Dataset de Validação}
+
+Para validar o comportamento do sistema de segurança em condições próximas da realidade, foi criado um \textit{dataset} de validação com imagens classificadas em duas classes: \textit{alarme} (positivas) e \textit{não alarme} (negativas). O objetivo foi garantir que o conjunto de dados refletisse contextos compatíveis com o ambiente de uma máquina de autoatendimento.
+
+A construção do \textit{dataset} baseou-se em três fontes complementares:
+
+\begin{itemize}
+    \item \textbf{Seleção manual em datasets públicos}: foram escolhidas imagens de bases de dados já existentes, selecionadas uma a uma de forma a corresponderem a condições visuais compatíveis com o cenário de máquinas de autoatendimento. Este processo incluiu tanto exemplos positivos (situações com armas, expressões de medo ou raiva, ou violência) como negativos (contextos neutros sem risco). Para reforçar estes últimos, recorreram-se também a imagens do COCO Dataset \cite{COCODataset}. Esta foi a principal fonte do dataset, reunindo a maioria dos exemplos positivos e negativos.
+    
+    \item \textbf{Aquisição através do Hefesto}: utilizou-se a câmara da própria máquina de autoatendimento para registar simulações de cenários de alarme e de utilização normal. Embora não representem o maior volume do dataset, estas imagens foram importantes por refletirem o contexto mais próximo das condições reais de funcionamento que foi possível obter.
+    
+    \item \textbf{Imagens sintéticas geradas por IA}: para reforçar a diversidade de casos positivos, recorreu-se a ferramentas de geração de imagens que produziram exemplos adicionais de situações de risco adaptadas ao contexto do sistema.
+\end{itemize}
+
+No total, o \textit{dataset} integra 405 imagens provenientes de diferentes origens. A Figura~\ref{fig:dist-fonte} apresenta a respetiva distribuição por fonte, mostrando que a maioria corresponde a \textit{datasets} públicos (cerca de 74\% do total), enquanto as simulações realizadas no Hefesto 
+representam aproximadamente 15\% e as imagens sintéticas geradas por IA cerca de 11\%.
+Esta composição garante uma predominância de exemplos reais, mas reforçada por casos simulados e gerados artificialmente, o que contribui para uma maior diversidade e adequação ao contexto de aplicação.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pic/dist_por_fonte_antes.png}
+    \caption{Distribuição do número de imagens do \textit{dataset} de validação por fonte.}
+    \label{fig:dist-fonte}
+\end{figure}
+
+\subsubsection{Critérios de classificação}
+O \textit{dataset} foi estruturado como uma tarefa de classificação binária, com duas classes (\textit{alarme} e \textit{não alarme}), sendo as imagens rotuladas manualmente através da sua organização em pastas correspondentes.
+Uma imagem foi classificada como \textit{alarme} sempre que incluía pelo menos um dos indícios de ameaça descritos na Tabela~\ref{tab:criterios-anotacao}, sendo atribuída à classe \textit{não alarme} quando correspondia a situações de utilização normal igualmente definidas na tabela. 
+Importa salientar que fatores como condições de iluminação, qualidade da imagem ou se o local era interior/exterior não foram considerados na definição dos critérios de classificação.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{0.25\textwidth} p{0.65\textwidth}}
+\toprule
+\textbf{Classe} & \textbf{Condições para classificação} \\
+\midrule
+\textit{Alarme} & 
+\begin{itemize}[leftmargin=*]
+    \item Arma de fogo visível, segurada ou apontada.
+    \item Arma branca (faca, navalha, etc.) segurada na mão.
+    \item Agressão ou ameaça explícita (socos, estrangulamento, imobilização violenta ou gesto de apontar arma/objeto).
+    \item Expressão de medo ou raiva associada a contexto de ameaça (não considerada isoladamente).
+\end{itemize} \\[1ex]
+\textit{Não alarme} &
+\begin{itemize}[leftmargin=*]
+    \item Utilização normal da máquina de autoatendimento.
+    \item Pessoas em enquadramentos próximos, compatíveis com a perspetiva da câmara.
+    \item Indivíduos a segurar objetos usuais (telemóveis, carteiras, chaves, documentos).
+    \item Posturas e expressões neutras, sem sinais de ameaça.
+    \item Presença de objetos semelhantes a armas, ou de brinquedos e ilustrações sem intenção hostil.
+\end{itemize} \\
+\bottomrule
+\end{tabular}
+\caption{Critérios de classificação utilizados nas imagens do \textit{dataset} de validação.}
+\label{tab:criterios-anotacao}
+\end{table}
+
+A aplicação destes critérios permitiu assegurar uma atribuição consistente dos rótulos, evitando a inclusão de casos ambíguos ou de difícil interpretação. No final, a distribuição por classes ficou equilibrada, com aproximadamente metade das imagens a corresponder à classe \textit{alarme} e a outra metade à classe \textit{não alarme}, conforme ilustrado na Figura~\ref{fig:dist-classes}.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{pic/dist_por_classe_nogrid_final.png}
+    \caption{Distribuição do número de imagens do \textit{dataset} de validação por classe.}
+    \label{fig:dist-classes}
+\end{figure}
+Para além da caracterização numérica, a Figura~\ref{fig:exemplos-dataset} apresenta exemplos representativos de ambas as classes, ilustrando a diversidade de situações consideradas no \textit{dataset}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{pic/exemplos_dataset.png}
+    \caption{Exemplos de imagens incluídas no \textit{dataset} de validação, contendo casos de \textit{alarme} (situações de risco) e de \textit{não alarme} (utilização normal).}
+    \label{fig:exemplos-dataset}
+\end{figure}
+
+
+
+\subsubsection{Verificação de duplicados e mitigação de \textit{leakage}}
+
+Um dos principais riscos associados à seleção manual de imagens em \textit{datasets} públicos reside na presença de imagens replicadas ou quase idênticas, frequentemente redistribuídas em múltiplos repositórios. Este risco é agravado pelo facto de diferentes conjuntos de dados partilharem subconjuntos visuais iguais sem indicação explícita dessa sobreposição. Tal situação origina fenómenos de \textit{data leakage}, conduzindo a métricas de validação artificialmente inflacionadas e a conclusões que não refletem a verdadeira capacidade de generalização do sistema.
+
+Para mitigar este risco, foram aplicadas técnicas de deteção de duplicados às imagens provenientes de conjuntos de dados públicos, removendo instâncias redundantes sempre que foram identificados pares semelhantes. As abordagens utilizadas foram as seguintes:
+
+\begin{itemize}
+    \item \textbf{Hashes percetuais (pHash)}: cada imagem foi convertida num \textit{hash} que resume o seu conteúdo visual. Quando dois \textit{hashes} diferiam em poucos bits (distância de Hamming até 8), as imagens foram consideradas praticamente iguais e uma delas foi removida;
+    \item \textbf{Embeddings}: cada imagem foi representada por um vetor (\textit{embedding}) gerado pelo modelo \gls{clip}. Se a semelhança entre dois vetores, medida pelo cosseno, fosse igual ou superior a 0.92, as imagens foram consideradas variantes quase idênticas e apenas uma foi mantida.
+\end{itemize}
+
+Os resultados deste processo de deduplicação mostram o impacto direto sobre o subconjunto de imagens provenientes de fontes públicas. O número de exemplos positivos foi reduzido em cerca de 37\%, passando de 139 para 87 instâncias, refletindo a existência de várias situações redundantes de risco que foram eliminadas. Já o número de exemplos negativos manteve-se inalterado em 150 imagens, uma vez que estas correspondiam a situações não alarmantes variadas, sem elementos visuais suficientemente semelhantes que justificassem a sua remoção. Estes resultados encontram-se resumidos na Tabela~\ref{tab:dedup-publico}.
+
+Importa referir que não foi identificada necessidade de aplicar um processo de deduplicação às restantes fontes. No caso das imagens encenadas, todas as situações foram captadas intencionalmente para representar alguns cenários, pelo que a sua preservação integral assegura maior realismo contextual. Já no caso das imagens geradas por inteligência artificial, a diversidade obtida foi considerada suficiente para os objetivos definidos, não se tendo observado redundâncias significativas que justificassem um processo adicional de filtragem nesta fase.
+
+
+\begin{table}[H]
+\centering
+\caption{Impacto da deduplicação no subconjunto de imagens de fontes públicas.}
+\label{tab:dedup-publico}
+\begin{tabular}{lcc}
+\toprule
+ & \textbf{Antes da deduplicação} & \textbf{Após a deduplicação} \\
+\midrule
+Positivas (alarme) & 139 & 87 \\
+Negativas (não alarme) & 150 & 150 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Considerando todas as fontes, o \textit{dataset} de validação passou a integrar um total de 348 imagens após a deduplicação, em contraste com as 405 imagens inicialmente reunidas. A Figura~\ref{fig:dist-fonte-dedup} apresenta a nova distribuição por origem, confirmando que a redução incidiu exclusivamente sobre as imagens provenientes de \textit{datasets} públicos.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pic/dist_por_fonte_depois_ref.png}
+    \caption{Distribuição do número de imagens por fonte após a deduplicação.}
+    \label{fig:dist-fonte-dedup}
+\end{figure}
+
+
+
+\subsection{Avaliação dos Modelos por Origem dos Dados}
+\label{subsec:AvaliaçãoValidaçao}
+Com o \textit{dataset} de validação devidamente rotulado (\textit{alarme} ou \textit{não alarme}) e organizado em três subconjuntos distintos (\textit{público}, \textit{encenado} e \textit{sintéticos/gerados por IA}), todas as imagens foram processadas pelos diferentes modelos integrados no sistema. Os resultados foram mantidos de forma separada para cada subconjunto, permitindo avaliar e comparar o desempenho dos modelos em contextos distintos.  
+
+De cada saída obtida foram extraídos apenas os valores de interesse para a avalidação, tendo em conta as classes disponibilizadas pelos próprios modelos:
+
+\begin{itemize}
+    \item \textbf{Modelos de deteção de armas} (\textit{YoloA}, \textit{YoloB}, \textit{YoloC} e \textit{Efficient-net}): cada um com o seu conjunto interno de classes possíveis, mas apenas foram retidas as maiores confianças associadas às classes consideradas alarmantes, como \textit{gun}, \textit{knife} ou \textit{pistol}.
+    
+    \item \textbf{Modelo de deteção de violência} (\textit{Modelo Violence}): entre as classes previstas por este modelo, foi considerada exclusivamente a confiança relativa à classe \textit{violence}, definida como alarmante.
+    
+    \item \textbf{Modelos de classificação facial} (\textit{DeepFace} e \textit{FER}): embora produzam probabilidades para várias expressões faciais, apenas foram preservadas as correspondentes às classes \textit{fear} e \textit{angry}, previamente identificadas como alarmantes.
+\end{itemize}
+
+Em paralelo, foi igualmente preservada a anotação de referência (\textit{ground truth}) de cada imagem, indicando a sua pertença ao conjunto positivo ou negativo, assegurando uma base consistente para a avaliação comparativa do desempenho dos modelos.
+
+\subsubsection{Validação Leave-Source-Out}
+
+Para avaliar a capacidade de generalização dos modelos em contextos distintos, foi adotada a estratégia de \textit{leave-source-out}. Em vez de considerar o \textit{dataset} de validação como um todo indiferenciado, as imagens deste conjunto foram analisadas separadamente por origem, considerando em particular as imagens públicas, as imagens captadas no ambiente encenado Hefesto e as imagens sintéticas geradas por inteligência artificial. Esta abordagem permite identificar de que forma a proveniência dos dados influencia o desempenho dos modelos e em que medida estes se adaptam a condições variadas.
+
+
+Na Tabela~\ref{tab:metricas_leave_source_out} apresentam-se as métricas clássicas de avaliação (acurácia, precisão, \textit{recall} e F1-score) obtidas para todos os modelos integrados no sistema, discriminadas por subconjunto de validação.
+
+\begin{table}[H]
+\centering
+\caption{Métricas de classificação por modelo e subconjunto de validação (\textit{leave-source-out}).}
+\label{tab:metricas_leave_source_out}
+\begin{tabular}{llrrrr}
+\toprule
+   Subconjunto &        Modelo &  Acurácia &  Precisão &  Recall &    F1 \\
+\midrule
+  Encenado &          YoloA &     0.619 &     1.000 &   \textbf{0.455} & 0.625 \\
+  Encenado &       YoloB &     0.349 &     1.000 &   0.068 & 0.128 \\
+  Encenado &         YoloC &     0.397 &     1.000 &   0.136 & 0.240 \\
+  Encenado & Efficient-net &     0.302 &     0.000 &   0.000 & 0.000 \\
+  Encenado &      DeepFace &     0.254 &     0.000 &   0.000 & 0.000 \\
+  Encenado &           Fer &     0.366 &     1.000 &   0.091 & 0.167 \\
+  Encenado &      Violence &     0.301 &     0.000 &   0.000 & 0.000 \\
+ Público &          YoloA  &     0.730 &     0.658 &   \textbf{0.552} & 0.600 \\
+ Público &       YoloB  &     0.624 &     0.450 &   0.103 & 0.168 \\
+ Público &         YoloC  &     0.684 &     0.620 &   0.357 & 0.453 \\
+ Público & Efficient-net  &     0.797 &     0.868 &   \textbf{0.528} & 0.657 \\
+ Público &      DeepFace  &     0.565 &     0.400 &   0.368 & 0.383 \\
+ Público &           Fer  &     0.599 &     0.250 &   0.046 & 0.077 \\
+ Público &      Violence  &     0.717 &     0.955 &   0.241 & 0.385 \\
+Sintético &          YoloA &     0.586 &     1.000 &   0.393 & 0.564 \\
+Sintético &       YoloB &     0.439 &     1.000 &   0.179 & 0.303 \\
+Sintético &         YoloC &     0.586 &     1.000 &   0.393 & 0.564 \\
+Sintético & Efficient-net &     0.293 &     0.000 &   0.000 & 0.000 \\
+Sintético &      DeepFace &     0.610 &     0.833 &   \textbf{0.536} & 0.652 \\
+Sintético &           Fer &     0.463 &     1.000 &   0.214 & 0.353 \\
+Sintético &      Violence &     0.317 &     0.000 &   0.000 & 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+A análise da Tabela~\ref{tab:metricas_leave_source_out} evidencia que o desempenho dos modelos varia significativamente tanto em função da origem das imagens como do modelo.  
+
+
+No subconjunto \textbf{Encenado}, vários modelos apresentaram precisão máxima (1.0), como o \textit{YoloA}, \textit{YoloB}, \textit{YoloC} e \textit{FER}. Este valor significa que, sempre que estes modelos detetaram classes consideradas alarmantes, a previsão correspondeu a um verdadeiro positivo. Contudo, os respetivos valores de \textit{recall} foram bastante reduzidos (variando entre 0.07 e 0.45), o que demonstra que apenas uma fração limitada dos casos alarmantes foi identificada. Esta combinação traduz um comportamento altamente conservador: o modelo acerta quando deteta algo alarmante, mas fá-lo em muito poucas ocasiões. Já os modelos \textit{EfficientNet}, \textit{DeepFace} e \textit{Violence} praticamente não detetaram classes alarmantes neste subconjunto, apresentando métricas nulas em termos de precisão, \textit{recall} e F1. Apesar disso, é possível observar valores de acurácia não nulos: isto ocorre porque a acurácia considera também os acertos na classe negativa (ou seja, os casos sem alarme). Assim, mesmo não identificando classes alarmantes, estes modelos acertaram na classificação de várias instâncias negativas, o que explica a acurácia acima de zero. No caso específico do modelo \textit{Violence}, este resultado poderá estar associado ao número reduzido de exemplos de situações de violência explícita (como confrontos físicos ou lutas) disponíveis neste subconjunto, limitando assim a sua capacidade de deteção.  
+
+No subconjunto \textbf{Público}, observa-se um maior equilíbrio entre precisão e \textit{recall}, destacando-se os modelos \textit{EfficientNet} e \textit{YoloA}, que obtiveram valores de F1 de 0.657 e 0.600, respetivamente, sugerindo uma capacidade de deteção mais consistente neste tipo de imagens. Em contrapartida, o modelo \textit{FER} registou um desempenho bastante fraco (F1 = 0.077), refletindo grande dificuldade em generalizar para este conjunto, enquanto o modelo \textit{Violence}, apesar de ter atingido uma precisão muito elevada (0.955), apresentou um \textit{recall} bastante reduzido (0.241), evidenciando uma vez mais um perfil de deteção conservador.
+
+
+Nas imagens \textbf{Sintéticas}, o comportamento é mais heterogéneo, com alguns modelos a apresentarem precisão máxima (\textit{YoloA}, \textit{YoloB}, \textit{YoloC} e \textit{FER}), mas acompanhada de valores de \textit{recall} bastante reduzidos. O modelo \textit{DeepFace} destacou-se neste subconjunto por atingir um equilíbrio relativamente bom entre precisão (0.833) e \textit{recall} (0.536), resultando num F1 de 0.652, enquanto os modelos \textit{EfficientNet} e \textit{Violence} não detetaram classes alarmantes, apresentando valores nulos em todas as métricas e, consequentemente, desempenho nulo.
+
+
+Em síntese, os resultados variam consoante a origem das imagens: no subconjunto Encenado observa-se elevada precisão mas baixo \textit{recall}, no Público um maior equilíbrio e nas Sintéticas um desempenho mais irregular. Destaca-se o Encenado, por reproduzir de forma controlada condições próximas da utilização real, podendo assim contribuir mais diretamente para a definição dos pesos dos modelos numa futura configuração do sistema por \textit{scoring}.
+
+
+
+
+\subsection{Avaliação da Influência dos Modelos}
+Nesta fase, o \textit{dataset} de validação foi considerado como um todo, sem distinção entre subconjuntos de origem. Todas as imagens foram processadas pelos modelos integrados no sistema, preservando-se a anotação de referência (\textit{alarme} ou \textit{não alarme}) e apenas os valores mais relevantes das suas saídas: nos modelos de deteção, as confianças associadas às classes alarmantes e, nos classificadores, as probabilidades correspondentes às classes de interesse.  
+
+Estes valores numéricos foram utilizados como variáveis de entrada num modelo auxiliar de aprendizagem automática. O objetivo não foi substituir a lógica interna do sistema, mas sim avaliar a influência relativa de cada modelo no resultado final (\textit{alarme} ou \textit{não alarme}). Para esse efeito, recorreu-se a um \textit{\gls{Random Forest}}, uma vez que se trata de um método robusto e interpretável, amplamente utilizado quando se pretende analisar o contributo das variáveis para a decisão. Uma das suas vantagens é fornecer de forma direta uma estimativa de importância, permitindo avaliar o grau em que cada variável contribui para a distinção entre \textit{alarme} e \textit{não alarme}. Assim, a importância pode ser entendida como uma medida do peso relativo de cada modelo no processo de decisão do sistema.
+
+As saídas dos modelos foram agregadas numa matriz de características, em que cada linha representa uma imagem e cada coluna corresponde à saída de um modelo (confiança na deteção ou probabilidade de classe). Essa matriz foi emparelhada com a classe de referência de cada imagem (\textit{alarme} ou \textit{não alarme}) e serviu de base ao treino do \textit{Random Forest}. Para assegurar maior robustez estatística, recorreu-se a validação cruzada 5×2, ou seja, cinco repetições de partições estratificadas em dois subconjuntos treino/teste, totalizando dez avaliações independentes. Com este procedimento, todos os exemplos participam em treino e teste várias vezes, reduzindo o risco de que uma única divisão influencie de forma desproporcionada os resultados.  
+
+Além disso, as métricas foram avaliadas com recurso a \textit{bootstrap} (10\,000 reamostragens), é uma técnica que consiste em voltar a sortear, com reposição, os valores originais várias vezes, que simula diferentes conjuntos possíveis. A partir dessa distribuição calcula-se a média e \gls{ic}\,95\%, permitindo quantificar de forma rigorosa a variabilidade e a incerteza associadas ao desempenho do sistema. Os valores obtidos encontram-se na Tabela~\ref{tab:metricas_rf}, onde se apresentam as métricas \textit{Recall}, \textit{FNR} e \textit{F1} com os respetivos IC95\%, formato que facilita a comparação direta dos indicadores e a avaliação da estabilidade dos resultados.
+
+\begin{table}[H]
+\centering
+\caption{Resultados médios das métricas com IC95\% (5×2 CV + bootstrap).}
+\label{tab:metricas_rf}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Métrica} & \textbf{Média} & \textbf{\gls{ic}95\%} & \textbf{Interpretação} \\
+\midrule
+Recall & 62.6\% & [61.3\%, 63.9\%] & Proporção de alarmes corretamente detetados \\
+FNR    & 37.4\% & [36.1\%, 38.7\%] & Proporção de alarmes não detetados (falsos negativos) \\
+F1     & 68.2\% & [67.7\%, 68.7\%] & Equilíbrio entre precisão e recall \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Para além das métricas globais, que permitem avaliar o desempenho médio do sistema e a respetiva estabilidade, interessa compreender de forma mais detalhada quais os modelos que mais contribuem para a decisão. Assim, o \textit{Random Forest} fornece ainda uma estimativa direta da importância relativa de cada variável, permitindo identificar de forma objetiva quais os detetores com maior peso no processo de classificação. A Figura~\ref{fig:importancia_rf} apresenta esses resultados, onde se observa a média das importâncias atribuídas a cada modelo ao longo das dez execuções da validação cruzada, incluindo o respetivo desvio padrão.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{pic/random_forest_importances.png}
+\caption{Importância média das \textit{features} (modelos) segundo o Random Forest, com desvio padrão.}
+\label{fig:importancia_rf}
+\end{figure}
+
+Os resultados da Figura~\ref{fig:importancia_rf} evidenciam uma clara predominância dos modelos de deteção de armas, em particular o \textit{YoloA}~\cite{joaoassalim_yolo}, que surge como a variável mais determinante na classificação. Outros detetores de armas, como o EfficientNet~\cite{jacobm_efficientnet} e o YoloC~\cite{gingerbrains_yolo}, mantêm também relevância considerável, reforçando o peso desta categoria no processo de decisão. Entre os classificadores, o modelo de reconhecimento de emoções baseado no \textit{DeepFace} destaca-se com importância intermédia, sugerindo que indicadores emocionais contribuem de forma complementar, enquanto o modelo FER e o de violência apresentam impacto mais reduzido.
+
+Esta distribuição de importâncias é coerente com os resultados médios das métricas apresentados na Tabela~\ref{tab:metricas_rf}. Apesar da forte influência dos modelos da categoria de armas, o sistema atinge apenas um \textit{Recall} global de 62.6\%, acompanhado de uma taxa de falsos negativos de 37.4\%. Tal significa que, quando existem armas visíveis, o desempenho é elevado, mas em cenários alternativos, como episódios de violência sem armas ou sinais emocionais mais subtis, a decisão perde robustez, originando falhas de deteção. O valor de F1 (68.2\%) confirma a consistência do compromisso entre precisão e \textit{Recall}, enquanto os intervalos de confiança estreitos em todas as métricas demonstram que este padrão não é um artefacto de uma divisão particular dos dados, mas sim um comportamento consistente. Em síntese, a análise conjunta das métricas e das importâncias revela um sistema fortemente dependente dos modelos de armas, o que pode garantir boas prestações nesses contextos mas limita a capacidade de generalização noutros tipos de ameaça.
+
+Importa salientar que o \textit{Random Forest} foi utilizado apenas com fins analíticos, para avaliar a influência relativa das variáveis. A sua adoção como mecanismo de decisão no sistema não seria adequado, uma vez que implicaria um conjunto fixo de modelos ativos, em contraste com a flexibilidade do sistema que permite ativar, desativar ou substituir modelos livremente através do ficheiro de configuração (\textit{config.json}).
+
+\subsubsection{Análise complementar dos modelos com base no AUC}
+Para além da análise de influência obtida com o \textit{Random Forest}, procedeu-se a uma avaliação direta do desempenho individual dos modelos, recorrendo ao cálculo da métrica AUC no dataset de validação. Esta análise funciona como complemento e validação da perspetiva anterior, permitindo medir de forma independente a capacidade discriminativa de cada modelo em relação à sua tarefa específica. Convém esclarecer que um AUC de 0.5 corresponde ao desempenho esperado por mero acaso, isto é, equivalente a uma classificação aleatória sem qualquer capacidade real de distinção. Valores significativamente acima deste nível indicam maior capacidade discriminativa, enquanto valores próximos de 0.5 revelam contributo reduzido.
+
+Na categoria de armas, os valores de AUC refletem a capacidade dos detetores em distinguir entre imagens que contêm armas e aquelas que não apresentam armas. Os resultados apresentados na Tabela~\ref{tab:auc_modelos} evidenciam uma hierarquia clara no interior da categoria: o modelo \textit{YoloA} destaca-se com um AUC de 0.769, demonstrando elevada robustez, seguido pelo \textit{YoloC} (0.648) e pelo \textit{EfficientNet} (0.589), que revelam contributos intermédios. Já o \textit{YoloB} (0.518) apresenta um valor muito próximo do nível de acaso, sugerindo utilidade reduzida.
+
+Na categoria de emoções, os valores de AUC dizem respeito à distinção entre imagens em que se observam predominantemente as emoções de medo ou raiva e aquelas que exibem outros estados emocionais. Os resultados mostram que ambos os classificadores têm desempenho limitado, apenas ligeiramente superior ao acaso, com o \textit{DeepFace} a alcançar 0.560 e o \textit{FER} 0.533. Este padrão indica que, considerados isoladamente, os modelos de emoções têm fraca capacidade discriminativa, embora possam ainda fornecer contributos complementares quando combinados com os detetores de armas.
+
+Esta análise não foi repetida para a categoria de violência, uma vez que nela existe apenas um único modelo. Não se justificaria a apresentação de uma comparação interna, dado que o objetivo desta subsubsecção é evidenciar as diferenças de desempenho entre modelos pertencentes à mesma categoria.
+
+
+\begin{table}[H]
+\centering
+\caption{Valores de AUC dos modelos das categorias de armas e emoções no dataset de validação.}
+\label{tab:auc_modelos}
+\begin{tabularx}{0.9\textwidth}{X X c}
+\toprule
+\textbf{Categoria} & \textbf{Modelo} & \textbf{AUC} \\
+\midrule
+Armas     & YoloA         & 0.769 \\
+Armas     & YoloB        & 0.518 \\
+Armas     & YoloC        & 0.648 \\
+Armas     & EfficientNet & 0.589 \\
+\midrule
+Emoções   & DeepFace     & 0.560 \\
+Emoções   & FER          & 0.533 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+
+
+
+\subsection{Ajuste dos Pesos no Ficheiro de Configuração}
+
+\subsubsection{Análise de correlação entre modelos}
+Antes de ajustar os pesos no ficheiro \textit{config.json}, avaliou-se a existência de redundância entre os modelos, isto é, se os seus valores de confiança estavam altamente correlacionados. Esta análise é relevante porque na regra de decisão por \textit{scoring} a soma dos pesos dos modelos é comparada com um limiar e, nesse contexto, sinais muito semelhantes provenientes de vários modelos podem levar a que cada um contribua para a soma e acabem por facilitar o disparo da categoria. Quando o limiar é ultrapassado a categoria passa a ser considerada alarmante e contribui apenas com o peso fixo que lhe está associado independentemente da soma dos pesos dos seus modelos. Para além disso, esta verificação da correlação permite identificar possíveis modelos redundantes que pouco acrescentam à decisão, possibilitando a sua remoção e tornando o sistema mais eficiente.
+
+
+Para esse efeito, calcularam-se as correlações entre as saídas dos modelos sobre as imagens do \textit{dataset} de validação, considerando como variáveis as confianças ou probabilidades associadas às classes alarmantes. Foram aplicados dois coeficientes complementares:
+\begin{itemize}
+    \item \textbf{Correlação de Pearson}, coeficiente que mede a força e a direção da relação linear entre duas variáveis numéricas.
+    \item \textbf{Correlação de Spearman}, coeficiente que avalia a relação monotónica entre duas variáveis, isto é, se tendem a variar no mesmo sentido, considerando apenas a ordenação dos valores.
+\end{itemize}
+
+Valores próximos de 1 indicam forte correlação positiva (os modelos tendem a dar pontuações semelhantes), valores próximos de 0 indicam ausência de relação, e valores negativos sugerem que os modelos respondem de forma inversa. Na literatura, valores superiores a 0.8 são geralmente considerados como sinal de correlação forte, justificando o agrupamento dos modelos para evitar redundância \cite{akoglu2018user}. 
+
+A Tabela~\ref{tab:correlacoes} apresenta os resultados obtidos para os principais pares de modelos dentro de cada categoria. Observa-se que, mesmo entre os modelos de armas, as correlações se mantêm baixas, e uma correlação baixa entre modelos pode ser interpretada de duas formas. Por um lado, sugere que os modelos estão a cometer erros diferentes: por exemplo, um detetor pode ser mais sensível a armas pequenas mas falhar em armas grandes, outro pode ter maior robustez a oclusões mas ser afetado por iluminação, e assim sucessivamente. Esta diversidade é benéfica, já que pode aumentar a cobertura em diversos cenários. Por outro lado, uma correlação baixa pode também refletir instabilidade ou ruído, isto é, um modelo que erra de forma aleatória. Nesse caso, a diversidade não acrescenta valor e pode mesmo introduzir ruído desnecessário.
+
+Nos classificadores de emoções, a baixa correlação entre o DeepFace e o FER em angry e fear confirma que exploram sinais distintos, como esperado pelas suas arquiteturas diferentes. Acresce que estas duas emoções partilham características visuais e significado parcialmente sobrepostos, o que acentua a divergência entre modelos.
+
+
+\begin{table}[H]
+\centering
+\caption{Correlação entre pares de modelos segundo os coeficientes de Pearson e Spearman.}
+\label{tab:correlacoes}
+\begin{tabularx}{\textwidth}{X X c c}
+\toprule
+\textbf{Modelo A} & \textbf{Modelo B} & \textbf{Pearson} & \textbf{Spearman} \\
+\midrule
+YoloA (armas) & YoloB (armas) & 0.22 & 0.23 \\
+YoloA (armas) & YoloC (armas) & 0.24 & 0.24 \\
+YoloA (armas) & EfficientNet (armas) & 0.21 & 0.22 \\
+YoloB (armas) & YoloC (armas) & 0.19 & 0.21 \\
+YoloB (armas) & EfficientNet (armas) & 0.22 & 0.24 \\
+YoloC (armas) & EfficientNet (armas) & 0.15 & 0.15 \\
+DeepFace (emoções) & FER (emoções) & 0.39 & 0.37 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+\subsubsection{Critérios para definição de pesos}
+\label{subsubsec:pesos}
+Os pesos utilizados no sistema foram definidos em dois níveis distintos, que não devem ser confundidos:
+
+\begin{itemize}
+    \item \textbf{Pesos das categorias:} definidos em função das prioridades do cliente, com possibilidade de ajuste em diferentes cenários de aplicação, assegurando a devida influência de cada categoria na decisão global do sistema.
+
+    \item \textbf{Pesos dos modelos dentro de cada categoria:} atribuídos de acordo com o desempenho individual de cada modelo no \textit{dataset} de validação, de forma aproximadamente proporcional ao respetivo \textit{recall}.
+\end{itemize}
+
+Na presente configuração, os pesos das categorias, usados na decisão global, foram definidos segundo os requisitos da \textbf{INM}, que solicitaram maior ênfase na categoria \textbf{armas}, por representar a ameaça de maior relevância no setor bancário. As categorias de \textbf{emoção} e \textbf{violência}, por sua vez, foram consideradas de relevância equivalente, tendo sido atribuídos pesos iguais na configuração do sistema.
+
+O limiar da decisão global foi definido de forma a garantir que a categoria de deteção de armas, por si só, é suficiente para acionar um alarme, enquanto as restantes categorias podem também contribuir para atingir o mesmo efeito quando ocorrem em conjunto. 
+Já a atribuição dos pesos aos modelos dentro de cada categoria baseou-se em três elementos complementares:
+
+\begin{enumerate}
+    \item \textbf{Importâncias estimadas pelo \textit{Random Forest} e análise de AUC:} utilizadas como referência para avaliar a relevância relativa dos modelos. O \textit{Random Forest} permitiu identificar a influência das variáveis no funcionamento global, enquanto o AUC mediu a capacidade discriminativa de cada modelo no \textit{dataset} de validação.
+    
+    \item \textbf{Desempenho individual de cada modelo (com foco no \textit{recall}):} considerada a métrica central para atribuição de pesos. Os valores de \textit{recall} serviram como base para a definição de pesos proporcionais, refletindo diretamente a sensibilidade de cada modelo na deteção de situações de risco. Esta análise foi realizada tanto na avaliação isolada (Sec.~\ref{subsec:Avaliação}) como nos subconjuntos do \textit{dataset} de validação (Sec.~\ref{subsec:AvaliaçãoValidaçao}).
+    
+    \item \textbf{Calibração dos parâmetros \texttt{thresholdDetection}:} preenchidos com base na análise da confiança média dos \textit{True Positives} de cada modelo, de forma a equilibrar sensibilidade e fiabilidade na decisão.
+\end{enumerate}
+
+Assim, os pesos foram estabelecidos de forma proporcional ao \textit{recall}, concluindo esta etapa de definição e introduzindo a secção seguinte, dedicada à definição dos \texttt{thresholds} das categorias.
+
+
+\subsubsection{Definição dos limiares de decisão por categoria}
+\label{subsubsec:thresholds-categorias}
+
+A determinação dos \textit{thresholds} por categoria baseou-se nas pontuações agregadas de cada grupo de modelos. Para cada imagem, a pontuação categorial foi calculada como a soma dos pesos dos modelos cuja confiança excedeu o respetivo \texttt{thresholdDetection}. Os pesos foram definidos a partir do \textit{recall} médio de cada modelo, conforme descrito na Sec.~\ref{subsubsec:pesos}, assegurando que modelos mais sensíveis à deteção de situações de risco tenham maior influência na decisão final. 
+
+Com estas pontuações, foram construídas curvas ROC ao nível de cada categoria, avaliando a área sob a curva (AUC) como medida da capacidade discriminativa. O \textit{threshold} ótimo foi determinado através do \gls{\textit{índice de Youden}}, métrica amplamente utilizada em classificação binária que identifica o ponto da curva ROC que maximiza simultaneamente a sensibilidade (TPR) e a especificidade (1-FPR). Formalmente, o índice é definido como $J = \text{TPR} - \text{FPR}$, sendo escolhido o limiar correspondente ao valor máximo desta diferença.
+
+Na categoria \textbf{armas}, foram considerados quatro modelos com pesos proporcionais ao \textit{recall} (\texttt{YoloA}=0.467, \texttt{YoloB}=0.117, \texttt{YoloC}=0.295 e \texttt{EfficientNet}=0.259). A curva ROC apresentou \textbf{AUC = 0.750} e o índice de Youden indicou um limiar ótimo de \textbf{$T = 0.259$} (ou \textbf{$\tilde T \approx 0.228$} na versão normalizada), valor a partir do qual a categoria de armas passa a ser considerada alarmante, com \textbf{TPR = 0.698} e \textbf{FPR = 0.253}, conforme ilustrado na Figura~\ref{fig:roc_armas_emocoes}. Este limiar foi considerado adequado no contexto bancário, privilegiando a sensibilidade à deteção de armas mesmo ao custo de mais falsos positivos.  
+
+Na categoria \textbf{emoções}, com dois modelos (\texttt{deepface}=0.3013 e \texttt{fer}=0.117), a curva ROC, apresentada na Figura~\ref{fig:roc_armas_emocoes}, mostra \textbf{AUC = 0.505}, praticamente sobreposta à linha diagonal de referência (AUC = 0.5). Tal resultado indica ausência de capacidade discriminativa, ou seja, o comportamento da categoria aproxima-se de uma decisão aleatória. O limiar ótimo foi definido em \textbf{$T = 0.117$} (ou \textbf{$\tilde T \approx 0.280$}), correspondendo a \textbf{TPR = 0.346} e \textbf{FPR = 0.335}. Apesar de formalmente definido, este resultado reforça a necessidade de explorar modelos alternativos ou dados adicionais em trabalhos futuros para melhorar a utilidade prática desta categoria.  
+
+Por fim, na categoria \textbf{violência}, composta por um único modelo, foi atribuído um peso $w$ correspondente ao seu \textit{recall}, de modo a manter consistência de escala com as restantes categorias. Assim, o \textit{score} categorial assume valores em $\{0,w\}$ e o limiar ótimo é, por definição, \textbf{$T = w$}. Na prática, a categoria é considerada alarmante sempre que o modelo emite uma deteção, e, por se tratar de um caso binário, a curva ROC não acrescenta informação relevante e não é aqui apresentada.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{pic/youden.png}
+\caption{Curvas ROC obtidas para as categorias armas e emoções. O ponto azul representa o limiar ótimo segundo o índice de Youden, com o respetivo valor indicado. A linha diagonal corresponde ao desempenho esperado por acaso (AUC = 0.5).}
+\label{fig:roc_armas_emocoes}
+\end{figure}
+
+
+
+\subsubsection{Avaliação do impacto prático}
+Para avaliar o impacto prático das definições de pesos e limiares por categoria, foi realizado um teste direto ao sistema completo sobre o \textit{dataset} de validação. Cada imagem foi processada pela regra de decisão por \textit{scoring}. Compararam-se dois cenários: (i) \textit{configuração equilibrada}, com pesos uniformes e sem ajustes, e (ii) \textit{configuração ajustada}, com pesos proporcionais ao \textit{recall} dos modelos e limiares por categoria definidos via índice de Youden (Sec.~\ref{subsubsec:thresholds-categorias}).
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{pic/comparacao_metricas_equilibrado_vs_ajustado_com_fpr.png}
+\caption{Comparação das métricas do sistema antes e após o ajuste dos pesos, com base na execução sobre o \textit{dataset} de validação.}
+\label{fig:comparacao_metricas_f1}
+\end{figure}
+
+
+
+Na Figura~\ref{fig:comparacao_metricas_f1} observa-se que, após os ajustes, o sistema passou a detetar de forma muito mais eficaz as situações de risco: o \textit{recall} aumentou de \textbf{0.45} para \textbf{0.77}, correspondendo a uma redução da FNR de \textbf{0.55} para \textbf{0.23}. Em termos práticos, isto significa que o sistema comete menos falhas críticas, deixando passar menos casos de situações alarmantes.  
+
+Contudo, este ganho de sensibilidade veio acompanhado de um aumento de alarmes indevidos: a \textit{precision} desceu de \textbf{0.91} para \textbf{0.78}, e o \textit{FPR} subiu de \textbf{0.05} para \textbf{0.26}, refletindo um maior número de falsos positivos. Apesar desta perda, o \textit{F1-score} evoluiu positivamente (de \textbf{0.60} para \textbf{0.77}), evidenciando um melhor equilíbrio global entre precisão e sensibilidade.  
+
+Deste modo, os resultados confirmam que o ajuste de pesos adotado esteve alinhado com a prioridade operacional definida: privilegiar a sensibilidade na deteção de situações de risco, ainda que à custa de um maior número de alarmes indevidos. Para além deste objetivo específico, a comparação entre os dois cenários evidencia que a análise e definição de pesos e limiares resultou em melhorias consistentes no desempenho global do sistema. Assim, a abordagem metodológica seguida revelou-se adequada, validando a relevância do processo analítico desenvolvido.
+
+
+
+\subsection{Avaliação da métrica de proximidade facial}
+
+Com o objetivo de avaliar a viabilidade de utilizar a razão entre áreas faciais como indicador de intrusão, desenvolveu-se uma fase experimental composta pela recolha de dados e pela análise estatística dos resultados. Importa salientar que esta métrica não integra a regra de decisão principal do sistema, assumindo apenas um papel complementar de caráter informativo, destinado a fornecer contexto adicional em cenários de potencial proximidade intrusiva.
+
+
+\subsubsection*{Recolha de dados e extração da métrica}
+Foi construído um \textit{dataset} de 80 imagens, distribuídas em duas classes: 
+\textbf{negativos}, correspondentes a situações normais (utilizador em primeiro plano, com outras pessoas presentes em segundo plano, mas sem intrusão), e \textbf{positivos}, que simulam a presença de uma segunda face em proximidade imediata ao utilizador, representando um potencial agressor.  
+
+As imagens resultaram de frames de vídeos encenados, captados diretamente na máquina HEFESTO através da sua câmara integrada, de forma a refletir a resolução e as condições reais de utilização. A Figura~\ref{fig:face_areas}, já apresentada anteriormente, ilustra os dois cenários simulados, enquanto a Figura~\ref{fig:dataset_distribution} apresenta a distribuição final das 80 imagens pelas duas classes (35 negativas e 45 positivas).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{pic/dataset_distribution.png}
+    \caption{Distribuição das imagens do dataset  pelas classes negativas e positivas.}
+    \label{fig:dataset_distribution}
+\end{figure}
+
+Cada frame foi processado através do serviço FER \cite{fer_model}, que utiliza o detetor de faces \textit{MTCNN} (\textit{Multi-task Cascaded Convolutional Networks}) para localizar as faces presentes na imagem e, em seguida, aplicar a classificação das expressões emocionais. A partir das caixas delimitadoras devolvidas pelo detetor, calculou-se a área de cada face (\(w \times h\)), sendo considerada como referência a face de maior dimensão, assumida como a do utilizador. A métrica de interesse correspondeu à razão percentual entre a área da segunda maior face e a área da face principal, conforme descrito na Sec.~\ref{sec:metrica_faces}.
+
+
+\subsubsection*{Análise estatística}
+As razões calculadas foram analisadas separadamente para os conjuntos positivo e negativo, considerando apenas os casos em que foram detetadas duas faces (excluindo, portanto, os rácios nulos resultantes de imagens com uma única face).  
+
+No caso dos negativos, a média situou-se em torno dos 10\%, com uma mediana próxima de 9\% e um valor máximo de aproximadamente 23\%. Já no caso dos positivos, a média atingiu cerca de 48\% e a mediana rondou os 47\%, registando-se, de forma consistente, valores bastante superiores a 40\%.  
+
+Estes resultados sugerem uma separação clara entre cenários normais e de intrusão, o que se encontra ilustrado na Figura~\ref{fig:boxplot_faces}, onde se apresenta a distribuição das razões em cada classe sob a forma de \textit{boxplot}, destacando as respetivas medianas.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{pic/boxplotDistribuicao.png}
+    \caption{Distribuição da razão percentual entre a segunda maior face e a face principal, para as classes negativas e positivas.}
+    \label{fig:boxplot_faces}
+\end{figure}
+
+
+\subsubsection*{Definição do limiar}
+Com base nos resultados da Figura~\ref{fig:boxplot_faces}, identificou-se um intervalo de separação natural entre os máximos da classe negativa (≈23.6\%) e os mínimos da classe positiva (≈40\%). Como compromisso entre ambos os extremos, definiu-se o limiar de decisão pelo ponto médio do intervalo:
+
+\begin{equation}
+T = \frac{23.6 + 40}{2} \approx 31\%
+\label{eq:limiar_faces}
+\end{equation}
+
+Este limiar maximiza a separação entre cenários normais e de intrusão, garantindo uma margem de segurança relativamente às variações observadas em ambos os grupos. Assim, valores de razão inferiores a 30\% são interpretados como normais, enquanto valores iguais ou superiores são registados como potenciais intrusões de proximidade.
+
+A escolha foi validada experimentalmente no \textit{dataset}, considerando apenas as imagens em que foram detetadas duas faces. Os resultados obtidos foram: \textbf{Accuracy = 0.96}, \textbf{Recall = 0.93}, \textbf{Precision = 1.00} e \textbf{F1-score = 0.97}. Em complemento, a curva ROC apresentou uma área sob a curva (AUC) de \textbf{1.00}, evidenciando uma capacidade discriminativa perfeita neste conjunto de dados. Estes resultados demonstram que, no contexto experimental definido, o limiar de 31\% é adequado e estatisticamente consistente para separar situações normais de intrusão.
+
+
+\subsubsection*{Discussão}
+A métrica de proximidade facial assume um caráter meramente informativo, funcionando como um indicador contextual adicional em cenários de possível intrusão, mas sem impacto direto na decisão de alarme.  
+
+Importa salientar, contudo, algumas limitações práticas. Em primeiro lugar, o valor da razão entre áreas faciais é sensível ao \textit{Field of View} (FOV) da câmara: alterações no ângulo de captação ou na distância entre utilizador e dispositivo podem modificar significativamente as dimensões relativas das faces detetadas, influenciando o resultado da métrica. Em segundo lugar, a fiabilidade desta abordagem depende diretamente da qualidade do detetor de faces utilizado (MTCNN através do FER). Falhas na deteção de uma segunda face ou imprecisões na delimitação das caixas podem conduzir a rácios incorretos, originando falsos negativos ou falsos positivos.  
+
+
+\section{Análise de Desempenho e Otimizações}
+
+Esta secção apresenta uma análise complementar focada no desempenho do sistema e nas possibilidades de otimização. Foram realizadas três avaliações distintas: comparação entre o uso de NMS na deteção com YOLO, impacto do envio de imagens em lote e medição dos tempos de execução dos modelos e do sistema em ambiente real.
+
+\subsection{Comparação entre YOLO com e sem NMS}
+
+Tendo sido referida no trabalho relacionado a proposta de eliminar a etapa de NMS em versões do YOLO, procedeu-se a uma breve análise para avaliar se essa alteração poderia impactar a latência do sistema desenvolvido. Para isso, testou-se um modelo de deteção de armas baseado no YOLOv8 \cite{joaoassalim_yolo}, no qual foi possível ativar e desativar o NMS, recolhendo os tempos de execução em 50 imagens do \textit{dataset} de validação.
+
+A Figura~\ref{fig:yolo_nms_comparacao} apresenta os resultados obtidos. Verifica-se que a remoção do NMS traz apenas uma ligeira redução de tempo, sem relevância prática para o sistema. Assim, manteve-se o uso dos modelos pré-treinados tal como fornecidos, com NMS ativo, sem que isso represente uma limitação relevante.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{pic/NMS.png}
+\caption{Comparação dos tempos de execução do modelo YOLO com e sem NMS, com base em 50 imagens.}
+\label{fig:yolo_nms_comparacao}
+\end{figure}
+
+
+
+\subsection{Avaliação do Processamento em Lote}
+\label{subsubsec:analise_batch}
+
+
+
+Foi avaliado o impacto de processar várias imagens em lote no sistema, com o objetivo de reduzir o tempo de processamento por imagem. Para tal, os testes foram realizados em dois ambientes distintos, ambos limitados a processamento em CPU e utilizando uma câmara configurada para capturar a uma taxa de 15~fps:
+
+\begin{enumerate}[label=(\roman*)]
+    \item uma máquina equipada com processador Intel\textsuperscript{\textregistered} Core\texttrademark{} i7-1255U e 16 GB de RAM;
+    \item a máquina HEFESTO, com um processador Intel\textsuperscript{\textregistered} Celeron\textsuperscript{\textregistered} N5095 e 8 GB de RAM.
+\end{enumerate}
+
+
+A escolha de dois ambientes justifica-se pelo facto de nem todas as máquinas de autoatendimento disporem do mesmo hardware que o HEFESTO, e o próprio equipamento está sujeito a evoluções e atualizações de componentes ao longo do tempo. Assim, esta análise comparativa permite compreender o impacto do processamento em lote em diferentes configurações de CPU e antecipar o comportamento do sistema em cenários com hardware diversificado.  
+
+A Tabela~\ref{tab:batch_tempos_comparacao} apresenta os tempos de processamento correspondentes ao \gls{p95} para lotes de 1, 5 e 10 imagens em ambos os cenários. Os testes foram conduzidos em ambiente integrado, simulando o funcionamento típico do sistema e incluindo a encenação de tentativas de eventos de alarme, durante um período contínuo de 10 minutos.
+
+\begin{table}[H]
+\centering
+\caption{Comparação dos tempos de processamento por lote em ambos os ambientes de teste.}
+\label{tab:batch_tempos_comparacao}
+\begin{tabularx}{\textwidth}{Xcccc}
+\toprule
+\textbf{Tamanho do Lote} 
+& \multicolumn{2}{c}{\textbf{Tempo Total P95 (s)}} 
+& \multicolumn{2}{c}{\textbf{Tempo Médio por Frame (s)}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+& \textbf{Máquina (i)} & \textbf{Máquina (ii)} & \textbf{Máquina (i)} & \textbf{Máquina (ii)} \\
+\midrule
+1 imagem   & 1.14 & 2.23 & 1.07 & 2.11 \\
+5 imagens  & 4.33 & 10.38 & 0.86 & 1.91 \\
+10 imagens & 8.53 & 21.91 & 0.85 & 2.06 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+Os resultados obtidos evidenciam que o envio em lote permite uma redução no tempo médio de processamento por imagem. Embora o tempo total aumente proporcionalmente ao tamanho do lote, o processamento conjunto conduz a uma maior eficiência relativa por frame, ou seja, um maior \textit{throughput} global do sistema.  
+
+Contudo, importa salientar que o tempo médio por frame apresentado na Tabela~\ref{tab:batch_tempos_comparacao} não corresponde à latência efetiva de cada frame individual. Na prática, todos os frames de um lote só ficam disponíveis após a conclusão do processamento completo desse lote. Por exemplo, no caso da Máquina~(i), um lote de 5 imagens demorou cerca de 4,33~s a ser processado, o que equivale a uma média de 0,86~s em termos de \textit{throughput} (\(\approx 1,15\) fps), mas a latência \textit{end-to-end} de cada frame nesse lote é de 4,33 segundos. Assim, valores médios de processamento por imagem inferiores a um segundo traduzem-se em ganhos de taxa de processamento, mas não implicam necessariamente que cada frame isolado seja processado em menos de um segundo. Os ganhos entre 5 e 10 imagens revelaram-se reduzidos, sobretudo quando analisados na Máquina~(ii).
+
+Neste ambiente Máquina~(ii), o processamento de lotes de 10 imagens provocou uma utilização da CPU próxima de 98\% e um consumo de memória superior a 84\%, comprometendo a estabilidade do sistema. Por essa razão, este foi o único cenário em que os testes tiveram de ser interrompidos antes dos 10 minutos inicialmente definidos, dada a sobrecarga de recursos verificada.
+Na mesma máquina (HEFESTO) a configuração com lotes de 5 imagens manteve-se estável e com 10 imagens verificou-se saturação confirmando que tal configuração não é adequada ao hardware em causa.
+
+Face a esta análise, a configuração com lotes de 5 imagens mostrou-se a mais equilibrada, proporcionando ganhos de \textit{throughput} sem comprometer de forma excessiva a latência \textit{end-to-end} nem a capacidade de resposta em ambientes com recursos limitados. Deste modo, a estratégia foi integrada no sistema como uma forma simples e eficaz de otimizar o tempo de inferência, assegurando a sua aplicabilidade em diferentes configurações de hardware, principalmente em máquinas de autoatendimento.
+
+
+
+
+\subsection{Benchmark na Máquina de Autoatendimento}
+
+Para além da análise de processamento em lote, foi também realizado um \textit{benchmark} diretamente na máquina de autoatendimento HEFESTO, de forma a aferir a viabilidade da execução local do sistema. Esta avaliação centrou-se na medição do tempo médio de resposta por \textit{frame}, do consumo de memória e do tamanho dos executáveis associados aos serviços dos modelos de visão computacional, ao sistema de segurança e à aplicação nativa da máquina (\textit{kiosk}).
+
+A Tabela~\ref{tab:benchmark_modelos} resume os resultados obtidos, permitindo identificar os componentes com maior impacto nos recursos do sistema. 
+
+
+\begin{table}[H]
+\centering
+\caption{Benchmarks dos modelos de visão computacional, do sistema de segurança e da aplicação nativa (\textit{kiosk}).}
+\label{tab:benchmark_modelos}
+\begin{tabularx}{\textwidth}{l >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
+\toprule
+\textbf{Executável avaliado} & \textbf{Tempo Médio de Resposta (ms)} & \textbf{Tamanho do Executável (MB)} & \textbf{Pico de Memória (MB)} \\
+\midrule
+weaponDetectionYoloA.exe     & 1815.0 & 243 & 374.50 \\
+weaponDetectionYoloB.exe     & 1809.0 & 242 & 373.29 \\
+weaponDetectionYoloC.exe     & 2148.0 & 257 & 462.11 \\
+weaponEfficient-net.exe      & 1658.0 & 622 & 348.30 \\
+violenceDetection.exe        & 1794.0 & 223 & 346.81 \\
+emotion\_deepface.exe        & 367.0  & 486 & 348.01 \\
+emotion\_fer.exe             & 1260.0 & 462 & 459.39 \\
+SecurityDetection.exe        & 2179.0 & 105 & 691.90 \\
+kiosk.exe                    & --     & --  & 362.35 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+
+A Tabela~\ref{tab:benchmark_modelos} apresenta o desempenho dos diferentes executáveis de visão computacional, do sistema de segurança e da aplicação principal da máquina de autoatendimento (\texttt{kiosk.exe}). Os valores da coluna Pico de Memória foram obtidos com lote de 5 imagens conforme definido na Secção~\ref{subsubsec:analise_batch}. As outras métricas não estão ligadas a esta configuração.
+
+
+Observa-se que o \texttt{SecurityDetection.exe}, correspondente ao sistema de segurança, regista o maior pico de utilização de memória, com aproximadamente 692~MB. Este valor não resulta apenas da execução do sistema, mas também do armazenamento temporário das imagens recebidas para análise, o que contribui significativamente para o aumento do consumo de recursos. Entre os modelos específicos, destacam-se o \texttt{weaponDetectionYoloC.exe} e o \texttt{emotion\_fer.exe}, ambos com valores próximos de 460~MB. Já o \texttt{kiosk.exe}, que representa a aplicação nativa da máquina responsável pelas operações, acrescenta cerca de 362~MB ao consumo total.
+
+
+Considerando o somatório dos picos de memória de todos os processos listados, o valor global ascende a aproximadamente 4,37 GB. Face à capacidade disponível na máquina de teste (8 GB instalados, dos quais 7,89 GB utilizáveis), esta utilização corresponde a cerca de 55,4\% da memória total.
+
+Estes resultados demonstram que a execução simultânea do sistema de segurança em conjunto com os modelos de visão computacional e a aplicação principal é tecnicamente viável no equipamento avaliado (HEFESTO), não comprometendo a operação do sistema nem as funcionalidades essenciais da aplicação cliente.

@@ -1,0 +1,128 @@
+\chapter{Introdução}
+
+As máquinas de autoatendimento têm-se consolidado como um elemento central nos processos de transformação digital em setores como serviços financeiros e seguradoras, de modo a oferecer conveniência e eficiência tanto para os utilizadores como para as empresas, permitindo que os clientes beneficiem de maior autonomia e disponibilidade temporal. No entanto, apesar da sua utilidade, estas máquinas continuam a enfrentar desafios significativos no que diz respeito à segurança, sobretudo na prevenção de ameaças físicas.
+Com o avanço das tecnologias de visão computacional e aprendizagem automática surgem novas oportunidades de desenvolver soluções de segurança que ajudem a mitigar alguns riscos, permitindo a deteção automática de potenciais ameaças em tempo real.
+Este trabalho foi desenvolvido durante um estágio na empresa \gls{inm}, no âmbito de implementar uma camada adicional de segurança num projeto interno denomidado de HEFESTO.
+
+\section{Contextualização}
+Nos últimos anos, os incidentes relacionados com fraudes e ataques físicos em máquinas de autoatendimento tornaram-se uma preocupação crescente para instituições financeiras e para os próprios clientes. Assaltos, tentativas de coação e vandalismo são algumas das ameaças enfrentadas, tornando evidente a necessidade de reforçar a segurança destas máquinas.
+Segundo o relatório da \gls{east}, os ataques físicos a \gls{atm} na Europa registaram um aumento de 24\% em 2023, totalizando 4637 incidentes \cite{roubosATMS}. Estes ataques resultaram em prejuízos superiores a 9 milhões de euros, evidenciando o impacto financeiro significativo associado a estas ocorrências. Alguns destes incidentes envolveram assaltos diretos aos utilizadores das máquinas, muitas vezes sob coação, além de vandalismo e fraudes eletrónicas. Estes números reforçam a necessidade de soluções mais avançadas que permitam a deteção de ameaças e uma resposta eficaz em tempo real. Atualmente, muitas soluções de segurança limitam-se a medidas reativas, como a análise posterior de imagens de videovigilância. No entanto, com os avanços em visão computacional e aprendizagem automática, através da própria câmara da máquina de autoatendimento é possível desenvolver sistemas de segurança que detetem ameaças de forma autónoma, nomeadamente através da deteção de armas, do reconhecimento de emoções associadas a situações de risco, como o medo, ou da identificação de ambientes violentos, permitindo sinalizar eventos críticos e contribuir para a proteção da integridade das operações, da segurança dos utilizadores e do próprio equipamento, reduzindo o impacto de incidentes e perdas associadas a situações de risco.
+
+\section{Motivação}
+
+Apesar da crescente necessidade de reforçar a segurança em máquinas de autoatendimento, continua a não existir uma solução que permita a integração direta de sistemas de segurança baseados em visão computacional nas máquinas de autoatendimento. Em particular, faltam abordagens do tipo \textit{"plug and play"} capazes de detetar automaticamente, e em tempo real, comportamentos suspeitos ou ameaças físicas. A maioria das soluções de segurança baseadas em visão computacional encontra-se integrada em sistemas de videovigilância tradicionais, como \gls{cctv}, os quais alguns já incorporam algoritmos de deteção \cite{singh2020real}. No entanto, esses sistemas estão maioritariamente posicionados em ambientes externos às máquinas de autoatendimento. Um sistema de segurança integrado diretamente nas máquinas permitiria atuar de forma imediata, identificando ameaças no próprio ponto de interação, aumentando assim a segurança das operações e a proteção dos utilizadores. Além disso, a falta de uma solução modular e adaptável dificulta a adoção de novas tecnologias sem necessidade de grandes alterações na infraestrutura. Desta forma as máquinas de autoatendimento podem beneficiar de sistemas de segurança com uma abordagem mais integrada, onde a deteção de ameaças físicas em tempo real forneça informação útil para uma resposta mais eficaz. Ao atuar como uma camada adicional de proteção, o sistema desenvolvido neste trabalho permite que o cliente final disponha de informação necessária para acionar alarmes que permitam às entidades responsáveis, como instituições bancárias, decidir as ações mais adequadas, tais como bloquear as operações na máquina, acionar protocolos de segurança ou até alertar as autoridades, caso necessário.
+
+
+
+
+\section{Objectivos}
+
+O principal objetivo deste trabalho é desenvolver um sistema de segurança avançado, baseado em visão computacional e aprendizagem automática, capaz de detetar em tempo real situações de ameaças físicas nas máquinas de autoatendimento, atuando como uma camada adicional de segurança. Este sistema deverá monitorizar e analisar continuamente as interações dos utilizadores com a máquina e, sempre que sejam identificadas situações potencialmente perigosas, como a presença de armas ou comportamentos violentos, fornecer uma resposta analítica que permita à máquina de autoatendimento adotar ações preventivas ou corretivas. O intuito é disponibilizar uma camada adicional de informação útil, assegurando uma resposta rápida e eficaz que contribua para a mitigação imediata dos riscos e para o reforço da segurança global da máquina, apoiando tanto cenários em que já existam mecanismos de segurança de primeira linha, como a deteção de \textit{spoofing} em sistemas de biometria por câmara ou leitores de cartões baseados em tecnologia de infravermelhos, como também contextos em que tais camadas de proteção não estão presentes, aumentando assim a resiliência global da infraestrutura de autoatendimento.
+
+
+Para além deste objetivo principal, pretende-se ainda cumprir um conjunto de requisitos específicos que assegurem a aplicabilidade prática e a evolução contínua do sistema. Assim, o sistema deverá ser modular e adaptável, permitindo a sua integração em diferentes tipos de máquinas de autoatendimento, particularmente no setor bancário, sem que sejam necessárias alterações estruturais significativas. Deverá igualmente ser expansível, adotando uma abordagem \textit{``plug and play''} que possibilite a sua atualização e melhoria ao longo do tempo, através da integração de novos modelos ou tecnologias, como modelos de deteção de armas ou de reconhecimento de emoções faciais. Por fim, o sistema deve contribuir de forma efetiva para a proteção dos utilizadores e para a integridade das operações, oferecendo uma camada de segurança sólida, funcional e eficiente.
+
+
+De forma a sintetizar estes aspetos, a Tabela~\ref{tab:objetivos} apresenta uma visão resumida do objetivo principal e dos requisitos específicos estabelecidos.  
+
+
+\begin{table}[H]
+\centering
+\caption{Resumo dos objetivos do sistema de segurança proposto}
+\label{tab:objetivos}
+\renewcommand{\arraystretch}{1.3} % aumenta espaçamento entre linhas
+\begin{tabular}{p{0.22\textwidth} p{0.70\textwidth}}
+\hline
+\textbf{Tipo de objetivo} & \textbf{Descrição} \\ \hline
+
+Objetivo principal & 
+Desenvolver um sistema de segurança avançado, baseado em visão computacional e aprendizagem automática, capaz de detetar em tempo real situações de ameaças físicas nas máquinas de autoatendimento e atuar como uma camada adicional de proteção. \\
+
+Complementaridade &
+Reforçar tanto máquinas que já possuam mecanismos de segurança de primeira linha (ex.: deteção de \textit{spoofing} em biometria por câmara, leitores de cartões com tecnologia de infravermelhos) como também aquelas que não dispõem de tais medidas, aumentando a resiliência global da infraestrutura. \\
+
+Modularidade &
+Assegurar que o sistema seja modular e adaptável, permitindo a integração em diferentes tipos de máquinas de autoatendimento, especialmente no setor bancário, sem alterações estruturais significativas. \\
+
+Expansibilidade &
+Garantir uma abordagem \textit{``plug and play''}, que possibilite atualizações futuras e a incorporação de novos modelos ou tecnologias, como deteção avançada de armas ou reconhecimento de emoções faciais. \\
+
+Proteção &
+Contribuir para a proteção dos utilizadores e para a integridade das operações, fornecendo uma camada de segurança sólida, funcional e eficiente. \\
+
+\hline
+\end{tabular}
+\end{table}
+
+
+
+
+\section{Contribuições}
+
+O trabalho desenvolvido nesta tese contribui para a área da segurança em máquinas de autoatendimento, abordando a ausência de soluções que recorram à visão computacional para detetar, em tempo real, ameaças físicas ou comportamentos suspeitos. Com base nas limitações identificadas na literatura consultada e nas oportunidades observadas ao longo da análise técnica, apresentam-se as seguintes contribuições:
+
+\begin{itemize}
+    \item Proposta e implementação de um sistema de segurança baseado em visão computacional, capaz de detetar em tempo real comportamentos suspeitos e ameaças físicas, com foco na aplicabilidade em contextos reais de utilização.
+
+    \item Desenvolvimento de uma arquitetura modular e extensível, permitindo a integração e substituição de modelos de computação visual de forma independente e sem necessidade de alterações estruturais na aplicação.
+
+    \item Conceção de mecanismos de decisão capazes de agregar os resultados dos diferentes modelos de computação visual utilizados pelo sistema de segurança, permitindo uma avaliação do risco mais informada, consistente e ajustável ao contexto operacional da máquina de autoatendimento.
+
+    \item Avaliação comparativa de modelos de computação visual, com análise de métricas como tempo de inferência, consumo de memória e precisão, com o objetivo de informar decisões futuras de integração e otimização.
+
+   
+    \item Utilização de processamento em lote de \textit{frames}, contribuindo para reduzir o tempo médio por imagem e aumentar a eficiência do sistema sem comprometer a reatividade.
+
+
+    \item Validação prática e análise interpretável, com testes em hardware limitado, uso de um \textit{dataset} realista e aplicação de técnicas de análise para aferir a influência dos modelos na decisão final.
+\end{itemize}
+
+\section{Modelo de Ameaça e Pressupostos}
+
+Esta secção apresenta os elementos de enquadramento que sustentam o trabalho proposto, descrevendo os atores envolvidos, o ambiente de operação, as capacidades e limitações do sistema, a definição de alarmes e alertas, as metas de desempenho, os aspetos fora de âmbito e os pressupostos considerados.  
+
+\subsubsection{Atores e comportamentos} 
+O trabalho proposto considera dois tipos principais de atores: o utilizador legítimo da máquina de autoatendimento, que em situações normais interage de forma regular e não hostil mas que pode também manifestar emoções de medo quando sujeito a intimidação, e potenciais agressores que podem surgir como transeuntes isolados ou em grupo, adotando comportamentos suspeitos ou hostis. Estes comportamentos incluem a exibição de armas de fogo ou de armas brancas de pequenas dimensões, atitudes de agressividade física como aproximação ameaçadora, confrontos interpessoais com empurrões ou lutas, bem como a manifestação de expressões faciais de agressividade e intimidação.  
+
+\subsubsection{Ambiente}
+O ambiente de operação contempla tanto cenários interiores como exteriores, sendo a câmara embutida na própria máquina de autoatendimento e permanecendo em posição e ângulo fixos. O campo de visão cobre distâncias típicas de meio a dois metros e permite a observação da região superior do corpo dos indivíduos, incluindo de forma consistente as faces e os movimentos dos membros superiores, o que possibilita a análise de expressões faciais, gestos e interações físicas entre utilizador e potenciais transeuntes. Assume-se que, no enquadramento da câmara, podem surgir apenas o utilizador legítimo, o utilizador acompanhado de agressores ou, em alguns casos, apenas os próprios agressores, sendo ainda possível que armas ou objetos de interesse se encontrem parcial ou totalmente ocultos pela posição corporal ou pela interação entre os indivíduos, bem como que os agressores se apresentem com o rosto total ou parcialmente coberto, o que pode limitar a análise de expressões faciais. As condições de iluminação podem variar de acordo com o contexto, sendo consideradas apenas situações que garantam níveis mínimos de visibilidade adequados à análise, excluindo-se cenários de escuridão total ou de luminosidade extrema permanente. Em situações em que a câmara não disponha de condições adequadas, por exemplo devido a obstrução, pintura, colocação de objetos ou incidência direta de luz intensa, o sistema gera um alerta para assinalar a incapacidade de análise.  
+
+\subsubsection{Capacidades e limitações}
+A solução baseia-se na receção sequencial de \textit{frames} \gls{rgb} fornecidos em tempo real pela câmara embutida na máquina de autoatendimento, que são processados localmente em lotes sem qualquer armazenamento persistente, assegurando o cumprimento das restrições de privacidade. Assume-se um \textit{throughput} mínimo de aproximadamente um \textit{frame} por segundo, considerado adequado para garantir funcionamento contínuo mesmo em \textit{hardware} limitado, embora valores superiores possam ser alcançados em equipamentos mais capazes.
+
+\subsubsection{Definição de alarmes e alertas} 
+Um evento de alarme ocorre quando, a partir da combinação das três categorias de deteção, o sistema atinge o limiar definido pela regra de decisão configurada, aplicado sobre lotes de \textit{frames} processados. As categorias consideradas são a presença de armas incluindo armas de fogo e armas brancas de pequenas dimensões a deteção de emoções negativas como medo ou agressividade no utilizador legítimo e a identificação de comportamentos classificados como violência. Situações de proximidade física excessiva ou degradação da qualidade da imagem são tratadas apenas como alertas, que não desencadeiam alarmes mas fornecem informação contextual que pode apoiar a interpretação do cenário.
+
+\subsubsection{Metas de desempenho}
+No que respeita às metas de desempenho, procura-se maximizar o valor de \textit{recall}, estabelecendo-se como objetivo mínimo um valor de 0.7 de forma a validar a viabilidade inicial do sistema. Foi também considerada como meta de referência uma latência \textit{end-to-end} correspondente a um tempo médio de processamento por \textit{frame} no lote inferior ou igual a um segundo \gls{p95}. Esta métrica é entendida sobretudo como orientação para o desenho do sistema e não como requisito obrigatório. Não foi definido formalmente um teto de falsos alarmes por hora, embora se considere que o custo associado a não detetar uma ameaça real é superior ao custo de gerar falsos alarmes.
+
+\subsubsection{Fora de âmbito}
+No âmbito desta dissertação não se inclui a deteção de objetos que não sejam armas, o uso de áudio, a integração multi-câmara ou o reconhecimento facial e biométrico. Também se considera fora de âmbito a decisão que ocorre após a emissão de um alerta ou de um alarme, isto é, as ações subsequentes que a máquina de autoatendimento ou a entidade bancária possam adotar. Embora possam ser apontados cenários de aplicação, como a interrupção da operação em curso ou a notificação automática das autoridades, a definição e implementação dessas medidas não fazem parte do presente trabalho.
+
+
+\subsubsection{Pressupostos}
+Assume-se que a câmara embutida na máquina de autoatendimento mantém calibração e posição estáveis ao longo do tempo. Parte-se ainda do pressuposto de que não existem manipulações adversariais intencionais do campo visual, como padrões ou objetos especificamente concebidos para enganar os modelos de computação visual. Considera-se também que os modelos correm a uma taxa mínima de um \textit{frame} por segundo, garantindo funcionamento contínuo. Todo o processamento bem como a emissão de alertas e alarmes ocorrem localmente, pelo que a estabilidade de rede não é considerada um fator determinante para o desempenho do sistema.
+
+\paragraph{}
+Em síntese, esta secção estabelece o enquadramento necessário para a introdução do trabalho, clarificando os atores, os cenários de risco, as condições técnicas e os limites assumidos. Estes elementos constituem a base conceptual para a metodologia e para a avaliação apresentadas nos capítulos seguintes.  
+  
+
+
+\section{Estrutura do documento}
+
+O documento encontra-se estruturado em seis capítulos, complementados por um glossário que compila os principais termos técnicos utilizados ao longo do trabalho. A estrutura foi concebida para conduzir o leitor desde a contextualização inicial até à apresentação dos resultados e propostas de evolução futura, garantindo assim uma compreensão gradual e fundamentada do projeto.
+
+O capítulo de \textbf{Introdução} apresenta o tema em estudo, a motivação que conduziu ao desenvolvimento do projeto, os objetivos definidos e as principais contribuições do trabalho. Este capítulo estabelece o enquadramento global e fornece ao leitor uma visão clara do propósito e da relevância do sistema de segurança proposto.  
+
+O capítulo de \textbf{Contexto} descreve em detalhe as máquinas de autoatendimento e os riscos de segurança a elas associados, analisando de que forma estas vulnerabilidades justificam a necessidade de mecanismos adicionais de proteção. São igualmente discutidos os fundamentos tecnológicos que suportam a proposta, nomeadamente a visão computacional e a aprendizagem automática, com foco na sua aplicação em cenários de tempo real.  
+
+O capítulo de \textbf{Trabalho Relacionado} reúne e discute estudos anteriores e soluções já existentes na literatura e no mercado, identificando modelos de deteção, arquiteturas recentes e diferentes abordagens ligadas à análise de vídeo e ao reconhecimento de padrões. Esta análise crítica permite destacar as limitações das soluções correntes e justificar as opções metodológicas adotadas neste trabalho.  
+
+O capítulo de \textbf{Metodologia}, é apresentada a abordagem seguida para o desenvolvimento do sistema de segurança, incluindo a arquitetura modular proposta, os critérios de conceção, os componentes implementados e a descrição do funcionamento em ambiente local. Este capítulo fornece uma visão detalhada sobre o processo de desenvolvimento e as decisões técnicas que suportam a solução.  
+
+O capítulo de \textbf{Análise} concentra-se na avaliação prática do sistema, abordando o desempenho dos modelos de inferência, a validação com dados realistas e a medição da eficiência em ambiente com os recursos computacionais limitados de uma máquina de autoatendimento. Esta análise empírica permite aferir a robustez da solução e a sua viabilidade em cenários reais.  
+
+Por fim, o capítulo de \textbf{Conclusão} sintetiza os principais resultados obtidos, reflete sobre a utilidade e aplicabilidade do sistema desenvolvido e aponta potenciais caminhos de evolução, sob a forma de perspetivas de trabalho futuro. Este encerramento assegura a ligação entre os objetivos inicialmente definidos e as contribuições efetivamente alcançadas.  
+
+A organização do documento, assim estruturada, visa não apenas apresentar os conteúdos de forma sequencial, mas também facilitar a compreensão e evidenciar a progressão lógica do raciocínio científico subjacente a todo o trabalho.
+

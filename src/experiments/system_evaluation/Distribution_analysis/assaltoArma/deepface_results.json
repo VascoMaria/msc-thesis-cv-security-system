@@ -1,0 +1,44 @@
+{
+  "image_path": "C:\\Vasco\\Tese\\Projeto\\ProjetoFinal\\SecurityDetectionML\\Sistema_de_Seguranca\\INFERENCE_ENGINE\\EvaluateModels\\Distribuicao\\assaltoArma.png",
+  "inference_time": 2.1290793418884277,
+  "faces": [
+    {
+      "box": {
+        "x": 201,
+        "y": 217,
+        "w": 278,
+        "h": 278
+      },
+      "emotions": {
+        "angry": 35.38912708888923,
+        "disgust": 1.4260516621776507e-07,
+        "fear": 22.38098265159337,
+        "happy": 1.1231959799992696e-05,
+        "sad": 42.15982947828418,
+        "surprise": 1.9462329870210395e-06,
+        "neutral": 0.07004535038414891
+      },
+      "top_emotion": "sad",
+      "top_confidence": 42.15982947828418
+    },
+    {
+      "box": {
+        "x": 558,
+        "y": 186,
+        "w": 195,
+        "h": 195
+      },
+      "emotions": {
+        "angry": 58.21952819824219,
+        "disgust": 4.555893440283398e-06,
+        "fear": 0.012037770648021251,
+        "happy": 0.0003962145001423778,
+        "sad": 2.133386954665184,
+        "surprise": 0.0004956569682690315,
+        "neutral": 39.6341472864151
+      },
+      "top_emotion": "angry",
+      "top_confidence": 58.21952819824219
+    }
+  ]
+}

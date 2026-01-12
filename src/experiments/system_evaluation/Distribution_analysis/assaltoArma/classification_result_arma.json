@@ -1,0 +1,28 @@
+{
+  "image_path": "C:\\Vasco\\Tese\\Projeto\\ProjetoFinal\\SecurityDetectionML\\Sistema_de_Seguranca\\INFERENCE_ENGINE\\EvaluateModels\\Distribuicao\\assaltoArma.png",
+  "predicted_class_idx": 1,
+  "predicted_class_name": "1",
+  "confidence": 0.957478940486908,
+  "logits": [
+    -1.543675422668457,
+    1.5706281661987305
+  ],
+  "probabilities": [
+    0.04252108931541443,
+    0.957478940486908
+  ],
+  "top_k": [
+    {
+      "class_idx": 1,
+      "class_name": "1",
+      "probability": 0.957478940486908,
+      "logit": 1.5706281661987305
+    },
+    {
+      "class_idx": 0,
+      "class_name": "0",
+      "probability": 0.04252108931541443,
+      "logit": -1.543675422668457
+    }
+  ]
+}

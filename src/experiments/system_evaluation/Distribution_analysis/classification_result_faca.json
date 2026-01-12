@@ -1,0 +1,28 @@
+{
+  "image_path": "C:\\Vasco\\Tese\\Projeto\\ProjetoFinal\\SecurityDetectionML\\Sistema_de_Seguranca\\INFERENCE_ENGINE\\EvaluateModels\\Distribuicao\\assaltoFaca.png",
+  "predicted_class_idx": 0,
+  "predicted_class_name": "0",
+  "confidence": 0.664103090763092,
+  "logits": [
+    0.7393905520439148,
+    0.057757556438446045
+  ],
+  "probabilities": [
+    0.664103090763092,
+    0.33589693903923035
+  ],
+  "top_k": [
+    {
+      "class_idx": 0,
+      "class_name": "0",
+      "probability": 0.664103090763092,
+      "logit": 0.7393905520439148
+    },
+    {
+      "class_idx": 1,
+      "class_name": "1",
+      "probability": 0.33589693903923035,
+      "logit": 0.057757556438446045
+    }
+  ]
+}

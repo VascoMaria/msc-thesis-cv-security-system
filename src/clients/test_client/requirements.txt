@@ -1,0 +1,6 @@
+opencv-python
+aiohttp
+requests
+numpy
+pandas
+openpyxl

@@ -1,0 +1,936 @@
+
+% Journals
+
+% First the Full Name is given, then the abbreviation used in the AMS Math
+% Reviews, with an indication if it could not be found there.
+% Note the 2nd overwrites the 1st, so swap them if you want the full name.
+
+ %{AMS}
+ @String{AMSTrans = "American Mathematical Society Translations" }
+ @String{AMSTrans = "Amer. Math. Soc. Transl." }
+ @String{BullAMS = "Bulletin of the American Mathematical Society" }
+ @String{BullAMS = "Bull. Amer. Math. Soc." }
+ @String{ProcAMS = "Proceedings of the American Mathematical Society" }
+ @String{ProcAMS = "Proc. Amer. Math. Soc." }
+ @String{TransAMS = "Transactions of the American Mathematical Society" }
+ @String{TransAMS = "Trans. Amer. Math. Soc." }
+
+ %ACM
+ @String{CACM = "Communications of the {ACM}" }
+ @String{CACM = "Commun. {ACM}" }
+ @String{CompServ = "Comput. Surveys" }
+ @String{JACM = "J. ACM" }
+ @String{ACMMathSoft = "{ACM} Transactions on Mathematical Software" }
+ @String{ACMMathSoft = "{ACM} Trans. Math. Software" }
+ @String{SIGNUM = "{ACM} {SIGNUM} Newsletter" }
+ @String{SIGNUM = "{ACM} {SIGNUM} Newslett." }
+
+ @String{AmerSocio = "American Journal of Sociology" }
+ @String{AmerStatAssoc = "Journal of the American Statistical Association" }
+ @String{AmerStatAssoc = "J. Amer. Statist. Assoc." }
+ @String{ApplMathComp = "Applied Mathematics and Computation" }
+ @String{ApplMathComp = "Appl. Math. Comput." }
+ @String{AmerMathMonthly = "American Mathematical Monthly" }
+ @String{AmerMathMonthly = "Amer. Math. Monthly" }
+ @String{BIT = "{BIT}" }
+ @String{BritStatPsych = "British Journal of Mathematical and Statistical
+          Psychology" }
+ @String{BritStatPsych = "Brit. J. Math. Statist. Psych." }
+ @String{CanMathBull = "Canadian Mathematical Bulletin" }
+ @String{CanMathBull = "Canad. Math. Bull." }
+ @String{CompApplMath = "Journal of Computational and Applied Mathematics" }
+ @String{CompApplMath = "J. Comput. Appl. Math." }
+ @String{CompPhys = "Journal of Computational Physics" }
+ @String{CompPhys = "J. Comput. Phys." }
+ @String{CompStruct = "Computers and Structures" }
+ @String{CompStruct = "Comput. \& Structures" }
+ @String{CompJour = "The Computer Journal" }
+ @String{CompJour = "Comput. J." }
+ @String{CompSysSci = "Journal of Computer and System Sciences" }
+ @String{CompSysSci = "J. Comput. System Sci." }
+ @String{Computing = "Computing" }
+ @String{ContempMath = "Contemporary Mathematics" }
+ @String{ContempMath = "Contemp. Math." }
+ @String{Crelle = "Crelle's Journal" }
+ @String{GiornaleMath = "Giornale di Mathematiche" }
+ @String{GiornaleMath = "Giorn. Mat." } % didn't find in AMS MR., ibid.
+
+ %IEEE
+ @String{Computer = "{IEEE} Computer" }
+ @String{IEEETransComp = "{IEEE} Transactions on Computers" }
+ @String{IEEETransComp = "{IEEE} Trans. Comput." }
+ @String{IEEETransAC = "{IEEE} Transactions on Automatic Control" }
+ @String{IEEETransAC = "{IEEE} Trans. Automat. Control" }
+ @String{IEEESpec = "{IEEE} Spectrum" } % didn't find in AMS MR
+ @String{ProcIEEE = "Proceedings of the {IEEE}" }
+ @String{ProcIEEE = "Proc. {IEEE}" } % didn't find in AMS MR
+ @String{IEEETransAeroElec = "{IEEE} Transactions on Aerospace and Electronic
+     Systems" }
+ @String{IEEETransAeroElec = "{IEEE} Trans. Aerospace Electron. Systems" }
+
+ @String{IMANumerAna = "{IMA} Journal of Numerical Analysis" }
+ @String{IMANumerAna = "{IMA} J. Numer. Anal." }
+ @String{InfProcLet = "Information Processing Letters" }
+ @String{InfProcLet = "Inform. Process. Lett." }
+ @String{InstMathApp = "Journal of the Institute of Mathematics and
+     its Applications" }
+ @String{InstMathApp = "J. Inst. Math. Appl." }
+ @String{IntControl = "International Journal of Control" }
+ @String{IntControl = "Internat. J. Control" }
+ @String{IntNumerEng = "International Journal for Numerical Methods in
+     Engineering" }
+ @String{IntNumerEng = "Internat. J. Numer. Methods Engrg." }
+ @String{IntSuper = "International Journal of Supercomputing Applications" }
+ @String{IntSuper = "Internat. J. Supercomputing Applic." } % didn't find
+%% in AMS MR
+ @String{Kibernetika = "Kibernetika" }
+ @String{JResNatBurStand = "Journal of Research of the National Bureau
+     of Standards" }
+ @String{JResNatBurStand = "J. Res. Nat. Bur. Standards" }
+ @String{LinAlgApp = "Linear Algebra and its Applications" }
+ @String{LinAlgApp = "Linear Algebra Appl." }
+ @String{MathAnaAppl = "Journal of Mathematical Analysis and Applications" }
+ @String{MathAnaAppl = "J. Math. Anal. Appl." }
+ @String{MathAnnalen = "Mathematische Annalen" }
+ @String{MathAnnalen = "Math. Ann." }
+ @String{MathPhys = "Journal of Mathematical Physics" }
+ @String{MathPhys = "J. Math. Phys." }
+ @String{MathComp = "Mathematics of Computation" }
+ @String{MathComp = "Math. Comp." }
+ @String{MathScand = "Mathematica Scandinavica" }
+ @String{MathScand = "Math. Scand." }
+ @String{TablesAidsComp = "Mathematical Tables and Other Aids to Computation" }
+ @String{TablesAidsComp = "Math. Tables Aids Comput." }
+ @String{NumerMath = "Numerische Mathematik" }
+ @String{NumerMath = "Numer. Math." }
+ @String{PacificMath = "Pacific Journal of Mathematics" }
+ @String{PacificMath = "Pacific J. Math." }
+ @String{ParDistComp = "Journal of Parallel and Distributed Computing" }
+ @String{ParDistComp = "J. Parallel and Distrib. Comput." } % didn't find
+%% in AMS MR
+ @String{ParComputing = "Parallel Computing" }
+ @String{ParComputing = "Parallel Comput." }
+ @String{PhilMag = "Philosophical Magazine" }
+ @String{PhilMag = "Philos. Mag." }
+ @String{ProcNAS = "Proceedings of the National Academy of Sciences
+                    of the USA" }
+ @String{ProcNAS = "Proc. Nat. Acad. Sci. U. S. A." }
+ @String{Psychometrika = "Psychometrika" }
+ @String{QuartMath = "Quarterly Journal of Mathematics, Oxford, Series (2)" }
+ @String{QuartMath = "Quart. J. Math. Oxford Ser. (2)" }
+ @String{QuartApplMath = "Quarterly of Applied Mathematics" }
+ @String{QuartApplMath = "Quart. Appl. Math." }
+ @String{RevueInstStat = "Review of the International Statisical Institute" }
+ @String{RevueInstStat = "Rev. Inst. Internat. Statist." }
+
+ %SIAM
+ @String{JSIAM = "Journal of the Society for Industrial and Applied
+     Mathematics" }
+ @String{JSIAM = "J. Soc. Indust. Appl. Math." }
+ @String{JSIAMB = "Journal of the Society for Industrial and Applied
+     Mathematics, Series B, Numerical Analysis" }
+ @String{JSIAMB = "J. Soc. Indust. Appl. Math. Ser. B Numer. Anal." }
+ @String{SIAMAlgMeth = "{SIAM} Journal on Algebraic and Discrete Methods" }
+ @String{SIAMAlgMeth = "{SIAM} J. Algebraic Discrete Methods" }
+ @String{SIAMAppMath = "{SIAM} Journal on Applied Mathematics" }
+ @String{SIAMAppMath = "{SIAM} J. Appl. Math." }
+ @String{SIAMComp = "{SIAM} Journal on Computing" }
+ @String{SIAMComp = "{SIAM} J. Comput." }
+ @String{SIAMMatrix = "{SIAM} Journal on Matrix Analysis and Applications" }
+ @String{SIAMMatrix = "{SIAM} J. Matrix Anal. Appl." }
+ @String{SIAMNumAnal = "{SIAM} Journal on Numerical Analysis" }
+ @String{SIAMNumAnal = "{SIAM} J. Numer. Anal." }
+ @String{SIAMReview = "{SIAM} Review" }
+ @String{SIAMReview = "{SIAM} Rev." }
+ @String{SIAMSciStat = "{SIAM} Journal on Scientific and Statistical
+     Computing" }
+ @String{SIAMSciStat = "{SIAM} J. Sci. Statist. Comput." }
+
+ @String{SoftPracExp = "Software Practice and Experience" }
+ @String{SoftPracExp = "Software Prac. Experience" } % didn't find in AMS MR
+ @String{StatScience = "Statistical Science" }
+ @String{StatScience = "Statist. Sci." }
+ @String{Techno = "Technometrics" }
+ @String{USSRCompMathPhys = "{USSR} Computational Mathematics and Mathematical
+     Physics" }
+ @String{USSRCompMathPhys = "{U. S. S. R.} Comput. Math. and Math. Phys." }
+ @String{VLSICompSys = "Journal of {VLSI} and Computer Systems" }
+ @String{VLSICompSys = "J. {VLSI} Comput. Syst." }
+ @String{ZAngewMathMech = "Zeitschrift fur Angewandte Mathematik und
+     Mechanik" }
+ @String{ZAngewMathMech = "Z. Angew. Math. Mech." }
+ @String{ZAngewMathPhys = "Zeitschrift fur Angewandte Mathematik und Physik" }
+ @String{ZAngewMathPhys = "Z. Angew. Math. Phys." }
+
+% Publishers % ================================================= |
+
+ @String{Academic = "Academic Press" }
+ @String{ACMPress = "{ACM} Press" }
+ @String{AdamHilger = "Adam Hilger" }
+ @String{AddisonWesley = "Addison-Wesley" }
+ @String{AllynBacon = "Allyn and Bacon" }
+ @String{AMS = "American Mathematical Society" }
+ @String{Birkhauser = "Birkha{\"u}ser" }
+ @String{CambridgePress = "Cambridge University Press" }
+ @String{Chelsea = "Chelsea" }
+ @String{ClaredonPress = "Claredon Press" }
+ @String{DoverPub = "Dover Publications" }
+ @String{Eyolles = "Eyolles" }
+ @String{HoltRinehartWinston = "Holt, Rinehart and Winston" }
+ @String{Interscience = "Interscience" }
+ @String{JohnsHopkinsPress = "The Johns Hopkins University Press" }
+ @String{JohnWileySons = "John Wiley and Sons" }
+ @String{Macmillan = "Macmillan" }
+ @String{MathWorks = "The Math Works Inc." }
+ @String{McGrawHill = "McGraw-Hill" }
+ @String{NatBurStd = "National Bureau of Standards" }
+ @String{NorthHolland = "North-Holland" }
+ @String{OxfordPress = "Oxford University Press" }  %address Oxford or London?
+ @String{PergamonPress = "Pergamon Press" }
+ @String{PlenumPress = "Plenum Press" }
+ @String{PrenticeHall = "Prentice-Hall" }
+ @String{SIAMPub = "{SIAM} Publications" }
+ @String{Springer = "Springer-Verlag" }
+ @String{TexasPress = "University of Texas Press" }
+ @String{VanNostrand = "Van Nostrand" }
+ @String{WHFreeman = "W. H. Freeman and Co." }
+
+
+@article{CHENG2018474,
+title = {Scene recognition with objectness},
+journal = {Pattern Recognition},
+volume = {74},
+pages = {474-487},
+year = {2018},
+issn = {0031-3203},
+doi = {https://doi.org/10.1016/j.patcog.2017.09.025},
+url = {https://www.sciencedirect.com/science/article/pii/S003132031730376X},
+author = {Xiaojuan Cheng and Jiwen Lu and Jianjiang Feng and Bo Yuan and Jie Zhou},
+keywords = {Scene recognition, Deep learning, Co-occurrence pattern},
+
+}
+
+@article{iberahim2016customer,
+  title={Customer satisfaction on reliability and responsiveness of self service technology for retail banking services},
+  author={Iberahim, H and Taufik, NK Mohd and Adzmir, AS Mohd and Saharuddin, H},
+  journal={Procedia Economics and Finance},
+  volume={37},
+  pages={13--20},
+  year={2016},
+  publisher={Elsevier}
+}
+
+@article{roslanimplementation,
+  title={The Implementation of Self-Service Kiosk at Larkin Bus Station},
+  year={2024},
+  author={Roslan, Nazneem Furzan Ain and Mifzal, Muhammad Hariz and Kassim, Rahimah and Azman, Wan Najat Wan}
+}
+
+@article{tomiPT,
+  title={TOMI lança serviço inovador para tirar filas das Lojas do Cidadão},
+  year={2018},
+  author={João Tomé},
+  journal={https://insider.dn.pt/noticias/tomi-lanca-servico-inovador-tirar-filas-das-lojas-do-cidadao/612/},
+  note = {Accessed Out. 2024}
+}
+@article{ngolaCrime,
+  title={Assaltos nos ATM preocupa untentes em Cacuaco},
+  year={2023},
+  author={Kihunga Bessa},
+  journal={https://namiradocrime.info/show/7567},
+  note = {Accessed Out. 2024}
+}
+
+@article{inm,
+  title = {Innovation Makers},
+  year = {2009},
+  url = {http://www.inm.pt/},
+  note = {Accessed Nov. 2024}
+}
+
+
+
+@article{RaioXWeapons,
+  title={Using deep convolutional neural network architectures for object classification and detection within x-ray baggage security imagery},
+  author={Akcay, Samet and Kundegorski, Mikolaj E and Willcocks, Chris G and Breckon, Toby P},
+  journal={IEEE transactions on information forensics and security},
+  volume={13},
+  number={9},
+  pages={2203--2215},
+  year={2018},
+  publisher={IEEE}
+}
+@article{RaioXBoVW,
+  title={On using feature descriptors as visual words for object detection within X-ray baggage security screening},
+  author={Kundegorski, Mikolaj E and Ak{\c{c}}ay, Samet and Devereux, Michael and Mouton, Andre and Breckon, Toby P},
+  year={2016},
+  publisher={IET}
+}
+
+
+@book{ComputerVision,
+  title={Computer vision: algorithms and applications},
+  author={Szeliski, Richard},
+  year={2022},
+  publisher={Springer Nature}
+}
+
+@article{InternetDasCoisasComComputerVision,
+  title={Midgar: Detection of people through computer vision in the Internet of Things scenarios to improve the security in Smart Cities, Smart Towns, and Smart Homes},
+  author={Garc{\'\i}a, Cristian Gonz{\'a}lez and Meana-Llori{\'a}n, Daniel and G-Bustelo, B Cristina Pelayo and Lovelle, Juan Manuel Cueva and Garcia-Fernandez, Nestor},
+  journal={Future Generation Computer Systems},
+  volume={76},
+  pages={301--313},
+  year={2017},
+  publisher={Elsevier}
+}
+@ARTICLE{Cnns,
+  author={Li, Zewen and Liu, Fan and Yang, Wenjie and Peng, Shouheng and Zhou, Jun},
+  journal={IEEE Transactions on Neural Networks and Learning Systems}, 
+  title={A Survey of Convolutional Neural Networks: Analysis, Applications, and Prospects}, 
+  year={2022},
+  volume={33},
+  number={12},
+  pages={6999-7019},
+  keywords={Convolutional neural networks;Feature extraction;Neurons;Deep learning;Computer vision;Computer vision;convolutional neural networks (CNNs);deep learning;deep neural networks},
+  doi={10.1109/TNNLS.2021.3084827}}
+
+@article{ObjDetSurvey2022,
+  title={A survey of modern deep learning based object detection models},
+  author={Zaidi, Syed Sahil Abbas and Ansari, Mohammad Samar and Aslam, Asra and Kanwal, Nadia and Asghar, Mamoona and Lee, Brian},
+  journal={Digital Signal Processing},
+  volume={126},
+  pages={103514},
+  year={2022},
+  publisher={Elsevier}
+}
+
+@article{yoloOptimal,
+  title={Yolov4: Optimal speed and accuracy of object detection},
+  author={Bochkovskiy, Alexey and Wang, Chien-Yao and Liao, Hong-Yuan Mark},
+  journal={arXiv preprint arXiv:2004.10934},
+  year={2020}
+}
+
+@inproceedings{yoloFast,
+  title={YOLO9000: better, faster, stronger},
+  author={Redmon, Joseph and Farhadi, Ali},
+  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+  pages={7263--7271},
+  year={2017}
+}
+
+@article{yolov8,
+  title={Yolov8},
+  author={Jocher Glenn},
+  journal={https://github.com/ultralytics/ultralytics/tree/main},
+  year={2023}
+}
+
+@inproceedings{Detrsbeatyolos,
+  title={Detrs beat yolos on real-time object detection},
+  author={Zhao, Yian and Lv, Wenyu and Xu, Shangliang and Wei, Jinman and Wang, Guanzhong and Dang, Qingqing and Liu, Yi and Chen, Jie},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={16965--16974},
+  year={2024}
+}
+@article{yolov10,
+  title={Yolov10: Real-time end-to-end object detection},
+  author={Wang, Ao and Chen, Hui and Liu, Lihao and Chen, Kai and Lin, Zijia and Han, Jungong and Ding, Guiguang},
+  journal={arXiv preprint arXiv:2405.14458},
+  year={2024}
+}
+https://github.com/ultralytics/ultralytics/tree/main
+
+@article{yolov10Repositorio,
+  title={Yolov10},
+  author={Ao Wang},
+  journal={https://github.com/THU-MIG/yolov10},
+  year={2023}
+}
+
+@article{MOT,
+  title={Multiple object tracking: A literature review},
+  author={Luo, Wenhan and Xing, Junliang and Milan, Anton and Zhang, Xiaoqin and Liu, Wei and Kim, Tae-Kyun},
+  journal={Artificial intelligence},
+  volume={293},
+  pages={103448},
+  year={2021},
+  publisher={Elsevier}
+}
+
+@article{smallOBJDeteTrack,
+  title={Small object detection and tracking: a comprehensive review},
+  author={Mirzaei, Behzad and Nezamabadi-Pour, Hossein and Raoof, Amir and Derakhshani, Reza},
+  journal={Sensors},
+  volume={23},
+  number={15},
+  pages={6887},
+  year={2023},
+  publisher={MDPI}
+}
+
+@inproceedings{Simpleonlineandrealtimetracking,
+  title={Simple online and realtime tracking},
+  author={Bewley, Alex and Ge, Zongyuan and Ott, Lionel and Ramos, Fabio and Upcroft, Ben},
+  booktitle={2016 IEEE international conference on image processing (ICIP)},
+  pages={3464--3468},
+  year={2016},
+  organization={IEEE}
+}
+
+@article{CrimeATMeArquitetura,
+  title={Crime detection and avoidance in ATM: a new framework},
+  author={Sujith, B},
+  journal={International Journal of Computer Science and Information Technologies},
+  volume={5},
+  number={5},
+  pages={6068--6071},
+  year={2014},
+  publisher={Citeseer}
+}
+
+@INPROCEEDINGS{Anomalybehavior,
+  author={Ko, Teddy},
+  booktitle={2008 37th IEEE Applied Imagery Pattern Recognition Workshop}, 
+  title={A survey on behavior analysis in video surveillance for homeland security applications}, 
+  year={2008},
+  volume={},
+  number={},
+  pages={1-8},
+  keywords={Video surveillance;Terrorism;Cameras;Computer vision;Software safety;Motion detection;Video recording;Event detection;Computerized monitoring;Humans},
+  doi={10.1109/AIPR.2008.4906450}}
+
+@article{CVSafety,
+  title={Computer vision based crowd disaster avoidance system: A survey},
+  author={Yogameena, Balasubramanian and Nagananthini, C},
+  journal={International journal of disaster risk reduction},
+  volume={22},
+  pages={95--129},
+  year={2017},
+  publisher={Elsevier}
+}
+
+@article{AnaliseComportamental,
+  title={Automated monitoring for security camera networks: promise from computer vision labs},
+  author={Chen, Chen and Surette, Ray and Shah, Mubarak},
+  journal={Security Journal},
+  volume={34},
+  number={3},
+  pages={389--409},
+  year={2021},
+  publisher={Springer}
+}
+
+@inproceedings{VideoActionDetection,
+  title={Video action detection with relational dynamic-poselets},
+  author={Wang, Limin and Qiao, Yu and Tang, Xiaoou},
+  booktitle={Computer Vision--ECCV 2014: 13th European Conference, Zurich, Switzerland, September 6-12, 2014, Proceedings, Part V 13},
+  pages={565--580},
+  year={2014},
+  organization={Springer}
+}
+
+@article{CameraUsingCVPollice,
+  title={Enhancing camera surveillance using computer vision: a research note},
+  author={Idrees, Haroon and Shah, Mubarak and Surette, Ray},
+  journal={Policing: An International Journal},
+  volume={41},
+  number={2},
+  pages={292--307},
+  year={2018},
+  publisher={Emerald Publishing Limited}
+}
+@online{hefesto2024,
+    author       = {Jornal Económico},
+    title        = {Innovation Makers lança máquinas de autoatendimento Hefesto para o setor bancário},
+    year         = {2024},
+    url          = {https://jornaleconomico.sapo.pt/noticias/innovation-makers-lanca-maquinas-de-autoatendimento-hefesto-para-o-setor-bancario/?utm_source=chatgpt.com},
+    urldate      = {2024-11-21}
+}
+
+@article{multipleobjecttracking,
+  title={Real-time multiple object tracking using deep learning methods},
+  author={Meimetis, Dimitrios and Daramouskas, Ioannis and Perikos, Isidoros and Hatzilygeroudis, Ioannis},
+  journal={Neural Computing and Applications},
+  volume={35},
+  number={1},
+  pages={89--118},
+  year={2023},
+  publisher={Springer}
+}
+
+@article{MOTComputerVision,
+  title={Fairmot: On the fairness of detection and re-identification in multiple object tracking},
+  author={Zhang, Yifu and Wang, Chunyu and Wang, Xinggang and Zeng, Wenjun and Liu, Wenyu},
+  journal={International journal of computer vision},
+  volume={129},
+  pages={3069--3087},
+  year={2021},
+  publisher={Springer}
+}
+@inproceedings{SOTAMOT,
+  title={Smiletrack: Similarity learning for occlusion-aware multiple object tracking},
+  author={Wang, Yu-Hsiang and Hsieh, Jun-Wei and Chen, Ping-Yang and Chang, Ming-Ching and So, Hung-Hin and Li, Xin},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={38},
+  number={6},
+  pages={5740--5748},
+  year={2024}
+}
+
+@inproceedings{HOG,
+  title={Histograms of oriented gradients for human detection},
+  author={Dalal, Navneet and Triggs, Bill},
+  booktitle={2005 IEEE computer society conference on computer vision and pattern recognition (CVPR'05)},
+  volume={1},
+  pages={886--893},
+  year={2005},
+  organization={Ieee}
+}
+
+@article{FER2,
+  title={Image ratio features for facial expression recognition application},
+  author={Song, Mingli and Tao, Dacheng and Liu, Zicheng and Li, Xuelong and Zhou, Mengchu},
+  journal={IEEE Transactions on Systems, Man, and Cybernetics, Part B (Cybernetics)},
+  volume={40},
+  number={3},
+  pages={779--788},
+  year={2009},
+  publisher={IEEE}
+}
+
+@article{Fer,
+  title={A novel facial emotion recognition model using segmentation VGG-19 architecture},
+  author={Vignesh, S and Savithadevi, M and Sridevi, M and Sridhar, Rajeswari},
+  journal={International Journal of Information Technology},
+  volume={15},
+  number={4},
+  pages={1777--1787},
+  year={2023},
+  publisher={Springer}
+}
+
+@misc{cursoProf,
+  author       = {Universidade de Stanford},
+  title        = {CS329S: Machine Learning Systems Design},
+  year         = {2022},
+  howpublished = {\url{https://stanford-cs329s.github.io/syllabus.html}},
+  note         = {Acesso em: nov. 2024}
+}
+
+@inproceedings{BYTETrack,
+  title={Bytetrack: Multi-object tracking by associating every detection box},
+  author={Zhang, Yifu and Sun, Peize and Jiang, Yi and Yu, Dongdong and Weng, Fucheng and Yuan, Zehuan and Luo, Ping and Liu, Wenyu and Wang, Xinggang},
+  booktitle={European conference on computer vision},
+  pages={1--21},
+  year={2022},
+  organization={Springer}
+}
+
+@article{BOT-SORT,
+  title={BoT-SORT: Robust associations multi-pedestrian tracking},
+  author={Aharon, Nir and Orfaig, Roy and Bobrovsky, Ben-Zion},
+  journal={arXiv preprint arXiv:2206.14651},
+  year={2022}
+}
+
+@article{fastapi,
+  author  = {Sebastián Ramírez},
+  title   = {FastAPI - The modern web framework for Python},
+  journal = {FastAPI Documentation},
+  year    = {2024},
+  url     = {https://fastapi.tiangolo.com/},
+  note    = {Acessado em: 7 de dezembro de 2024}
+}
+
+@article{OpenCV,
+  title={Learning OpenCV: Computer vision with the OpenCV library},
+  author={Bradski, Gary},
+  journal={O'REILLY google schola},
+  volume={2},
+  pages={334--352},
+  year={2008}
+}
+@misc{deepface,
+  author = {Sefik Ilkin Serengil},
+  title = {DeepFace: A Lightweight Face Recognition and Facial Attribute Analysis Framework},
+  year = {2024},
+  howpublished = {\url{https://github.com/serengil/deepface}},
+  note = {Acesso em: 13 de novembro de 2024}
+}
+
+@article{ArchitectureProposal,
+  title={Crime detection and avoidance in ATM: a new framework},
+  author={Sujith, B},
+  journal={International Journal of Computer Science and Information Technologies},
+  volume={5},
+  number={5},
+  pages={6068--6071},
+  year={2014},
+  publisher={Citeseer}
+}
+@article{cursoProf2,
+  title={A review of machine learning for the optimization of production processes},
+  author={Weichert, Dorina and Link, Patrick and Stoll, Anke and R{\"u}ping, Stefan and Ihlenfeldt, Steffen and Wrobel, Stefan},
+  journal={The International Journal of Advanced Manufacturing Technology},
+  volume={104},
+  number={5},
+  pages={1889--1902},
+  year={2019},
+  publisher={Springer}
+}
+
+@misc{fer2013kaggle,
+  title = {FER-2013 Dataset},
+  author = {Sambare, Mehul},
+  year = {2013},
+  url = {https://www.kaggle.com/datasets/msambare/fer2013},
+  note = {Disponível no Kaggle: Facial Expression Recognition Dataset (FER-2013). Acesso em 5 de Janeiro de 2025}
+}
+
+@article{roubosATMS,
+    author = {{European Association for Secure Transactions (EAST)}},
+    title = {ATM Physical Attacks Rise in Europe},
+    year = {2024},
+    url = {https://www.association-secure-transactions.eu/wp-content/uploads/ATM-Physical-attacks-rise-in-Europe-for-release-to-the-media-on-16th-April-2024.pdf},
+    note = {Acessado em março de 2025}
+}
+
+@article{Agarwal2025,
+  author  = {Agarwal, Raghav},
+  title   = {Implementing Batch and Real-Time ML Systems for Scalable User Engagement},
+  journal = {International Journal of Realtime Systems and Machine Learning},
+  year    = {2025}
+}
+
+@article{QiTao2019,
+  author       = {Qi, Qinglin and Tao, Fei},
+  title        = {A Smart Manufacturing Service System Based on Edge Computing, Fog Computing, and Cloud Computing},
+  journal      = {IEEE Access},
+  year         = {2019}
+}
+
+@article{Wang2020,
+  author  = {Wang, Xiaofei and Han, Yiwen and Leung, Victor C. M. and Niyato, Dusit and Yan, Xueqiang and Chen, Xu},
+  title   = {Convergence of Edge Computing and Deep Learning: A Comprehensive Survey},
+  journal = {IEEE Communications Surveys & Tutorials},
+  year    = {2020}
+}
+
+@article{oh2025optimizing,
+  title={Optimizing Real-Time Object Detection in a Multi-Neural Processing Unit System},
+  author={Oh, Sehyeon and Kwon, Yongin and Lee, Jemin},
+  journal={Sensors},
+  volume={25},
+  number={5},
+  pages={1376},
+  year={2025},
+  publisher={MDPI}
+}
+
+@inproceedings{sultani2018real,
+  title={Real-world anomaly detection in surveillance videos},
+  author={Sultani, Waqas and Chen, Chen and Shah, Mubarak},
+  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+  pages={6479--6488},
+  year={2018}
+}
+
+@inproceedings{meinhardt2022trackformer,
+  title={Trackformer: Multi-object tracking with transformers},
+  author={Meinhardt, Tim and Kirillov, Alexander and Leal-Taixe, Laura and Feichtenhofer, Christoph},
+  booktitle={Proceedings of the IEEE/CVF conference on computer vision and pattern recognition},
+  pages={8844--8854},
+  year={2022}
+}
+
+@misc{jacobm_efficientnet,
+  author = {JacobM184},
+  title = {EfficientNet for Gun Detection},
+  howpublished = {\url{https://github.com/JacobM184/EfficientNet-for-Gun-detection}},
+  year = {2023},
+  note = {Acedido em 2025-04-21}
+}
+
+@misc{joaoassalim_yolo,
+  author = {João Assalim},
+  title = {Weapons and Knives Detector with YOLOv8},
+  howpublished = {\url{https://github.com/JoaoAssalim/Weapons-and-Knives-Detector-with-YOLOv8}},
+  year = {2023},
+  note = {Acedido em 2025-04-21}
+}
+
+@misc{becayesoft_yolo,
+  author = {BecayeSoft},
+  title = {Guns Detection YOLOv8},
+  howpublished = {\url{https://github.com/BecayeSoft/Guns-Detection-YOLOv8}},
+  year = {2023},
+  note = {Acedido em 2025-04-21}
+}
+
+@misc{gingerbrains_yolo,
+  author = {GingerBrains},
+  title = {Object Detection with YOLOv8},
+  howpublished = {\url{https://github.com/GingerBrains/object-detection}},
+  year = {2023},
+  note = {Acedido em 2025-06-21}
+}
+
+@misc{musawer14_yolo_fight,
+  author = {Musawer14},
+  title = {fight\_detection\_yolov8},
+  year = {2024},
+  howpublished = {\url{https://huggingface.co/Musawer14/fight_detection_yolov8}},
+  note = {Acedido em 2025-04-21}
+}
+
+@misc{fer_model,
+  author = {Justin Shenk},
+  title = {fer: Facial Expression Recognition},
+  year = {2023},
+  howpublished = {\url{https://github.com/JustinShenk/fer}},
+  note = {Acesso em: 2025-04-19}
+}
+
+@article{jabbar2024advanced,
+  title={Advanced Threat Detection Using Soft and Hard Voting Techniques in Ensemble Learning},
+  author={Jabbar, Hanan Ghali},
+  journal={Journal of Robotics and Control (JRC)},
+  volume={5},
+  number={4},
+  pages={1104--1116},
+  year={2024}
+}
+
+@article{ala2016classifiers,
+  title={Classifiers consensus system approach for credit scoring},
+  author={Ala'raj, Maher and Abbod, Maysam F},
+  journal={Knowledge-Based Systems},
+  volume={104},
+  pages={89--105},
+  year={2016},
+  publisher={Elsevier}
+}
+
+@article{NoDatasetsWeapons1,
+  title={Weapon detection in real-time cctv videos using deep learning},
+  author={Bhatti, Muhammad Tahir and Khan, Muhammad Gufran and Aslam, Masood and Fiaz, Muhammad Junaid},
+  journal={Ieee Access},
+  volume={9},
+  pages={34366--34382},
+  year={2021},
+  publisher={IEEE}
+}
+
+@inproceedings{NoDatasetsWeapons2,
+  title={A Multi-Weapon Detection Using Synthetic Dataset and Yolov5},
+  author={Abdullah, Moahaimen Talib and ALameri, Jamila Harbi},
+  booktitle={2022 Fifth College of Science International Conference of Recent Trends in Information Technology (CSCTIT)},
+  pages={100--104},
+  year={2022},
+  organization={IEEE}
+}
+
+@misc{roboflow_weapon_cctv,
+  author = {{weapon detection cctv}},
+  title = {Weapon detection cctv v3 dataset},
+  howpublished = {\url{https://universe.roboflow.com/weapon-detection-cctv/weapon-detection-cctv-v3-dataset}},
+  year = {2023}
+}
+
+@misc{roboflow_yolo_weapon,
+  author = {{Roboflow Community}},
+  title = {YOLO Weapon Detection Dataset},
+  howpublished = {\url{https://universe.roboflow.com/weapon-detect-qbsiw/yolo-weapon-detection}},
+  note = {Acedido em julho de 2025}
+}
+
+@misc{roboflow_suspicious_movement,
+  author = {{Roboflow Community}},
+  title = {Suspicious Detection Dataset},
+  howpublished = {\url{https://universe.roboflow.com/suspicious-movement/suspicious-detection}}
+}
+
+@misc{roboflow_silah,
+  author = {Usuário Roboflow},
+  title = {Silah Computer Vision Project},
+  howpublished = {\url{https://universe.roboflow.com/deneme-jnb8a/silah-h8axi}},
+  year = {2023}
+}
+
+@misc{roboflow_knife,
+  author = {Usuário Roboflow},
+  title = {Knife Detection Computer Vision Project},
+  howpublished = {\url{https://universe.roboflow.com/ai-0jtbr/knife-detection-hgvy2}},
+  year = {2023}
+}
+
+
+@inproceedings{fer2013_dataset,
+  title={Challenges in representation learning: A report on three machine learning contests},
+  author={Goodfellow, Ian J and Erhan, Dumitru and Carrier, Pierre Luc and Courville, Aaron and Mirza, Mehdi and Hamner, Ben and Cukierski, Will and Tang, Yichuan and Thaler, David and Lee, Dong-Hyun and others},
+  booktitle={Neural information processing: 20th international conference, ICONIP 2013, daegu, korea, november 3-7, 2013. Proceedings, Part III 20},
+  pages={117--124},
+  year={2013},
+  organization={Springer}
+}
+
+@inproceedings{rafdb_dataset,
+  title={Reliable crowdsourcing and deep locality-preserving learning for expression recognition in the wild},
+  author={Li, Shan and Deng, Weihong and Du, JunPing},
+  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+  pages={2852--2861},
+  year={2017}
+}
+
+
+@INPROCEEDINGS{violence_dataset,
+  author={Cheng, Ming and Cai, Kunjing and Li, Ming},
+  booktitle={2020 25th International Conference on Pattern Recognition (ICPR)}, 
+  title={RWF-2000: An Open Large Scale Video Database for Violence Detection}, 
+  year={2021},
+  volume={},
+  number={},
+  pages={4183-4190},
+  doi={10.1109/ICPR48806.2021.9412502}}
+
+@article{SOTAMOT,
+  title={Online action detection in surveillance scenarios: A comprehensive review and comparative study of state-of-the-art multi-object tracking methods},
+  author={Alikhanov, Jumabek and Kim, Hakil},
+  journal={IEEE Access},
+  volume={11},
+  pages={68079--68092},
+  year={2023},
+  publisher={IEEE}
+}
+
+@inproceedings{resnet,
+  title={Deep residual learning for image recognition},
+  author={He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+  pages={770--778},
+  year={2016}
+}
+
+@inproceedings{mobilenetv3,
+  title={Searching for mobilenetv3},
+  author={Howard, Andrew and Sandler, Mark and Chu, Grace and Chen, Liang-Chieh and Chen, Bo and Tan, Mingxing and Wang, Weijun and Zhu, Yukun and Pang, Ruoming and Vasudevan, Vijay and others},
+  booktitle={Proceedings of the IEEE/CVF international conference on computer vision},
+  pages={1314--1324},
+  year={2019}
+}
+
+@inproceedings{efficientnet,
+  title={Efficientnet: Rethinking model scaling for convolutional neural networks},
+  author={Tan, Mingxing and Le, Quoc},
+  booktitle={International conference on machine learning},
+  pages={6105--6114},
+  year={2019},
+  organization={PMLR}
+}
+
+@inproceedings{ssd,
+  title={Ssd: Single shot multibox detector},
+  author={Liu, Wei and Anguelov, Dragomir and Erhan, Dumitru and Szegedy, Christian and Reed, Scott and Fu, Cheng-Yang and Berg, Alexander C},
+  booktitle={European conference on computer vision},
+  pages={21--37},
+  year={2016},
+  organization={Springer}
+}
+
+@article{fasterrcnn,
+  title={Faster r-cnn: Towards real-time object detection with region proposal networks},
+  author={Ren, Shaoqing and He, Kaiming and Girshick, Ross and Sun, Jian},
+  journal={Advances in neural information processing systems},
+  volume={28},
+  year={2015}
+}
+
+@article{li2020deep,
+  title={Deep facial expression recognition: A survey},
+  author={Li, Shan and Deng, Weihong},
+  journal={IEEE transactions on affective computing},
+  volume={13},
+  number={3},
+  pages={1195--1215},
+  year={2020},
+  publisher={IEEE}
+}
+
+@article{SVM,
+  title={What is a support vector machine?},
+  author={Noble, William S},
+  journal={Nature biotechnology},
+  volume={24},
+  number={12},
+  pages={1565--1567},
+  year={2006},
+  publisher={Nature Publishing Group UK London}
+}
+
+@article{singh2020real,
+  title={Real-time anomaly recognition through CCTV using neural networks},
+  author={Singh, Virender and Singh, Swati and Gupta, Pooja},
+  journal={Procedia Computer Science},
+  volume={173},
+  pages={254--263},
+  year={2020},
+  publisher={Elsevier}
+}
+@inproceedings{COCODataset,
+  title={Microsoft coco: Common objects in context},
+  author={Lin, Tsung-Yi and Maire, Michael and Belongie, Serge and Hays, James and Perona, Pietro and Ramanan, Deva and Doll{\'a}r, Piotr and Zitnick, C Lawrence},
+  booktitle={European conference on computer vision},
+  pages={740--755},
+  year={2014},
+  organization={Springer}
+}
+
+@article{atencaotranformer,
+  title={Attention mechanisms in computer vision: A survey},
+  author={Guo, Meng-Hao and Xu, Tian-Xing and Liu, Jiang-Jiang and Liu, Zheng-Ning and Jiang, Peng-Tao and Mu, Tai-Jiang and Zhang, Song-Hai and Martin, Ralph R and Cheng, Ming-Ming and Hu, Shi-Min},
+  journal={Computational visual media},
+  volume={8},
+  number={3},
+  pages={331--368},
+  year={2022},
+  publisher={TUP}
+}
+
+@book{van1995python,
+  title={Python reference manual},
+  author={Van Rossum, Guido and Drake, Fred L and others},
+  volume={111},
+  year={1995},
+  publisher={Centrum voor Wiskunde en Informatica Amsterdam}
+}
+
+@misc{roboflow,
+  author       = {{Roboflow}},
+  title        = {Roboflow: Organize, Annotate, and Train Computer Vision Datasets},
+  year         = {2024},
+  howpublished = {\url{https://roboflow.com}},
+  note         = {Acessado em fevereiro de 2025}
+}
+
+@article{DetectionViolentPoseEstimation,
+  title={Detection of violent behavior using neural networks and pose estimation},
+  author={Kwan-Loo, Kevin B and Ort{\'\i}z-Bayliss, Jos{\'e} C and Conant-Pablos, Santiago E and Terashima-Mar{\'\i}n, Hugo and Rad, P},
+  journal={IEEE Access},
+  volume={10},
+  pages={86339--86352},
+  year={2022},
+  publisher={IEEE}
+}
+
+@article{akoglu2018user,
+  title={User's guide to correlation coefficients},
+  author={Akoglu, Haldun},
+  journal={Turkish journal of emergency medicine},
+  volume={18},
+  number={3},
+  pages={91--93},
+  year={2018},
+  publisher={Elsevier}
+}

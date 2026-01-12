@@ -1,0 +1,15 @@
+{
+  "weapons": [
+    "weapon_detection_best_detections",
+    "weapon_detection_best2_detections",
+    "weapon_detection_model_detections",
+    "weapon_detection_EffientNet_detections"
+  ],
+  "emotions": [
+    "emotion_recognition_deepface_emotions",
+    "emotion_recognition_fer_emotions"
+  ],
+  "environment": [
+    "environment_detection_violenceEnvironments"
+  ]
+}

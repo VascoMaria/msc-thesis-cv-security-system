@@ -1,0 +1,44 @@
+{
+  "C:\\Vasco\\Tese\\Projeto\\ProjetoFinal\\SecurityDetectionML\\Sistema_de_Seguranca\\INFERENCE_ENGINE\\EvaluateModels\\Distribuicao\\assaltoArma.png": {
+    "inference_time": 4.950713634490967,
+    "num_detections": 2,
+    "avg_confidence": 0.543087050318718,
+    "max_confidence": 0.7230567336082458,
+    "detections": [
+      {
+        "class_id": 0,
+        "class_name": "non_violence",
+        "confidence": 0.7230567336082458,
+        "bbox": {
+          "x1": 158.4345703125,
+          "y1": 69.0494155883789,
+          "x2": 1024.0,
+          "y2": 1023.8082275390625
+        },
+        "bbox_norm": {
+          "x1": 0.15472126007080078,
+          "y1": 0.06743106991052628,
+          "x2": 1.0,
+          "y2": 0.9998127222061157
+        }
+      },
+      {
+        "class_id": 0,
+        "class_name": "non_violence",
+        "confidence": 0.36311736702919006,
+        "bbox": {
+          "x1": 517.7049560546875,
+          "y1": 53.518455505371094,
+          "x2": 1015.5831909179688,
+          "y2": 1016.791015625
+        },
+        "bbox_norm": {
+          "x1": 0.5055712461471558,
+          "y1": 0.05226411670446396,
+          "x2": 0.9917804598808289,
+          "y2": 0.9929599761962891
+        }
+      }
+    ]
+  }
+}

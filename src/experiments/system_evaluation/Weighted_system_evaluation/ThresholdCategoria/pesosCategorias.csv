@@ -1,0 +1,8 @@
+Modelo,Peso,Categoria
+weapon_detection_best_detections,0.467,Armas
+weapon_detection_best2_detections,0.117,Armas
+weapon_detection_model_detections,0.295,Armas
+weapon_detection_EffientNet_detections,0.259,Armas
+emotion_recognition_deepface_emotions,0.3013333333,Emoções
+emotion_recognition_fer_emotions,0.117,Emoções
+violence_detection_model,,Violência

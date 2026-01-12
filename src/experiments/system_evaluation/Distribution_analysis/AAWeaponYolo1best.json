@@ -1,0 +1,44 @@
+{
+  "C:\\Vasco\\Tese\\Projeto\\ProjetoFinal\\SecurityDetectionML\\Sistema_de_Seguranca\\INFERENCE_ENGINE\\EvaluateModels\\Distribuicao\\assaltoArma.png": {
+    "inference_time": 4.887433767318726,
+    "num_detections": 2,
+    "avg_confidence": 0.5640475898981094,
+    "max_confidence": 0.8413110971450806,
+    "detections": [
+      {
+        "class_id": 0,
+        "class_name": "guns",
+        "confidence": 0.8413110971450806,
+        "bbox": {
+          "x1": 432.3736267089844,
+          "y1": 515.2605590820312,
+          "x2": 686.4035034179688,
+          "y2": 697.3397216796875
+        },
+        "bbox_norm": {
+          "x1": 0.42223986983299255,
+          "y1": 0.5031841397285461,
+          "x2": 0.6703159213066101,
+          "y2": 0.6809958219528198
+        }
+      },
+      {
+        "class_id": 0,
+        "class_name": "guns",
+        "confidence": 0.2867840826511383,
+        "bbox": {
+          "x1": 78.93152618408203,
+          "y1": 931.09423828125,
+          "x2": 229.5196075439453,
+          "y2": 1016.40478515625
+        },
+        "bbox_norm": {
+          "x1": 0.07708156853914261,
+          "y1": 0.9092717170715332,
+          "x2": 0.2241402417421341,
+          "y2": 0.9925827980041504
+        }
+      }
+    ]
+  }
+}
