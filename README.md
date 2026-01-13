@@ -4,7 +4,8 @@ This repository contains the complete work developed as part of a **Master’s T
 **“Visão Computacional para Soluções de Segurança Adicional em Máquinas de Autoatendimento”**  
 by **Vasco Miguel Raimão Maria**, submitted to the **Faculdade de Ciências da Universidade de Lisboa**.
 
-This work was developed during a **professional internship at INM – Innovation Makers** and focuses on the design, implementation, and evaluation of an **additional computer vision–based security layer for the banking sector**, specifically targeting self-service machines such as ATMs and VTMs.
+This work was developed during a professional internship at **INM – Innovation Makers**, a technology company, and focuses on the design, implementation, and evaluation of an additional computer vision–based security layer for the banking sector, specifically targeting self-service machines such as ATMs and VTMs.
+
 
 ---
 
