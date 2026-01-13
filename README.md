@@ -45,12 +45,12 @@ The outputs of these models are combined through **configurable decision rules**
 ---
 
 ## Repository Structure
-
+```
 .
-├── src/       # Source code of the security system, clients, and experiments
-├── thesis/    # Master's thesis (PDF and LaTeX source)
-└── README.md  # This file
-
+├─ src/       # Source code of the security system, clients, and experiments
+├─ thesis/    # Master's thesis (PDF and LaTeX source)
+└─ README.md  # This file
+```
 ---
 
 ### `src/`
