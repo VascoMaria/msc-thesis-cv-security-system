@@ -51,6 +51,8 @@ The outputs of these models are combined through **configurable decision rules**
 ├─ thesis/    # Master's thesis (PDF and LaTeX source)
 └─ README.md  # This file
 
+---
+
 ### `src/`
 
 Contains the complete implementation of the system, including:
