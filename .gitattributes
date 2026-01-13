@@ -1,0 +1,2 @@
+# Ignore LaTeX thesis sources in language statistics
+thesis/source/** linguist-vendored
